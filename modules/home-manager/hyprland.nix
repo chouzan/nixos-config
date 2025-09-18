@@ -18,7 +18,7 @@ in
       kdePackages.dolphin
       kdePackages.gwenview
       kdePackages.kwallet
-      rofi-wayland
+      rofi
 
       # Clipboard manager
       wl-clipboard
@@ -58,7 +58,6 @@ in
 
       plugins = with hyprlandPlugins; [
         hyprbars
-        hyprexpo
       ];
     };
 

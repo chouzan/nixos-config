@@ -52,19 +52,21 @@
 
       ssh = {
         enable = true;
-        addKeysToAgent = "confirm";
+        enableDefaultConfig = false;
 
         matchBlocks = {
           "github.com" = {
             hostname = "github.com";
             user = "git";
             identityFile = "~/.ssh/id_ed25519";
+            addKeysToAgent = "confirm";
           };
 
           "gitlab.com" = {
             hostname = "gitlab.com";
             user = "git";
             identityFile = "~/.ssh/id_ed25519";
+            addKeysToAgent = "confirm";
           };
         };
       };
