@@ -4,6 +4,7 @@
   imports = [
     ./..
     ./nix.nix
+    ./boot.nix
     ./hardware.nix
     ./security.nix
     ./secret.nix
