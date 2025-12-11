@@ -13,5 +13,7 @@
     ./dev.nix
     ./editor.nix
     ./ai.nix
+    ./stylix.nix
+    ./stylix-targets.nix
   ];
 }

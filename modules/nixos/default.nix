@@ -17,5 +17,6 @@
     ./nerdfonts.nix
     ./hyprland.nix
     ./stylix.nix
+    ./stylix-targets.nix
   ];
 }
