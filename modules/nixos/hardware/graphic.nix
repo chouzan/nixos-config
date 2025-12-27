@@ -1,14 +1,15 @@
 {
   config,
-  pkgs,
   lib,
+  pkgs,
   ...
 }:
 
 let
-  cfg = config.modules;
+  inherit (config.modules) packages;
 in
 {
+  # Enable OpenGL, Vulkan (Mesa RADV), and other graphics drivers/libraries for GPU acceleration
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
@@ -16,7 +17,7 @@ in
 
   environment.systemPackages =
     with pkgs;
-    lib.optionals cfg.packages.admin.enable [
+    lib.optionals packages.admin.enable [
       # Mesa utilities, glxinfo, glxgears, es2_info, es2gears
       mesa-demos
 

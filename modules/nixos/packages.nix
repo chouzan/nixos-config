@@ -8,11 +8,11 @@
 
 let
   inherit (machine) user;
-  cfg = config.modules;
+  cfg = config.modules.packages;
 in
 {
   config = lib.mkMerge [
-    (lib.mkIf cfg.packages.admin.enable {
+    (lib.mkIf cfg.admin.enable {
       environment = {
         systemPackages = with pkgs; [
           dmidecode
@@ -29,14 +29,9 @@ in
           PAGER = "less";
         };
       };
-
-      programs.vim = {
-        enable = true;
-        defaultEditor = true;
-      };
     })
 
-    (lib.mkIf cfg.packages.network.enable {
+    (lib.mkIf cfg.network.enable {
       users.users.${user.username}.packages = with pkgs; [
         curl
         dig
@@ -46,7 +41,7 @@ in
       ];
     })
 
-    (lib.mkIf cfg.packages.archive.enable {
+    (lib.mkIf cfg.archive.enable {
       users.users.${user.username}.packages = with pkgs; [
         p7zip
         unzip
@@ -54,32 +49,12 @@ in
       ];
     })
 
-    (lib.mkIf cfg.packages.cli.enable {
+    (lib.mkIf cfg.cli.enable {
       users.users.${user.username}.packages = with pkgs; [
         jq
         tree
         yq-go
       ];
-    })
-
-    (lib.mkIf cfg.hyprland.enable {
-      environment.systemPackages = with pkgs; [
-        brightnessctl
-        playerctl
-        wireplumber
-      ];
-    })
-
-    (lib.mkIf cfg.spotify.enable {
-      users.users.${user.username}.packages = [ pkgs.spotify ];
-
-      networking.firewall = {
-        # Sync local tracks from filesystem with mobile devices in the same network
-        allowedTCPPorts = [ 57621 ];
-
-        # Enable discovery of Google Cast devices in the same network
-        allowedUDPPorts = [ 5353 ];
-      };
     })
   ];
 }

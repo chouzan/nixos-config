@@ -1,0 +1,7 @@
+{ ... }:
+
+{
+  imports = [
+    ./targets.nix
+  ];
+}

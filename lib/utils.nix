@@ -11,7 +11,9 @@ let
     hostname = null;
     configDir = null;
     nixosConfig = null;
-    homeManager = null;
+    # TODO: Refactor to explicit boolean (default false, require explicit true)
+    # Remove auto-detect magic - user should explicitly enable homeManager
+    homeManager = null; # null = auto-detect, true = force enable, false = force disable
     homeManagerConfig = null;
 
     # Optional
@@ -26,8 +28,7 @@ let
       collectNames =
         name: machine:
         let
-          hostname = machine.hostname;
-          aliases = machine.aliases;
+          inherit (machine) hostname aliases;
 
           mkRecord = recordName: source: {
             inherit hostname source;
@@ -42,8 +43,8 @@ let
         ++ lib.map (alias: mkRecord alias "alias") aliases;
 
       allNameSources = lib.flatten (lib.mapAttrsToList collectNames machines);
-      nameGroups = lib.groupBy (item: item.name) allNameSources;
-      conflicts = lib.filterAttrs (name: items: lib.length items > 1) nameGroups;
+      nameGroups = builtins.groupBy (item: item.name) allNameSources;
+      conflicts = lib.filterAttrs (_name: items: lib.length items > 1) nameGroups;
 
       formatConflict =
         name: items:
@@ -71,6 +72,7 @@ let
       homeManagerConfig,
       extraModules,
       extraHomeManagerModules,
+      overlays ? [ ],
     }:
     let
       machine = { inherit hostname user; };
@@ -83,7 +85,12 @@ let
         inputs.nur.modules.nixos.default
         nixosConfig
 
-        { nixpkgs.hostPlatform = system; }
+        {
+          nixpkgs = {
+            inherit overlays;
+            hostPlatform = system;
+          };
+        }
 
         (lib.optionalAttrs (homeManagerConfig != null) {
           imports = [ inputs.home-manager.nixosModules.home-manager ];
@@ -99,7 +106,8 @@ let
             };
           };
         })
-      ] ++ extraModules;
+      ]
+      ++ extraModules;
     };
 
   collectAllNames =
@@ -123,21 +131,23 @@ let
     machines: lib.mapAttrs (_: resolved: resolved.machine) (autoResolveConfigurations machines);
 
   buildConfigurations =
-    machines: extraModules: extraHomeManagerModules:
+    machines: extraModules: extraHomeManagerModules: overlays:
     let
       machineConfigs = resolveMachineConfigs machines;
 
       configs = lib.mapAttrs (
-        name: machine:
+        _name: machine:
         buildConfiguration {
-          inherit extraModules extraHomeManagerModules;
+          inherit extraModules extraHomeManagerModules overlays;
 
-          system = machine.system;
-          hostname = machine.hostname;
-          user = machine.user;
-          nixosConfig = machine.nixosConfig;
-          homeManagerConfig = machine.homeManagerConfig;
-          inputs = machine.inputs;
+          inherit (machine)
+            system
+            hostname
+            user
+            nixosConfig
+            homeManagerConfig
+            inputs
+            ;
         }
       ) machineConfigs;
 
@@ -247,8 +257,19 @@ let
       }
   );
 
+  # TODO: Reconsider home.nix auto-resolution magic
+  # Current behavior auto-detects home.nix per host, but most hosts share similar config
+  # Options:
+  # - Introduce hosts/shared/home.nix for common home-manager config
+  # - Use profiles/home/base.nix following profile pattern
+  # - Require explicit homeManagerConfig paths instead of magic
+  # See also: flake.nix TODOs for hosts/shared/ discussion
   autoResolveHomeManagerConfig = mkResolver "homeManagerConfig" (
     machine:
+    # Three-state logic:
+    # - false: explicitly disabled
+    # - true: explicitly enabled (use home.nix)
+    # - null: auto-detect (enable only if home.nix exists)
     if machine.homeManager == false then
       {
         value = null;
@@ -278,27 +299,31 @@ let
       machineConfigs = resolveMachineConfigs machines;
 
       nameCollections = collectAllNames machineConfigs;
-      names = nameCollections.names;
-      hostnames = nameCollections.hostnames;
-      aliases = nameCollections.aliases;
+
+      inherit (nameCollections)
+        names
+        hostnames
+        aliases
+        ;
 
       pathInfo = lib.mapAttrs (
-        name: resolved:
+        _name: resolved:
         let
-          machine = {
-            hostname = resolved.machine.hostname;
-            nixosConfig = resolved.machine.nixosConfig;
-            homeManagerConfig = resolved.machine.homeManagerConfig;
-            configDir = resolved.machine.configDir;
-          };
+          inherit (resolved) autoResolve;
 
-          autoResolve = resolved.autoResolve;
+          machine = {
+            inherit (resolved.machine)
+              hostname
+              nixosConfig
+              homeManagerConfig
+              configDir
+              ;
+          };
         in
         {
           inherit autoResolve machine;
         }
       ) resolvedConfigs;
-
     in
     {
       inherit
@@ -313,6 +338,7 @@ let
 
   getEnabledMonitors = monitors: lib.filter (m: !m.disabled) monitors;
 
+  # Returns value unless it's exactly false (allows null and other falsy values)
   orUnless = fallback: value: if value != false then value else fallback;
   orIfNull = fallback: value: if value != null then value else fallback;
   orIfEmpty = fallback: value: if value != [ ] then value else fallback;

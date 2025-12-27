@@ -11,18 +11,27 @@ in
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
 
-    # Might not be needed
-    ./nixos-hardware-patch.nix
+    # TODO: Check if it actually needed
+    ./hardware-patch.nix
 
     ./storage.nix
-    ./udev.nix
+    ./udev-patch.nix
+
     ../../modules/nixos
+
+    ../../profiles/base.nix
+    ../../profiles/hardware/laptop.nix
+    ../../profiles/hardware/amd.nix
+    ../../profiles/environment/desktop.nix
+    ../../profiles/environment/hyprland.nix
+    ../../profiles/role/development.nix
+    ../../profiles/role/media.nix
   ];
 
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  networking.hostName = hostname; # Define your hostname.
+  networking.hostName = hostname;
   # networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -51,22 +60,15 @@ in
   users.users.${user.username} = {
     isNormalUser = true;
     description = user.name;
+
     extraGroups = [
       "networkmanager"
       "wheel"
     ];
-    packages = [ ];
   };
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  environment.systemPackages = [
-    # vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    # wget
-  ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -126,30 +128,6 @@ in
       }
     ];
 
-    amd.enable = true;
-    battery.enable = true;
-
-    packages = {
-      admin.enable = true;
-      extras.enable = true;
-    };
-
-    hyprland.enable = true;
-
-    dev = {
-      nix.enable = true;
-
-      elixir = {
-        enable = true;
-        phoenix.enable = true;
-      };
-
-      node.enable = true;
-      python.enable = true;
-    };
-
-    ai.enable = true;
-
-    spotify.enable = true;
+    programs.bitwarden.enable = true;
   };
 }

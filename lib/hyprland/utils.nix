@@ -4,7 +4,8 @@ let
   toHyprlandMonitor =
     monitor:
     let
-      name = monitor.name;
+      inherit (monitor) name;
+
       resolution = "${toString monitor.width}x${toString monitor.height}@${toString monitor.refreshRate}";
       position = utils.orIfNull monitor.position monitor.hyprland.position;
       scale = toString monitor.scale;

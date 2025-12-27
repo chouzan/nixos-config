@@ -35,6 +35,11 @@
       };
     };
 
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -81,9 +86,12 @@
 
     hyprgraphics = {
       url = "github:hyprwm/hyprgraphics";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.systems.follows = "systems";
-      inputs.hyprutils.follows = "hyprutils";
+
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        systems.follows = "systems";
+        hyprutils.follows = "hyprutils";
+      };
     };
 
     hyprland = {
@@ -157,33 +165,71 @@
   };
 
   outputs =
-    { nixpkgs, ... }@inputs:
+    { self, nixpkgs, ... }@inputs:
     let
-      utils = import ./lib/utils.nix { lib = nixpkgs.lib; };
+      utils = import ./lib/utils.nix { inherit (nixpkgs) lib; };
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
 
-      user = rec {
-        username = "muhifauzan";
-        homedir = "/home/${username}";
-        dataHome = "${homedir}/.local/share";
-        stateHome = "${homedir}/.local/state";
-        configHome = "${homedir}/.config";
-        cacheHome = "${homedir}/.cache";
+      # TODO: Consider moving user/XDG configuration to proper options system
+      # Options:
+      # 1. Create modules/options/user.nix with config.modules.user.*
+      # 2. Profiles/hosts set these options, modules read them
+      # 3. Keep mkUser here for "obvious" entry point, but derive XDG in modules
+      # Current approach is fine for personal config, but adds coupling to flake.nix
+      mkUser = username: rec {
+        inherit username;
+        homeDir = "/home/${username}";
+        dataHome = "${homeDir}/.local/share";
+        stateHome = "${homeDir}/.local/state";
+        configHome = "${homeDir}/.config";
+        cacheHome = "${homeDir}/.cache";
         runtimeDir = "/run/user/1000";
-        name = "Muhammad Hilmy Fauzan";
+        name = "Muhammad H. Fauzan";
+        gitEmail = "14904191+chouzan@users.noreply.github.com";
       };
+
+      # Default user for most hosts
+      user = mkUser "chouzan";
 
       mkMachine = utils.mkMachineDefaults { inherit inputs system user; };
 
+      # TODO: Consider hosts/shared/ for common configs (e.g., home.nix)
+      # Currently home.nix files are duplicated across hosts with little difference
+      # Options:
+      # - hosts/shared/home.nix imported by hosts
+      # - profiles/home/base.nix following profile pattern
+      # - Explicit homeManagerConfig paths instead of utils.nix magic
+      # See also: lib/utils.nix autoResolveHomeManagerConfig magic
+      #
+      # TODO: Add per-host extraModules support to machine definitions
+      # e.g., extraModules = [ inputs.disko.nixosModules.disko ];
+      # This would allow hosts like panthera to declare disko without affecting acinonyx
+      #
+      # TODO: Consider integrating leopardus (installer) into machines with aliases
+      # Currently separate due to extraModules (sops, quadlet, stylix) not being needed for live ISO
+      #
+      # TODO: Evaluate folder structure as project grows
+      # Current: hosts/, profiles/, modules/, lib/, scripts/, docs/, overlays/
+      #
+      # TODO: Introduce `nixosadm` command for unified admin tasks
+      # - Similar to `eos` from EndeavourOS
+      # - Commit hardware-configuration.nix and stateVersion changes after install
+      # - System maintenance, updates, garbage collection
+      # - Explore integration with nh (github:nix-community/nh) for better UX
       machines = {
         workstation = mkMachine {
           hostname = "panthera";
-          aliases = [ "pc" ];
+          aliases = [ "desktop" ];
+        };
+
+        lab = mkMachine {
+          hostname = "neofelis";
         };
 
         laptop = mkMachine {
           hostname = "acinonyx";
+          user = mkUser "muhifauzan";
         };
 
         server = mkMachine {
@@ -191,19 +237,38 @@
         };
       };
 
-      extraModules = [
-        inputs.sops-nix.nixosModules.sops
-        inputs.quadlet-nix.nixosModules.quadlet
-        inputs.stylix.nixosModules.stylix
+      # TODO: Make extraModules more flexible to support per-host modules
+      # Currently these are applied to ALL hosts. Consider adding a mechanism
+      # for hosts to declare additional modules (e.g., disko for panthera only)
+      # without polluting other host configurations.
+      extraModules = with inputs; [
+        sops-nix.nixosModules.sops
+        quadlet-nix.nixosModules.quadlet
+        stylix.nixosModules.stylix
       ];
 
-      extraHomeManagerModules = [
-        inputs.sops-nix.homeManagerModules.sops
-        inputs.quadlet-nix.homeManagerModules.quadlet
+      extraHomeManagerModules = with inputs; [
+        sops-nix.homeManagerModules.sops
+        quadlet-nix.homeManagerModules.quadlet
       ];
+
+      overlays = import ./overlays;
     in
     {
-      nixosConfigurations = utils.buildConfigurations machines extraModules extraHomeManagerModules;
+      nixosConfigurations =
+        utils.buildConfigurations machines extraModules extraHomeManagerModules overlays
+        // {
+          leopardus = nixpkgs.lib.nixosSystem {
+            inherit system;
+            modules = [ ./hosts/leopardus/configuration.nix ];
+          };
+        };
+
+      # Convenience package outputs
+      packages.${system} = {
+        leopardus = self.nixosConfigurations.leopardus.config.system.build.isoImage;
+        installer = self.nixosConfigurations.leopardus.config.system.build.isoImage; # Alias
+      };
 
       formatter.${system} = inputs.treefmt-nix.lib.mkWrapper pkgs {
         projectRootFile = "flake.nix";

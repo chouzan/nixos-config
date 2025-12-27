@@ -16,14 +16,14 @@ let
   monitorToHyprlandString =
     monitor:
     let
+      # Position
+      inherit (monitor) position;
+
       # Base monitor specification
       baseSpec = if builtins.isString monitor.name then monitor.name else "desc:${monitor.name.desc}";
 
       # Resolution and refresh rate
       resolution = "${toString monitor.width}x${toString monitor.height}@${toString monitor.refreshRate}";
-
-      # Position
-      position = monitor.position;
 
       # Scale (convert number to string if needed)
       scale = toString monitor.scale;
@@ -33,8 +33,7 @@ let
 
       # Build optional parameters
       optionalParams =
-        [ ]
-        ++ optional (hyprlandOpts.vrr or 0 != 0) "vrr,${toString hyprlandOpts.vrr}"
+        optional (hyprlandOpts.vrr or 0 != 0) "vrr,${toString hyprlandOpts.vrr}"
         ++ optional (hyprlandOpts.transform or 0 != 0) "transform,${toString hyprlandOpts.transform}"
         ++ optional (hyprlandOpts.bitdepth or null != null) "bitdepth,${toString hyprlandOpts.bitdepth}"
         ++ optional (hyprlandOpts.adaptiveSync or false) "adaptivesync"

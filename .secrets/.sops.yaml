@@ -1,14 +1,14 @@
 keys:
-  - &nixos age15tu2ryy7s2ahwdfh6ukhfcq8f262hcfzlgcfnd0cl5lylyfs5qdqkv60nw
-  - &home_manager age1p5x2qprr9d4gry8h05g2xm0dsawuwpsy3cnxjdh58v5j7a4hpaxq9kldry
+    - &nixos age15tu2ryy7s2ahwdfh6ukhfcq8f262hcfzlgcfnd0cl5lylyfs5qdqkv60nw
+    - &home age1p5x2qprr9d4gry8h05g2xm0dsawuwpsy3cnxjdh58v5j7a4hpaxq9kldry
 
 creation_rules:
-  - path_regex: \.secrets/secrets\.nixos\.yaml$
-    key_groups:
-      - age:
-          - *nixos
+    - path_regex: \.secrets/secrets\.nixos\.yaml$
+      key_groups:
+          - age:
+                - *nixos
 
-  - path_regex: \.secrets/secrets\.home_manager\.yaml$
-    key_groups:
-      - age:
-          - *home_manager
+    - path_regex: \.secrets/secrets\.home\.yaml$
+      key_groups:
+          - age:
+                - *home

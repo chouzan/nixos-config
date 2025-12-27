@@ -1,12 +1,13 @@
 {
   config,
-  pkgs,
   lib,
+  pkgs,
   ...
 }:
 
 let
-  cfg = config.modules;
+  inherit (config.modules) packages;
+  cfg = config.modules.hardware;
 in
 {
   hardware.graphics = {
@@ -18,19 +19,19 @@ in
       libvdpau-va-gl
 
       # VDPAU to VA-API bridge (fallback)
-      vaapiVdpau
+      libva-vdpau-driver
     ];
 
     extraPackages32 = with pkgs.pkgsi686Linux; [
       libva
       libvdpau-va-gl
-      vaapiVdpau
+      libva-vdpau-driver
     ];
   };
 
   environment = {
     # VA-API utilities, vainfo, vaapi-fits
-    systemPackages = lib.optionals cfg.packages.admin.enable [ pkgs.libva-utils ];
+    systemPackages = lib.optionals packages.admin.enable [ pkgs.libva-utils ];
 
     sessionVariables = lib.mkMerge [
       {

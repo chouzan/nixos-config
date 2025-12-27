@@ -1,8 +1,8 @@
 { config, lib, ... }:
 
 let
+  inherit (config) modules;
   inherit (lib) types;
-  cfg = config.modules;
 in
 {
   options.modules.monitors = lib.mkOption {
@@ -96,9 +96,9 @@ in
     '';
   };
 
-  config.assertions = lib.optionals ((lib.length cfg.monitors) != 0) [
+  config.assertions = lib.optionals ((lib.length modules.monitors) != 0) [
     {
-      assertion = (lib.length (lib.filter (m: m.primary) cfg.monitors)) == 1;
+      assertion = (lib.length (lib.filter (m: m.primary) modules.monitors)) == 1;
       message = ''
         Exactly one monitor must be set to primary when monitors are configured.
 
@@ -107,7 +107,7 @@ in
     }
 
     {
-      assertion = (lib.length (lib.filter (m: !m.disabled) cfg.monitors)) >= 1;
+      assertion = (lib.length (lib.filter (m: !m.disabled) modules.monitors)) >= 1;
       message = ''
         At least one monitor must be enabled when monitors are configured.
 
@@ -117,7 +117,7 @@ in
 
     (
       let
-        invalidScales = (lib.filter (m: m.scale <= 0 || m.scale > 10) cfg.monitors);
+        invalidScales = lib.filter (m: m.scale <= 0 || m.scale > 10) modules.monitors;
       in
       {
         assertion = (lib.length invalidScales) == 0;
@@ -131,7 +131,7 @@ in
 
     (
       let
-        invalidResolutions = lib.filter (m: m.width < 320 || m.height < 240) cfg.monitors;
+        invalidResolutions = lib.filter (m: m.width < 320 || m.height < 240) modules.monitors;
       in
       {
         assertion = (lib.length invalidResolutions) == 0;
@@ -147,7 +147,7 @@ in
 
     (
       let
-        invalidRefreshRates = lib.filter (m: m.refreshRate < 30 || m.refreshRate > 500) cfg.monitors;
+        invalidRefreshRates = lib.filter (m: m.refreshRate < 30 || m.refreshRate > 500) modules.monitors;
       in
       {
         assertion = (lib.length invalidRefreshRates) == 0;

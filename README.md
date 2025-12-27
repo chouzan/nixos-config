@@ -1,217 +1,263 @@
-# My NixOS Config
+# NixOS Configuration
 
-###### 🚧 This is a Work in Progress
+[![NixOS Unstable](https://img.shields.io/badge/NixOS-unstable-4D6FB7.svg?style=flat&logo=nixos&logoColor=white)](https://nixos.org)
+[![NixOS Flakes](https://img.shields.io/badge/NixOS-Flakes-4D6FB7.svg?style=flat&logo=nixos&logoColor=white)](https://wiki.nixos.org/wiki/Flakes)
+[![Home Manager](https://img.shields.io/badge/Nix_Community-Home_Manager-4D6FB7.svg?style=flat&logo=nixos&logoColor=white)](https://github.com/nix-community/home-manager)
 
-Personal NixOS flake with modular configuration system.
+Personal NixOS configuration with an opinionated abstraction layer over NixOS and Home Manager. **This is a reference implementation** - feel free to learn from it, but it's tailored to my specific needs and workflow.
 
-## Quick Start
+## What is This?
+
+A modular NixOS configuration that provides high-level feature flags (`modules.*`) instead of raw NixOS options. Set what you want (`modules.bundles.dev.elixir.enable = true`) and let implementations handle the details (Elixir packages, LSP integration in Zed, shell completions, etc.).
+
+## Quick Example
 
 ```nix
+# hosts/<hostname>/configuration.nix
 {
-  modules.amd.enable = true;                # AMD hardware
-  modules.hyprland.enable = true;           # Hyprland WM
-  modules.packages.extras.enable = true;    # CLI tools
-  modules.dev.elixir.phoenix.enable = true; # Development
+  imports = [
+    ../../profiles/base.nix
+    ../../profiles/hardware/amd.nix
+    ../../profiles/environment/hyprland.nix
+  ];
+
+  modules = {
+    packages.extras.enable = true;
+    programs.git.enable = true;
+    bundles.dev.elixir.enable = true;
+  };
 }
 ```
 
-## Current Setup
+## Architecture
 
-**Hardware:**
-- 🚧 AMD laptop (acinonyx) running Hyprland with full development environment
-- 🚧 workstation *planned*
+```
+Custom Options (modules.*)
+    ↓
+Implementations (opinionated logic)
+    ↓
+NixOS/Home Manager Options
+```
 
-**Features:** 🚧 Multi-monitor support, development tools (Nix/Elixir/Node/Python), AI packages, SOPS secrets
+**Key Concepts:**
+
+- **Options** (`modules/options/*`) - Define the public API contract
+- **Implementations** (`modules/nixos/*`, `modules/home/*`) - Derive configuration decisions from custom options
+- **Profiles** (`profiles/*`) - Preset option combinations with `lib.mkDefault` (easily overridable)
+- **Hosts** (`hosts/*`) - Machine-specific configurations
+
+**Example Flow:**
+```nix
+# You enable:
+modules.programs.zsh.enable = true;
+
+# Implementation derives:
+programs.zsh.enable = true;                     # Enable Zsh itself
+programs.bat.enableZshIntegration = true;       # Auto-integration
+programs.fzf.enableZshIntegration = true;       # Cross-cutting concern
+services.gpg-agent.enableZshIntegration = true;
+```
 
 ```nix
-modules = {
-  # Hardware
-  amd.enable = true;
-  battery.enable = true;
+# You enable:
+modules.bundles.dev.elixir.enable = true;
 
-  # Monitors (custom multi-monitor system)
-  monitors = [
-    {
-      name = "eDP-1";
-      primary = true;
-      width = 2880;
-      height = 1800;
-      scale = 1.5;
-      # ... more config
-    }
-  ];
+# Implementation derives:
+environment.systemPackages = [ elixir elixir-ls ];
+programs.zed.extensions = [ "elixir" ];             # Conditional dependency
+# ... and more
+```
 
-  # Desktop
-  hyprland.enable = true;
+## Project Structure
 
-  # Development
-  dev = {
-    elixir.phoenix.enable = true;
-    node.enable = true;
-    python.enable = true;
-  };
+```
+nixos-config/
+├── flake.nix           # Entry point
+├── lib/                # Helper functions
+├── hosts/              # Machine configurations
+│   ├── panthera/       # Desktop workstation
+│   ├── neofelis/       # Lab machine
+│   ├── acinonyx/       # Laptop
+│   ├── leopardus/      # Installer ISO
+│   └── default/        # Template for new hosts
+├── profiles/           # Convenience presets
+│   ├── base.nix
+│   ├── hardware/
+│   ├── environment/
+│   └── role/
+├── modules/
+│   ├── options/        # API contract (modules.*)
+│   ├── nixos/          # NixOS implementations
+│   ├── home/           # Home Manager implementations
+│   └── nix/            # Nix daemon & community settings
+└── docs/               # Documentation
+```
 
-  # Packages & Apps
-  packages.extras.enable = true;
-  ai.enable = true;
-  spotify.enable = true;
-  # ...
+## Available Modules
+
+All available options are defined in `modules/options/`. The files are organized by category for easy discovery:
+
+- `modules/options/hardware.nix` - CPU, GPU, battery, etc.
+- `modules/options/system.nix` - System configuration (XDG, fonts, secrets)
+- `modules/options/stylix.nix` - Stylix theming configuration
+- `modules/options/desktop/` - Desktop environments
+- `modules/options/packages.nix` - Package collections (admin, cli, media, etc.)
+- `modules/options/programs.nix` - Individual programs (zsh, git, firefox, zed, etc.)
+- `modules/options/bundles.nix` - Feature bundles (containers, dev tools, AI, etc.)
+- `modules/options/monitors.nix` - Monitor configuration
+- `modules/options/my.nix` - Personal paths configuration (~/.my, scripts, keys)
+
+Each file contains clear option definitions with descriptions.
+
+## Multi-Monitor Setup
+
+```nix
+modules.monitors = [
+  {
+    name = "eDP-1";
+    primary = true;
+    width = 2880;
+    height = 1800;
+    refreshRate = 90;
+    scale = 1.5;
+    hyprland.workspace = "main";
+  }
+  {
+    name = "DP-4";
+    width = 3440;
+    height = 1440;
+    refreshRate = 144;
+    hyprland = {
+      workspace = "workspace";
+      position = "auto-right";
+      vrr = 1;
+    };
+  }
+];
+```
+
+See `modules/options/monitors.nix` and `modules/options/desktop/hyprland/monitors.nix` for all options.
+
+## Installation
+
+### Bootable Installer (Recommended for Fresh Installs)
+
+Build and use the unified installer ISO:
+
+```bash
+nix build .#installer -o out
+sudo dd if=out/iso/nixos-installer.iso of=/dev/sdX bs=4M status=progress
+```
+
+Boot from USB and run `sudo menu`. The installer supports:
+- **Disko method**: Automated, wipes entire disk (single-boot)
+- **Manual method**: GParted + script (dual-boot safe)
+
+See [hosts/leopardus/configuration.nix](hosts/leopardus/configuration.nix) for details.
+
+### Manual Setup
+
+**Note:** This is a personal config. If you want to use it as a base, you'll need to adapt it to your needs.
+
+1. **Clone and enter:**
+   ```bash
+   git clone <repo-url> ~/nixos-config
+   cd ~/nixos-config
+   ```
+
+2. **Update `flake.nix` with your information:**
+   ```nix
+   # User information
+   user = rec {
+     username = "<username>";      # Your username
+     name = "<Your Full Name>";    # Your full name
+     gitEmail = "<your-email>";    # Your git email
+     # ... homeDir is derived from username
+   };
+   
+   # Machine configuration
+   machines = {
+     <hostname> = mkMachine {
+       hostname = "<hostname>";
+     };
+   };
+   ```
+
+3. **Create your host:**
+   ```bash
+   cp -r hosts/default hosts/<hostname>
+   nixos-generate-config --show-hardware-config > hosts/<hostname>/hardware-configuration.nix
+   ```
+
+4. **Edit configuration:**
+   ```bash
+   $EDITOR hosts/<hostname>/configuration.nix
+   ```
+
+5. **Build and switch:**
+   ```bash
+   sudo nixos-rebuild switch --flake .#<hostname>
+   ```
+
+## Profiles
+
+Profiles are convenience wrappers that set multiple options at once with `lib.mkDefault`:
+
+```nix
+# profiles/hardware/amd.nix
+modules.hardware = {
+  cpu.amd.enable = lib.mkDefault true;
+  gpu.amd.enable = lib.mkDefault true;
 };
 ```
 
-## Available Options
-
-- **Hardware:** `amd`, `battery`, `cpu.amd`, `gpu.amd`
-- **Desktop:** 🚧 `hyprland`, `xdg`
-- **Packages:** 🚧 `admin`, `extras`, `network`, `archive`, `cli`
-- **Development:** 🚧 `nix`, `elixir`, `elixir.phoenix`, `node`, `python`
-- **Apps:** 🚧 `ai`, `spotify`
-- **Advanced:** 🚧 `monitors` (multi-monitor configuration system)
-
-### Custom Module System
-
-- **Basic toggles:** Simple feature flags in `modules/options.nix`
-- **Complex options:** Advanced configs like monitors in `modules/options/`
-- 🚧 **Implementations:** Most logic still uses traditional NixOS/home-manager modules
-
-## Structure
-
-```
-├── flake.nix              # Main flake
-├── hosts/acinonyx/        # Laptop config
-├── modules/
-│   ├── options.nix        # Simple feature toggles
-│   ├── options/           # Complex configurations (monitors, etc.)
-│   ├── nixos/             # NixOS modules
-│   └── home-manager/      # Home-manager modules
-└── lib/                   # Utilities
+Import profiles in your host's configuration:
+```nix
+imports = [
+  ../../profiles/base.nix                   # Essential tools
+  ../../profiles/hardware/laptop.nix        # Battery optimizations
+  ../../profiles/hardware/amd.nix           # AMD CPU + GPU
+  ../../profiles/environment/hyprland.nix
+  ../../profiles/role/development.nix       # Full dev stack
+];
 ```
 
-## Tech Stack
+Override as needed:
+```nix
+imports = [ ../../profiles/hardware/amd.nix ];
+modules.hardware.gpu.amd.enable = false;        # Disable GPU part
+```
 
-- **Base:** NixOS flake + home-manager
-- **Desktop:** 🚧 Hyprland with custom configuration
-- **Hardware:** AMD-optimized (laptop + future workstation)
-- **Development:** 🚧 Multi-language setup with dev containers
-- **Secrets:** SOPS encryption
-- **Containers:** 🚧 Podman + quadlet
+## Development
 
-## Next
+**Format code:**
+```bash
+nix fmt
+```
 
-- More custom module implementations
-- Expand package collections
-- Add workstation config (`panthera`)
+**Debug configurations:**
+```bash
+nix eval .#debug.machines --json | jq
+```
 
-## Troubleshooting
+**Add new module:**
+1. Define option in `modules/options/<category>.nix`
+2. Implement in `modules/nixos/<category>/` or `modules/home/<category>/`
+3. Use `lib.mkIf cfg.enable { ... }` pattern
 
-### USB Wake-Up Issues
+## Documentation
 
-Follow this guide to quickly stop unwanted wakes or perform a detailed diagnosis to identify and permanently disable the exact USB device causing the issue.
+- [hosts/leopardus/README.md](hosts/leopardus/README.md) - Bootable installer ISO (build, usage, NixOS references)
+- [scripts/installer/README.md](scripts/installer/README.md) - Installer scripts documentation
+- [docs/STORAGE_DESIGN.md](docs/STORAGE_DESIGN.md) - Storage architecture and configuration reference
+- [PARTITIONING.md](docs/PARTITIONING.md) - Installation procedures
+- [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) - Common issues
+- Architecture details - see `modules/` structure
 
-#### A) Quick Short‑Circuit
+## License
 
-Disable the entire USB controller responsible for spurious wakes:
-
-1. **Identify wake‑capable controllers**
-
-   ```bash
-   grep . /proc/acpi/wakeup
-   ```
-2. **Disable the controller** (e.g. `XHC1`)
-
-   ```bash
-   echo XHC1 | sudo tee /proc/acpi/wakeup
-   ```
-3. **Test suspend**
-
-   ```bash
-   systemctl suspend
-   ```
-
-   * If unwanted wakes stop, make it permanent by adding a udev rule in your NixOS configuration:
-
-     ```nix
-     # configuration.nix
-     services.udev.extraRules = ''
-     # Disable wake-up on the USB host controller (gateway device)
-     ACTION=="add|change", SUBSYSTEM=="pci",
-       ATTR{power/wakeup}="disabled"
-     '';
-     ```
-   * **Trade‑off**: All devices on that USB controller lose wake capability.
-
-#### B) Detailed Diagnosis & Targeted Fix
-
-1. **Find the active host controller**
-
-   ```bash
-   cat /proc/acpi/wakeup
-   ```
-
-   Note the entry with `*enabled` under S3 (Sysfs node shows `pci:0000:XX:00.Y`).
-
-2. **Map to USB bus**
-
-   ```bash
-   lsusb -t              # see "Bus N" mapping
-   lsusb | grep "^Bus N"   # list devices on Bus N
-   ```
-
-3. **Locate the culprit**
-
-   ```bash
-   grep . /sys/bus/usb/devices/N-*/power/wakeup
-   ```
-
-   One path reports `enabled` (e.g. `/sys/bus/usb/devices/3-1.2.4.2/power/wakeup`).
-
-4. **Verify device IDs**
-
-   ```bash
-   udevadm info -q all -p /sys/bus/usb/devices/3-1.2.4.2 \
-     | grep -E 'ID_VENDOR_ID|ID_MODEL_ID'
-   ```
-
-   Expect lines:
-
-   ```
-   E: ID_VENDOR_ID=XXXX
-   E: ID_MODEL_ID=YYYY
-   ```
-
-5. **Add a udev rule**
-
-   ```nix
-   services.udev.extraRules = ''
-   ACTION=="add|bind|change", SUBSYSTEM=="usb",
-     ATTRS{idVendor}=="XXXX", ATTRS{idProduct}=="YYYY",
-     ATTR{power/wakeup}="disabled",
-     ATTR{power/control}="auto",
-     ATTR{power/autosuspend_delay_ms}="5000"
-   '';
-   ```
-
-6. **Apply changes**
-
-   ```bash
-   sudo nixos-rebuild switch
-   sudo udevadm control --reload
-   sudo udevadm trigger --action=add --subsystem-match=usb
-   ```
-
-7. **Confirm**
-
-   ```bash
-   grep . /sys/bus/usb/devices/3-1.2.4.2/power/wakeup
-   # should print "disabled"
-   ```
-
-#### Summary
-
-* **Section A**: controller‑wide disable for an immediate stop.
-* **Section B**: precise identification and permanent disable of the offending device via udev.
-* Adjust `power/control` and `power/autosuspend_delay_ms` to tune responsiveness and power savings.
+Personal configuration - use at your own risk.
 
 ---
 
-Daily driver config that's still evolving. Feel free to steal ideas!
+*Made with Nix*

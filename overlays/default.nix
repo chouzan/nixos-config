@@ -1,0 +1,3 @@
+[
+  (import ./mcp-proxy.nix)
+]
