@@ -2,6 +2,11 @@ _:
 
 {
   nix = {
+    # Disable channels since we use flakes
+    # nixos-rebuild will auto-detect flake at /etc/nixos/flake.nix
+    # and use networking.hostName to find the configuration
+    channel.enable = false;
+
     settings = {
       experimental-features = [
         "nix-command"

@@ -317,6 +317,12 @@ run_nixos_install() {
     fi
     log_success "NixOS installed"
 
+    # Clean up legacy channel directories (we use flakes)
+    log_info "Cleaning up legacy channels..."
+    rm -rf /mnt/root/.nix-defexpr/channels
+    rm -rf /mnt/nix/var/nix/profiles/per-user/root/channels
+    log_success "Legacy channels cleaned"
+
     show_complete
 }
 
