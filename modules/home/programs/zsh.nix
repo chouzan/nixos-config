@@ -22,8 +22,7 @@ in
 
         # TODO: remove when upgrading home-manager
         # to version = > 26.05 (default behaviour)
-        # TODO: Find out how to make it work
-        # dotDir = "${config.xdg.configHome}/zsh";
+        dotDir = "${config.xdg.configHome}/zsh";
 
         plugins = with pkgs; [
           {
