@@ -23,10 +23,10 @@ scripts/installer/
 ## Build
 
 ```bash
-nix build .#installer -o out
+nix build .#installer
 ```
 
-The ISO will be at `out/iso/nixos-installer.iso`.
+The ISO will be at `result/iso/nixos-installer.iso`.
 
 ## Usage
 
@@ -34,7 +34,7 @@ See [hosts/leopardus/configuration.nix](../hosts/leopardus/configuration.nix) fo
 
 1. Write ISO to USB:
    ```bash
-   sudo dd if=out/iso/nixos-installer.iso of=/dev/sdX bs=4M status=progress
+   sudo dd if=result/iso/nixos-installer.iso of=/dev/sdX bs=4M status=progress
    ```
 
 2. Boot from USB

@@ -20,4 +20,4 @@ devenv.local.nix
 *.swp
 
 # Nix build outputs
-out
+result

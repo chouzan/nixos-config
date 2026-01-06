@@ -145,8 +145,8 @@ See `modules/options/monitors.nix` and `modules/options/desktop/hyprland/monitor
 Build and use the unified installer ISO:
 
 ```bash
-nix build .#installer -o out
-sudo dd if=out/iso/nixos-installer.iso of=/dev/sdX bs=4M status=progress
+nix build .#installer
+sudo dd if=result/iso/nixos-installer.iso of=/dev/sdX bs=4M status=progress
 ```
 
 Boot from USB and run `sudo menu`. The installer supports:

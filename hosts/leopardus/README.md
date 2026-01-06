@@ -5,17 +5,17 @@ Bootable installer ISO supporting multiple hosts and installation methods.
 ## Build
 
 ```bash
-nix build .#installer -o out
-# or: nix build .#leopardus -o out
+nix build .#installer
+# or: nix build .#leopardus
 ```
 
-The ISO will be at `out/iso/nixos-minimal-<version>-x86_64-linux.iso`.
+The ISO will be at `result/iso/nixos-minimal-<version>-x86_64-linux.iso`.
 
 ## Usage
 
 1. Write to USB:
    ```bash
-   sudo dd if=out/iso/*.iso of=/dev/sdX bs=4M status=progress
+   sudo dd if=result/iso/*.iso of=/dev/sdX bs=4M status=progress
    ```
 
 2. Boot from USB
