@@ -60,7 +60,6 @@ _:
 
               content = {
                 type = "swap";
-                priority = 32767;
                 randomEncryption = false;
               };
             };

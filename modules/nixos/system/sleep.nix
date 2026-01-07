@@ -4,18 +4,20 @@ let
   inherit (config) modules;
 in
 {
-  boot.kernelParams = [
-    # Use S3 sleep (suspend-to-RAM)
-    "mem_sleep_default=deep"
+  boot = {
+    kernelParams = [
+      # Use S3 sleep (suspend-to-RAM)
+      "mem_sleep_default=deep"
 
-    "hibernate.compressor=zstd"
-
-    # TODO: Explore zstd compression level
-    # "hibernate.compressor_level="
-
+      # TODO: Evaluate lz4 compression (faster resume, requires kernel config: CONFIG_HIBERNATION_COMP_LZ4=y)
+      # TODO: Evaluate zstd compression (better ratio, requires kernel config: CONFIG_HIBERNATION_COMP_ZSTD=y)
+      "hibernate.compressor=lzo"
+    ]
     # Use RTC wakeup timer for suspend/resume/hibernation (laptops)
-  ]
-  ++ lib.optional modules.hardware.battery.enable "rtc_cmos.use_acpi_alarm=1";
+    ++ lib.optional modules.hardware.battery.enable "rtc_cmos.use_acpi_alarm=1";
+
+    resumeDevice = lib.mkDefault "/dev/disk/by-partlabel/swap";
+  };
 
   systemd.sleep.extraConfig = ''
     AllowSuspend=yes

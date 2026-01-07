@@ -63,10 +63,7 @@ options = [ "subvol=@home" "noatime" "compress=zstd:3" "space_cache=v2" "discard
 
 ### Swap
 ```nix
-swapDevices = [{
-  device = "/dev/disk/by-partlabel/swap";
-  priority = 32767;
-}];
+swapDevices = [ { device = "/dev/disk/by-partlabel/swap"; } ];
 ```
 
 ### Tmpfs (/tmp)

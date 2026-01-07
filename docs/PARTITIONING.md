@@ -254,7 +254,6 @@ sudo nix run github:nix-community/disko -- disko-install \
               size = "18G"; # Adjust: RAM + 2GB for hibernation
               content = {
                 type = "swap";
-                priority = 32767;
                 randomEncryption = false; # Required for hibernation
               };
             };

@@ -36,14 +36,7 @@ _:
     };
   };
 
-  swapDevices = [
-    {
-      device = "/dev/disk/by-partlabel/swap";
-
-      # Highest swap priority
-      priority = 32767;
-    }
-  ];
+  swapDevices = [ { device = "/dev/disk/by-partlabel/swap"; } ];
 
   boot.tmp.useTmpfs = true;
 }

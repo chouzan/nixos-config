@@ -60,7 +60,6 @@ _:
 
               content = {
                 type = "swap";
-                priority = 32767;
                 randomEncryption = false;
               };
             };
@@ -115,5 +114,8 @@ _:
     };
   };
 
-  boot.tmp.useTmpfs = true;
+  boot = {
+    resumeDevice = "/dev/disk/by-partlabel/lab-swap";
+    tmp.useTmpfs = true;
+  };
 }
