@@ -74,7 +74,11 @@ in
     xdg.portal = {
       enable = true;
       xdgOpenUsePortal = true;
-      extraPortals = with pkgs; [ kdePackages.xdg-desktop-portal-kde ];
+
+      extraPortals = with pkgs; [
+        kdePackages.xdg-desktop-portal-kde
+        xdg-desktop-portal-gtk
+      ];
 
       config.hyprland = {
         default = [
