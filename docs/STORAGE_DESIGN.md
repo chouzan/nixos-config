@@ -63,8 +63,16 @@ options = [ "subvol=@home" "noatime" "compress=zstd:3" "space_cache=v2" "discard
 
 ### Swap
 ```nix
-swapDevices = [ { device = "/dev/disk/by-partlabel/swap"; } ];
+swapDevices = [{
+  device = "/dev/disk/by-partlabel/swap";
+}];
 ```
+
+**Important for hibernation:**
+- Set `randomEncryption = false` in disko.nix (hibernation incompatible with swap encryption)
+- Size must be at least RAM + 2GB for reliable hibernation
+- Set `boot.resumeDevice` explicitly to specify which swap partition to use for hibernation
+- This is especially important when multiple swap partitions exist on different drives
 
 ### Tmpfs (/tmp)
 ```nix
@@ -87,6 +95,61 @@ boot.tmp.tmpfsSize = "50%";  # Adjust based on RAM
 | `nodev, nosuid, noexec` | Security restrictions for boot partitions |
 
 ---
+
+## Hibernation Configuration
+
+### Requirements
+
+**Swap Partition:**
+```nix
+# In disko.nix
+swap = {
+  label = "swap";
+  size = "18G";  # RAM + 2GB minimum
+  content = {
+    type = "swap";
+    randomEncryption = false;  # REQUIRED for hibernation
+  };
+};
+```
+
+**Resume Device (if multiple swaps on different drives):**
+```nix
+# In disko.nix or configuration.nix
+boot.resumeDevice = "/dev/disk/by-partlabel/swap";
+```
+
+**Why set resumeDevice explicitly:**
+- NixOS will check all swap partitions for hibernation images by default
+- This can cause issues with multiple Linux installations on different drives
+- Explicit configuration ensures consistent, predictable behavior
+- Prevents the system from attempting to resume from the wrong swap partition
+
+### Compression
+
+Hibernation uses kernel-level compression. The default NixOS kernel only includes `lzo`:
+
+| Compressor | Speed | Ratio | Kernel Config Required |
+|------------|-------|-------|------------------------|
+| lzo | Fast | Good | ✅ Built-in (default) |
+| lz4 | Faster | Good | `CONFIG_HIBERNATION_COMP_LZ4=y` |
+| zstd | Slower | Better | `CONFIG_HIBERNATION_COMP_ZSTD=y` |
+
+The system configures `lzo` by default in `modules/nixos/system/sleep.nix`. To use lz4 or zstd, you must rebuild the kernel with the appropriate configuration option enabled.
+
+### Common Issues
+
+**"Device or resource busy" on swap:**
+- Usually caused by failed hibernation resume leaving device locked
+- Solution: Reboot to clear the lock
+
+**"lz4/zstd compression is not available":**
+- Kernel doesn't have the compressor compiled in
+- Solution: Use lzo (default) or add kernel patch for lz4/zstd
+
+**Immediate wake after hibernate:**
+- Check wakeup sources in `/proc/acpi/wakeup`
+- See `docs/TROUBLESHOOTING.md` for USB wake issues
 
 ## Design Rationale
 
@@ -129,7 +192,7 @@ Apply only if experiencing container performance issues.
 | Root | 100-300GB | 100-200GB | 200-300GB |
 | Home | Remaining | Remaining | Remaining |
 
-**Swap sizing:** Match RAM size + 2GB margin for hibernation support.
+**Swap sizing:** Match RAM size + 2GB margin for hibernation support. Set `randomEncryption = false` in disko.nix to enable hibernation (encrypted swap prevents resume).
 
 **Root sizing:** Depends on disk size:
 - 512GB disk: 100-150GB root
@@ -142,14 +205,9 @@ Apply only if experiencing container performance issues.
 
 ### Example Laptop Configuration
 
-**Current:** `hosts/<hostname>/storage.nix`
-- Single vfat /boot
-- Basic mount options
-
-**Target:** `hosts/<hostname>/storage-future.nix`
-- Separate EFI + boot
-- Improved mount options
-- @home subvolume
+**Configurations:**
+- `hosts/<hostname>/storage.nix` - Legacy mount configuration (some hosts)
+- `hosts/<hostname>/disko.nix` - Modern automated configuration (preferred)
 
 ### Example Desktop Configuration
 

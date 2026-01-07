@@ -48,17 +48,23 @@ Linux partitions (create in unallocated space):
 **Automated:** Format, mount, subvolume creation
 
 **Tools:**
-- `hosts/<hostname>/installer-iso.nix` - Custom installer with embedded scripts
-- `hosts/<hostname>/setup-dual-boot.sh` - Format and mount automation
-- `hosts/<hostname>/storage-future.nix` - Mount point declarations
+- `hosts/leopardus/` - Unified installer ISO configuration
+- `scripts/installer/menu.sh` - Interactive installer menu
+- `scripts/installer/manual-partition.sh` - Format and mount automation
+- `hosts/<hostname>/storage.nix` or `disko.nix` - Mount point declarations
 
 ## Build Installer ISO
 
 ```bash
-nix run github:nix-community/nixos-generators -- \
-  --format install-iso \
-  --configuration ./hosts/<hostname>/installer-iso.nix \
-  -o <hostname>-installer
+nix build .#installer
+# or: nix build .#leopardus
+```
+
+The ISO will be at `result/iso/nixos-minimal-<version>-x86_64-linux.iso`.
+
+Write to USB:
+```bash
+sudo dd if=result/iso/*.iso of=/dev/sdX bs=4M status=progress
 ```
 
 ## Installation Steps
@@ -69,29 +75,34 @@ nix run github:nix-community/nixos-generators -- \
    - Create unallocated space
 
 2. **Boot Installer**
-   - Boot from custom ISO
-   - Instructions appear on screen
+   - Boot from USB
+   - Connect to WiFi if needed: `nmtui`
 
-3. **Create Partitions**
+3. **Run Interactive Installer**
+   ```bash
+   sudo menu
+   ```
+   
+   Or manually:
+
+4. **Create Partitions**
    ```bash
    sudo gparted
    # Create 5 partitions with labels: uefi, boot, swap, root, home
    ```
 
-4. **Verify and Format**
+5. **Verify and Format**
    ```bash
-   setup-<hostname> --check
-   sudo setup-<hostname>
+   sudo manual-partition --check
+   sudo manual-partition
    ```
 
-5. **Install**
-   ```bash
-   cd /mnt/etc
-   sudo cp -r /etc/nixos-config nixos
-   cd nixos
-   sudo nixos-generate-config --root /mnt
-   sudo nixos-install --root /mnt --flake .#<hostname>
-   ```
+6. **Install**
+   The installer will:
+   - Clone/copy configuration to `/mnt/etc/nixos`
+   - Generate hardware configuration
+   - Run `nixos-install --flake .#<hostname>`
+   - Set ownership to your user
 
 ---
 
@@ -195,10 +206,11 @@ sudo nix run github:nix-community/disko -- disko-install \
 - `docs/PARTITIONING.md` - Installation procedures (this document)
 - `docs/TROUBLESHOOTING.md` - Common issues and solutions
 
-**Dual-Boot Setup:**
-- `hosts/<hostname>/setup-dual-boot.sh` - Format/mount script
-- `hosts/<hostname>/installer-iso.nix` - Custom ISO
-- `hosts/<hostname>/storage-future.nix` - Mount declarations
+**Installer:**
+- `hosts/leopardus/` - Unified installer ISO configuration
+- `scripts/installer/menu.sh` - Interactive installation menu
+- `scripts/installer/manual-partition.sh` - Manual partitioning script
+- `profiles/role/installer.nix` - Installer profile with packages
 
 **Single-Boot Setup:**
 - `hosts/<hostname>/disko.nix` - Automated disk setup (⚠️ verify device identifier before use)
@@ -288,6 +300,9 @@ sudo nix run github:nix-community/disko -- disko-install \
       };
     };
   };
+
+  # Explicitly set resume device for hibernation (if multiple swaps on different drives)
+  boot.resumeDevice = "/dev/disk/by-partlabel/swap";
 
   boot.tmp.useTmpfs = true;
 }
