@@ -8,7 +8,7 @@
     ./bat.nix
     ./eza.nix
     ./fzf.nix
-    ./firefox.nix
+    ./firefox
     ./zed
     ./bitwarden.nix
   ];
