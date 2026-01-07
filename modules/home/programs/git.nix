@@ -33,28 +33,63 @@ in
           diff.algorithm = "histogram";
           merge.conflictStyle = "zdiff3";
 
+          rebase = {
+            autoStash = true;
+            autoSquash = true;
+          };
+
           alias = {
             st = "status";
+            ss = "st --short --branch";
+            su = "st --untracked-files=no";
+            si = "st --ignored";
+            sh = "st --show-stash";
+            sv = "st --verbose";
+            svv = "st -vv";
+
             di = "diff";
-            lo = "log --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
+            dx = "di --stat";
+            df = "di --function-context";
+            dz = "di --color-moved=dimmed-zebra";
+            ds = "di --staged";
+            dsx = "dx --staged";
+            dsf = "df --staged";
+            dsz = "dz --staged";
+            da = "di HEAD";
+            dup = "di @{upstream}...HEAD";
+
+            lo = "log --graph --abbrev-commit --pretty=format:'%C(yellow)%h%Creset%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'";
             lh = "log -1 HEAD --stat";
 
             ch = "checkout";
+
             br = "branch";
 
             ad = "add";
             aa = "add --all";
-            re = "reset HEAD --";
+
+            xx = "reset HEAD --";
 
             co = "commit";
-            cm = "commit -m";
-            ca = "commit --amend --no-edit";
+            cm = "co --message";
+            cf = "co --fixup";
+            ca = "co --amend --no-edit";
 
-            em = "remote";
-            ev = "remote -v";
+            eb = "rebase";
+            ei = "eb --interactive";
+            es = "ei --autosquash";
+
+            re = "remote";
+            rv = "remote --verbose";
+
+            # Fixup and autosquash
+            cfes = "!f() { git cf \"$1\" && git es \"$1\"^; }; f";
+
+            # Search for a string across all commit messages output
+            grm = "!f() { git lo --color=always | grep --ignore-case \"$1\" --context=2 --color=always; }; f";
 
             # Search for a string across all commits in the repository
-            gr = "!git rev-list --all | xargs git grep -F";
+            gri = "!git rev-list --all | xargs git grep -F";
           };
 
           url = {

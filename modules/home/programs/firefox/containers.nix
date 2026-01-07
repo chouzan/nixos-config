@@ -25,70 +25,70 @@ in
       containersForce = true;
 
       containers = {
-        "firefox-container-1" = {
+        "01-personal" = {
           id = 1;
           name = "Personal";
           color = "blue";
           icon = "fingerprint";
         };
 
-        "firefox-container-2" = {
+        "02-zestead" = {
           id = 2;
           name = "Zestead";
           color = "turquoise";
           icon = "briefcase";
         };
 
-        "firefox-container-3" = {
+        "03-research" = {
           id = 3;
           name = "Product Research";
           color = "purple";
           icon = "briefcase";
         };
 
-        "firefox-container-4" = {
+        "04-profession" = {
           id = 4;
           name = "Profession";
           color = "blue";
           icon = "briefcase";
         };
 
-        "firefox-container-5" = {
+        "05-work" = {
           id = 5;
           name = "Work";
           color = "orange";
           icon = "briefcase";
         };
 
-        "firefox-container-6" = {
+        "06-finance" = {
           id = 6;
           name = "Finance";
           color = "green";
           icon = "dollar";
         };
 
-        "firefox-container-7" = {
+        "07-transaction" = {
           id = 7;
           name = "Transaction";
           color = "pink";
           icon = "cart";
         };
 
-        "firefox-container-8" = {
+        "08-social" = {
           id = 8;
           name = "Social";
           color = "turquoise";
           icon = "fingerprint";
         };
 
-        "firefox-container-9" = {
+        "09-anonymous" = {
           id = 9;
           name = "Anonymous";
           color = "red";
           icon = "fingerprint";
         };
 
-        "firefox-container-10" = {
+        "10-mum" = {
           id = 10;
           name = "Mum's";
           color = "purple";
