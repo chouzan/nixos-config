@@ -18,6 +18,7 @@ in
 
     inputs.disko.nixosModules.disko
     ./disko.nix
+    ./udev-rules.nix
 
     ../../modules/nixos
 
