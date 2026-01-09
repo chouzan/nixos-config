@@ -12,7 +12,7 @@ _:
           type = "gpt";
 
           partitions = {
-            uefi = {
+            "01-uefi" = {
               label = "lab-uefi";
               size = "512M";
               type = "EF00";
@@ -34,7 +34,7 @@ _:
               };
             };
 
-            boot = {
+            "02-boot" = {
               label = "lab-boot";
               size = "2G";
 
@@ -54,7 +54,7 @@ _:
               };
             };
 
-            swap = {
+            "03-swap" = {
               label = "lab-swap";
               size = "34G";
 
@@ -64,7 +64,7 @@ _:
               };
             };
 
-            root = {
+            "04-root" = {
               label = "lab-root";
               size = "350G";
 
@@ -87,7 +87,7 @@ _:
               };
             };
 
-            home = {
+            "05-home" = {
               label = "lab-home";
               size = "100%";
 
