@@ -13,4 +13,22 @@ _:
   # want to update the value, then make sure to first check the Home Manager
   # release notes.
   home.stateVersion = "25.05"; # Please read the comment before changing.
+
+  programs.claude-code = {
+    enable = true;
+
+    mcpServers = {
+      sequential-thinking = {
+        type = "stdio";
+        command = "bunx";
+        args = [ "@modelcontextprotocol/server-sequential-thinking" ];
+      };
+
+      context7 = {
+        type = "stdio";
+        command = "bunx";
+        args = [ "@upstash/context7-mcp" ];
+      };
+    };
+  };
 }
