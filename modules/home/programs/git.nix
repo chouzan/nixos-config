@@ -1,3 +1,5 @@
+# TODO: Make git GPG sign settings configurable
+
 {
   osConfig,
   lib,
@@ -26,17 +28,39 @@ in
 
           init.defaultBranch = "master";
 
-          # NOTE: Set to true for signed commits
-          commit.gpgSign = false;
+          branch.sort = "-committerdate";
 
-          push.autoSetupRemote = true;
+          tag = {
+            sort = "-version:refname";
+
+            # NOTE: Uncomment for signed tags
+            # gpgSign = true;
+          };
+
+          # NOTE: Uncomment for signed commits
+          # commit.gpgSign = true;
+
+          pull.rebase = true;
+
+          push = {
+            autoSetupRemote = true;
+            useForceIfIncludes = true;
+
+            # NOTE: Uncomment for signed pushes
+            # gpgSign = true;
+          };
+
           diff.algorithm = "histogram";
           merge.conflictStyle = "zdiff3";
 
           rebase = {
             autoStash = true;
             autoSquash = true;
+            updateRefs = true;
           };
+
+          rerere.enabled = true;
+          help.autoCorrect = "prompt";
 
           alias = {
             st = "status";
