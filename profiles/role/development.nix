@@ -15,6 +15,7 @@
       eza.enable = lib.mkDefault true;
       fzf.enable = lib.mkDefault true;
       zed.enable = lib.mkDefault true;
+      claude-code.enable = lib.mkDefault true;
     };
 
     bundles = {

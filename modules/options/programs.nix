@@ -11,6 +11,7 @@
     fzf.enable = lib.mkEnableOption "fzf (fuzzy finder) with custom configuration";
     firefox.enable = lib.mkEnableOption "Firefox web browser with extensions";
     zed.enable = lib.mkEnableOption "Zed code editor (program name: zed-editor)";
+    claude-code.enable = lib.mkEnableOption "Claude Code agentic coding tool";
     bitwarden.enable = lib.mkEnableOption "Bitwarden password manager";
     spotify.enable = lib.mkEnableOption "Spotify music player";
   };
