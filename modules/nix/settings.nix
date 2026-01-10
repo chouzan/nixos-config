@@ -23,6 +23,8 @@ _:
       # Use all available CPU cores in the system
       cores = 0;
 
+      build-dir = "/nix/var/nix/builds";
+
       auto-optimise-store = true;
 
       # Auto-cleanup store on min-free
@@ -68,4 +70,6 @@ _:
       options = "--delete-older-than=30d";
     };
   };
+
+  systemd.tmpfiles.rules = [ "D /nix/var/nix/builds 0755 root root 0 -" ];
 }
