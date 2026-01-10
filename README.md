@@ -196,8 +196,10 @@ See [hosts/leopardus/configuration.nix](hosts/leopardus/configuration.nix) for d
 
 5. **Build and switch:**
    ```bash
-   sudo nixos-rebuild switch --flake .#<hostname>
+   sudo nixos-rebuild switch
    ```
+
+**Note:** It's best to limit the number of cores and jobs to run when doing major upgrades by passing `--option cores <cores> --option max-jobs <jobs>`
 
 ## Profiles
 

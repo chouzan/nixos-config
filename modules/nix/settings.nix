@@ -1,5 +1,57 @@
-_:
+{ lib, ... }:
 
+let
+  caches = [
+    {
+      name = "cache.nixos.org";
+      hash = "6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=";
+    }
+
+    {
+      name = "nix-community.cachix.org";
+      hash = "mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=";
+    }
+
+    {
+      name = "cachix.cachix.org";
+      hash = "eWNHQldwUO7G2VkjpnjDbWwy4KQ/HNxht7H4SSoMckM=";
+    }
+
+    {
+      name = "hyprland.cachix.org";
+      hash = "a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=";
+    }
+
+    {
+      name = "zed-industries.cachix.org";
+      hash = "fgVpvtdF+ssrgP1lB6EusuR3uM6bNcncWduKxri3u6Y=";
+    }
+
+    {
+      name = "zed.cachix.org";
+      hash = "/pHQ6dpMsAZk2DiP4WCL0p9YDNKWj2Q5FL20bNmw1cU=";
+    }
+
+    {
+      name = "devenv.cachix.org";
+      hash = "w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw=";
+    }
+
+    {
+      name = "numtide.cachix.org";
+      hash = "2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE=";
+    }
+
+    {
+      name = "nixpkgs-wayland.cachix.org";
+      hash = "3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA=";
+    }
+  ];
+
+  mkUrl = c: "https://${c.name}";
+  mkKey = c: "${c.name}-1:${c.hash}";
+  mkSubstituter = i: c: "${mkUrl c}?priority=${toString i}";
+in
 {
   nix = {
     # Disable channels since we use flakes
@@ -17,51 +69,25 @@ _:
       # Already default to false, just want to be extra careful
       accept-flake-config = false;
 
-      # Use all CPU cores defined by the cores setting
-      max-jobs = "auto";
-
-      # Use all available CPU cores in the system
+      # Use all available CPU cores for each build
       cores = 0;
+
+      # Maximum number of local build(s) to run in parallel
+      max-jobs = "auto";
 
       build-dir = "/nix/var/nix/builds";
 
       auto-optimise-store = true;
 
-      # Auto-cleanup store on min-free
-      min-free = 5000 * 1000000;
+      # Auto-cleanup store when free space falls below 10 GiB
+      min-free = 10 * 1024 * 1024 * 1024;
 
-      # Stop auto-cleanup when max-free reached
-      max-free = 15000 * 1000000;
+      # Stop auto-cleanup when free space reaches 25 GiB
+      max-free = 25 * 1024 * 1024 * 1024;
 
-      substituters = [
-        "https://cache.nixos.org?priority=1"
-        "https://nix-community.cachix.org?priority=2"
-        "https://devenv.cachix.org?priority=3"
-        "https://cachix.cachix.org?priority=4"
-        "https://hyprland.cachix.org?priority=5"
-        "https://numtide.cachix.org?priority=6"
-        "https://nixpkgs-wayland.cachix.org?priority=7"
-      ];
-
-      trusted-substituters = [
-        "https://cache.nixos.org"
-        "https://nix-community.cachix.org"
-        "https://devenv.cachix.org"
-        "https://cachix.cachix.org"
-        "https://hyprland.cachix.org"
-        "https://numtide.cachix.org"
-        "https://nixpkgs-wayland.cachix.org"
-      ];
-
-      trusted-public-keys = [
-        "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-        "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
-        "cachix.cachix.org-1:eWNHQldwUO7G2VkjpnjDbWwy4KQ/HNxht7H4SSoMckM="
-        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-        "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE="
-        "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
-      ];
+      substituters = lib.imap1 mkSubstituter caches;
+      trusted-substituters = map mkUrl caches;
+      trusted-public-keys = map mkKey caches;
     };
 
     gc = {
