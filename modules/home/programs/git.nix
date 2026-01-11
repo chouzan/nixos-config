@@ -82,7 +82,8 @@ in
             da = "di HEAD";
             dup = "di @{upstream}...HEAD";
 
-            lo = "log --graph --abbrev-commit --pretty=format:'%C(yellow)%h%Creset%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'";
+            lo = "log --graph --pretty=format:'%C(yellow)%h%Creset%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'";
+            lop = "!git --no-pager lo --no-graph --color=always";
             lh = "log -1 HEAD --stat";
 
             ch = "checkout";
@@ -114,6 +115,10 @@ in
 
             # Search for a string across all commits in the repository
             gri = "!git rev-list --all | xargs git grep -F";
+          }
+          // lib.optionalAttrs modules.programs.fzf.enable {
+            fzow = "!f() { line=$(git lop | fzf --ansi --no-sort) || exit; set -- $line; git show $1; }; f";
+            fzcfes = "!f() { line=$(git lop --max-count=35 | fzf --ansi --no-sort) || exit; set -- $line; git cfes $1; }; f";
           };
 
           url = {
