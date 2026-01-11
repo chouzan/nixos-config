@@ -1,4 +1,4 @@
-_:
+{ ... }:
 
 {
   # Auto-manage user service changes during rebuild
