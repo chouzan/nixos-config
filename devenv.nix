@@ -7,14 +7,19 @@
   };
 
   scripts = {
+    nix-static-check.exec = ''
+      statix check .
+      deadnix .
+    '';
+
     sops-edit-nixos.exec = ''
       export SOPS_AGE_KEY_FILE=$HOME/.my/keys/age/nixos.key
       sops edit .secrets/secrets.nixos.yaml
     '';
 
-    sops-edit-home-manager.exec = ''
-      export SOPS_AGE_KEY_FILE=$HOME/.my/keys/age/home_manager.key
-      sops edit .secrets/secrets.home-manager.yaml
+    sops-edit-home.exec = ''
+      export SOPS_AGE_KEY_FILE=$HOME/.my/keys/age/home.key
+      sops edit .secrets/secrets.home.yaml
     '';
 
     sops-info.exec = ''
