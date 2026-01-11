@@ -144,6 +144,23 @@
       };
     };
 
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # NOTE: Building Zed may cause LimitNOFILE error.
+    # Build it with:
+    # sudo bash -lc 'ulimit -n 1048576; nixos-rebuild switch --option cores 4 --option max-jobs 4'
+    zed-editor = {
+      url = "github:zed-industries/zed";
+
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        rust-overlay.follows = "rust-overlay";
+      };
+    };
+
     claude-desktop = {
       url = "github:k3d3/claude-desktop-linux-flake";
 
@@ -160,6 +177,7 @@
         nixpkgs.follows = "nixpkgs";
         systems.follows = "systems";
         flake-parts.follows = "flake-parts";
+        nur.follows = "nur";
       };
     };
   };
@@ -170,6 +188,7 @@
       utils = import ./lib/utils.nix { inherit (nixpkgs) lib; };
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
+      overlays = import ./overlays { inherit inputs system; };
 
       # TODO: Consider moving user/XDG configuration to proper options system
       # Options:
@@ -251,8 +270,6 @@
         sops-nix.homeManagerModules.sops
         quadlet-nix.homeManagerModules.quadlet
       ];
-
-      overlays = import ./overlays;
     in
     {
       nixosConfigurations =
