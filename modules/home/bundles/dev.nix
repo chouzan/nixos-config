@@ -34,7 +34,7 @@ in
 
     (lib.mkIf cfg.dev.nix.enable {
       home.packages = with pkgs; [
-        nixfmt-rfc-style
+        nixfmt
         nixfmt-tree
         statix
         deadnix

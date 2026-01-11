@@ -32,7 +32,7 @@ in
     services = {
       displayManager = {
         enable = true;
-        defaultSession = "hyprland-uwsm";
+        defaultSession = "hyprland";
 
         sddm = {
           # Enable SDDM as the graphical login manager
