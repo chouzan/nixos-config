@@ -27,7 +27,7 @@ in
           };
 
           init.defaultBranch = "master";
-
+          checkout.defaultRemote = "origin";
           branch.sort = "-committerdate";
 
           tag = {
