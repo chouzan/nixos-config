@@ -16,6 +16,9 @@ in
     # Use RTC wakeup timer for suspend/resume/hibernation (laptops)
     ++ lib.optional modules.hardware.battery.enable "rtc_cmos.use_acpi_alarm=1";
 
+    # NOTE: Escape hatch - this module sets a nixpkgs option directly with mkDefault
+    # so hosts can override with direct assignment. If more cases like this emerge,
+    # consider introducing a mkOverridable helper or moving to a profile.
     resumeDevice = lib.mkDefault "/dev/disk/by-partlabel/swap";
   };
 
