@@ -1,4 +1,3 @@
-# WARNING: Disko will DESTROY ALL DATA on the target disk!
 { ... }:
 
 {

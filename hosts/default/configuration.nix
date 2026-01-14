@@ -1,166 +1,61 @@
 # Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-{ pkgs, machine, ... }:
+# your system. Help is available in the configuration.nix(5) man page, on
+# https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-let
-  inherit (machine) hostname user;
-in
+{ ... }:
+
 {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
 
+    ./storage.nix
+
+    ../shared/udev-rules.nix
+    ../shared/locale.nix
+    ../shared/user.nix
+
     ../../modules/nixos
+
+    ../../profiles/base.nix
+    ../../profiles/hardware/desktop.nix
+    ../../profiles/hardware/amd.nix
+    ../../profiles/environment/desktop.nix
+    ../../profiles/environment/hyprland.nix
+    ../../profiles/role/development.nix
+    ../../profiles/role/media.nix
   ];
 
-  boot = {
-    # Bootloader.
-    loader = {
-      systemd-boot.enable = true;
-      efi.canTouchEfiVariables = true;
-    };
+  # This option defines the first version of NixOS you have installed on this particular machine,
+  # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
+  #
+  # Most users should NEVER change this value after the initial install, for any reason,
+  # even if you've upgraded your system to a new NixOS release.
+  #
+  # This value does NOT affect the Nixpkgs version your packages and OS are pulled from,
+  # so changing it will NOT upgrade your system - see https://nixos.org/manual/nixos/stable/#sec-upgrading for how
+  # to actually do that.
+  #
+  # This value being lower than the current NixOS release does NOT mean your system is
+  # out of date, out of support, or vulnerable.
+  #
+  # Do NOT change this value unless you have manually inspected all the changes it would make to your configuration,
+  # and migrated your data accordingly.
+  #
+  # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
+  system.stateVersion = "26.05"; # Did you read the comment?
 
-    # Use latest kernel.
-    kernelPackages = pkgs.linuxPackages_latest;
-  };
-
-  networking.hostName = hostname; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Enable networking
-  networking.networkmanager.enable = true;
-
-  # Set your time zone and use local time (Windows dual-boot compatible)
-  time = {
-    timeZone = "Asia/Jakarta";
-    hardwareClockInLocalTime = true; # Makes Linux use local time like Windows
-  };
-
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_GB.UTF-8";
-
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.${user.username} = {
-    isNormalUser = true;
-    description = user.name;
-    extraGroups = [
-      "networkmanager"
-      "wheel"
-    ];
-    packages = [ ];
-  };
-
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  environment.systemPackages = [
-    # vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    # wget
-  ];
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "25.05"; # Did you read the comment?
-
+  # Host-specific module configuration
+  # See modules/options/ for available options
   modules = {
-    monitors = [
-      {
-        name = "eDP-1";
-        primary = true;
-        width = 2880;
-        height = 1800;
-        refreshRate = 90;
-        position = "0x0";
-        scale = 1.5;
-
-        hyprland = {
-          workspace = "main";
-        };
-      }
-
-      {
-        name = "DP-4";
-        width = 3440;
-        height = 1440;
-        refreshRate = 144;
-        position = "auto";
-        scale = 1;
-
-        hyprland = {
-          workspace = "workspace";
-          vrr = 1;
-        };
-      }
-    ];
-
-    # hyprland.workspaces = [
+    # monitors = [
     #   {
-    #     name = "main";
-    #     rules = "";
-    #   }
-    #   {
-    #     name = "workspace";
-    #     rules = "";
+    #     name = "eDP-1";
+    #     primary = true;
+    #     width = 1920;
+    #     height = 1080;
+    #     refreshRate = 60;
     #   }
     # ];
-
-    packages = {
-      admin.enable = true;
-      extras.enable = true;
-    };
-
-    hyprland.enable = true;
-
-    dev = {
-      nix.enable = true;
-
-      elixir = {
-        enable = true;
-        phoenix.enable = true;
-      };
-
-      node.enable = true;
-      python.enable = true;
-    };
-
-    ai.enable = true;
-
-    spotify.enable = true;
   };
 }
