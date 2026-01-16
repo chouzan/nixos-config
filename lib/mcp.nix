@@ -40,7 +40,8 @@
       command = "mcp-proxy";
 
       args = [
-        "$TIDEWAVE_URL"
+        # TODO: Make this dynamic somehow
+        "http://localhost:4000/tidewave/mcp"
       ];
 
       env = { };
