@@ -21,7 +21,7 @@ in
         # Just want to make sure
         systemd.setPath.enable = true;
 
-        # Lets Hyprland launch via the Unified Wayland Session Manager (UWSM)
+        # Let Hyprland launch via the Unified Wayland Session Manager (UWSM)
         withUWSM = true;
 
         # Use the one from flake
