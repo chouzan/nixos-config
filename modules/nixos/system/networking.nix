@@ -1,8 +1,18 @@
 { machine, ... }:
 
+let
+  inherit (machine) hostname user;
+in
 {
   networking = {
-    hostName = machine.hostname;
+    hostName = hostname;
     networkmanager.enable = true;
+  };
+
+  users.users.${user.username} = {
+    extraGroups = [
+      # Allow the user to change network settings
+      "networkmanager"
+    ];
   };
 }

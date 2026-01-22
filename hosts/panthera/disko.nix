@@ -1,18 +1,17 @@
-# WARNING: Disko will DESTROY ALL DATA on the target disk!
 { ... }:
 
 {
   disko.devices = {
     disk = {
       main = {
-        device = "/dev/disk/by-id/CHANGE-ME";
+        device = "/dev/disk/by-id/nvme-GIGABYTE_GP-ASM2NE6200TTTD_SN210308903973";
         type = "disk";
 
         content = {
           type = "gpt";
 
           partitions = {
-            uefi = {
+            "01-uefi" = {
               label = "uefi";
               size = "512M";
               type = "EF00";
@@ -21,6 +20,7 @@
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot/efi";
+                extraArgs = [ "-n" "uefi" ];
 
                 mountOptions = [
                   "defaults"
@@ -34,7 +34,7 @@
               };
             };
 
-            boot = {
+            "02-boot" = {
               label = "boot";
               size = "2G";
 
@@ -42,6 +42,7 @@
                 type = "filesystem";
                 format = "ext4";
                 mountpoint = "/boot";
+                extraArgs = [ "-L" "boot" ];
 
                 mountOptions = [
                   "defaults"
@@ -54,22 +55,24 @@
               };
             };
 
-            swap = {
+            "03-swap" = {
               label = "swap";
-              size = "34G";
+              size = "66G";
 
               content = {
                 type = "swap";
                 randomEncryption = false;
+                extraArgs = [ "-L" "swap" ];
               };
             };
 
-            root = {
+            "04-root" = {
               label = "root";
               size = "350G";
 
               content = {
                 type = "btrfs";
+                extraArgs = [ "-L" "root" ];
 
                 subvolumes = {
                   "@" = {
@@ -87,12 +90,14 @@
               };
             };
 
-            home = {
+            "05-home" = {
               label = "home";
               size = "100%";
 
               content = {
                 type = "btrfs";
+                extraArgs = [ "-L" "home" ];
+
                 subvolumes = {
                   "@home" = {
                     mountpoint = "/home";
