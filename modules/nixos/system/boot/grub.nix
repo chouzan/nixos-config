@@ -1,27 +1,24 @@
-{ config, lib, ... }:
+{ ... }:
 
 {
-  boot = {
-    supportedFilesystems = [
-      "vfat"
-      "btrfs"
-      "ntfs"
-    ];
+  boot.loader.grub = {
+    enable = true;
 
-    loader = {
-      timeout = 15;
-      efi.efiSysMountPoint = lib.mkIf (config.fileSystems ? "/boot/efi") "/boot/efi";
+    # UEFI
+    efiSupport = true;
+    efiInstallAsRemovable = true;
+    devices = [ "nodev" ];
 
-      grub = {
-        enable = true;
-        efiSupport = true;
-        devices = [ "nodev" ];
-        efiInstallAsRemovable = true;
-        useOSProber = true;
-        default = "saved";
-        timeoutStyle = "menu";
-        theme = ../../../../assets/grub-themes/nixos;
-      };
-    };
+    # Menu
+    useOSProber = true;
+    configurationLimit = 10;
+    default = "saved";
+    timeoutStyle = "menu";
+
+    # Appearance
+    theme = ../../../../assets/grub-themes/nixos;
+
+    # Extras
+    memtest86.enable = true;
   };
 }
