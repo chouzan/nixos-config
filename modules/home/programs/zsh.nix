@@ -12,7 +12,6 @@ let
   inherit (machine) hostname;
 
   cfg = modules.programs.zsh;
-  colours = lib.optionalAttrs modules.stylix.enable config.lib.stylix.colors.withHashtag;
 in
 {
   config = lib.mkIf cfg.enable {
@@ -71,6 +70,9 @@ in
             '';
 
             zshZvmEnv = lib.mkIf modules.stylix.enable (
+              let
+                colours = config.lib.stylix.colors.withHashtag;
+              in
               lib.mkOrder 1000 ''
                 ZVM_VI_HIGHLIGHT_BACKGROUND=${colours.base03}
                 ZVM_VI_HIGHLIGHT_FOREGROUND=${colours.base05}

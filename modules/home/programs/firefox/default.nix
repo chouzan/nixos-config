@@ -15,8 +15,11 @@ in
 
       profiles.default = {
         id = 0;
+
+        # TODO: Rename name and path to username
         name = "default";
         path = "92oz7e9w.default";
+
         isDefault = true;
       };
     };

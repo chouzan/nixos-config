@@ -5,7 +5,9 @@ let
 in
 {
   networking = {
+    # TODO: Maybe rename to hostName
     hostName = hostname;
+
     networkmanager.enable = true;
   };
 
