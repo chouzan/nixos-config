@@ -12,6 +12,9 @@
     ./hosts.nix
   ];
 
+  # Disable watchdog auto-reboot (prefer debugging hangs)
+  systemd.settings.Manager.RebootWatchdogSec = "0";
+
   services = {
     # Firmware updates for hardware devices
     fwupd.enable = true;
