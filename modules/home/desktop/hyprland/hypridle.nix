@@ -1,20 +1,12 @@
-{
-  osConfig,
-  lib,
-  pkgs,
-  inputs,
-  ...
-}:
+{ osConfig, lib, ... }:
 
 let
   cfg = osConfig.modules.desktop.hyprland;
-  hypridlePackages = inputs.hypridle.packages.${pkgs.stdenv.hostPlatform.system};
 in
 {
   config = lib.mkIf cfg.enable {
     services.hypridle = {
       enable = true;
-      package = hypridlePackages.hypridle;
 
       settings = {
         general = {

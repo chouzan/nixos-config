@@ -1,20 +1,12 @@
-{
-  osConfig,
-  lib,
-  pkgs,
-  inputs,
-  ...
-}:
+{ osConfig, lib, ... }:
 
 let
   cfg = osConfig.modules.desktop.hyprland;
-  hyprlockPackages = inputs.hyprlock.packages.${pkgs.stdenv.hostPlatform.system};
 in
 {
   config = lib.mkIf cfg.enable {
     programs.hyprlock = {
       enable = true;
-      package = hyprlockPackages.hyprlock;
 
       settings = {
         # general = {

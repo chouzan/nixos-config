@@ -2,13 +2,11 @@
   osConfig,
   lib,
   pkgs,
-  inputs,
   ...
 }:
 
 let
   cfg = osConfig.modules.desktop.hyprland;
-  hyprlandPlugins = inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system};
 in
 {
   imports = [
@@ -62,7 +60,7 @@ in
       package = null;
       portalPackage = null;
 
-      plugins = with hyprlandPlugins; [
+      plugins = with pkgs.hyprlandPlugins; [
         hyprbars
       ];
     };

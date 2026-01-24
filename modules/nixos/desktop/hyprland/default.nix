@@ -2,13 +2,11 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }:
 
 let
   cfg = config.modules.desktop.hyprland;
-  hyprlandPackages = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system};
 in
 {
   config = lib.mkIf cfg.enable {
@@ -23,10 +21,6 @@ in
 
         # Let Hyprland launch via the Unified Wayland Session Manager (UWSM)
         withUWSM = true;
-
-        # Set Hyprland and XDPH packages to use the ones from the flake
-        package = hyprlandPackages.hyprland;
-        portalPackage = hyprlandPackages.xdg-desktop-portal-hyprland;
       };
     };
 
