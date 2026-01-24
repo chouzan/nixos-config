@@ -3,28 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs-lib.url = "github:nix-community/nixpkgs.lib";
     systems.url = "github:nix-systems/x86_64-linux";
-
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    treefmt-nix = {
-      url = "github:numtide/treefmt-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    flake-parts = {
-      url = "github:hercules-ci/flake-parts";
-      inputs.nixpkgs-lib.follows = "nixpkgs-lib";
-    };
-
-    flake-utils = {
-      url = "github:numtide/flake-utils";
-      inputs.systems.follows = "systems";
-    };
 
     nur = {
       url = "github:nix-community/NUR";
@@ -35,8 +14,8 @@
       };
     };
 
-    disko = {
-      url = "github:nix-community/disko";
+    home-manager = {
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -46,6 +25,116 @@
     };
 
     quadlet-nix.url = "github:SEIAROTg/quadlet-nix";
+
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    hyprland = {
+      url = "github:hyprwm/Hyprland";
+
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        systems.follows = "systems";
+        hyprutils.follows = "hyprutils";
+        hyprlang.follows = "hyprlang";
+        hyprland-protocols.follows = "hyprland-protocols";
+        hyprwayland-scanner.follows = "hyprwayland-scanner";
+        hyprgraphics.follows = "hyprgraphics";
+        pre-commit-hooks.follows = "git-hooks";
+      };
+    };
+
+    hypridle = {
+      url = "github:hyprwm/hypridle";
+
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        systems.follows = "systems";
+        hyprutils.follows = "hyprutils";
+        hyprlang.follows = "hyprlang";
+        hyprland-protocols.follows = "hyprland-protocols";
+        hyprwayland-scanner.follows = "hyprwayland-scanner";
+      };
+    };
+
+    hyprlock = {
+      url = "github:hyprwm/hyprlock";
+
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        systems.follows = "systems";
+        hyprutils.follows = "hyprutils";
+        hyprlang.follows = "hyprlang";
+        hyprwayland-scanner.follows = "hyprwayland-scanner";
+        hyprgraphics.follows = "hyprgraphics";
+      };
+    };
+
+    hyprland-plugins = {
+      url = "github:hyprwm/hyprland-plugins";
+
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        systems.follows = "systems";
+        hyprland.follows = "hyprland";
+      };
+    };
+
+    # NOTE: Building Zed may cause LimitNOFILE error.
+    # Build it with:
+    # sudo bash -lc 'ulimit -n 1048576; nixos-rebuild switch --option cores 4 --option max-jobs 4'
+    zed-editor = {
+      url = "github:zed-industries/zed";
+
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-compat.follows = "flake-compat";
+        rust-overlay.follows = "rust-overlay";
+      };
+    };
+
+    claude-desktop = {
+      url = "github:k3d3/claude-desktop-linux-flake";
+
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
+
+    stylix = {
+      url = "github:nix-community/stylix";
+
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        systems.follows = "systems";
+        flake-parts.follows = "flake-parts";
+        nur.follows = "nur";
+      };
+    };
+
+    # Transitive dependencies
+
+    nixpkgs-lib.url = "github:nix-community/nixpkgs.lib";
+
+    flake-utils = {
+      url = "github:numtide/flake-utils";
+      inputs.systems.follows = "systems";
+    };
+
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs-lib";
+    };
+
+    flake-compat.url = "github:NixOS/flake-compat";
 
     hyprutils = {
       url = "github:hyprwm/hyprutils";
@@ -94,91 +183,18 @@
       };
     };
 
-    hyprland = {
-      url = "github:hyprwm/Hyprland";
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
 
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        systems.follows = "systems";
-        hyprutils.follows = "hyprutils";
-        hyprlang.follows = "hyprlang";
-        hyprland-protocols.follows = "hyprland-protocols";
-        hyprwayland-scanner.follows = "hyprwayland-scanner";
-        hyprgraphics.follows = "hyprgraphics";
-      };
-    };
-
-    hypridle = {
-      url = "github:hyprwm/hypridle";
-
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        systems.follows = "systems";
-        hyprutils.follows = "hyprutils";
-        hyprlang.follows = "hyprlang";
-        hyprland-protocols.follows = "hyprland-protocols";
-        hyprwayland-scanner.follows = "hyprwayland-scanner";
-      };
-    };
-
-    hyprlock = {
-      url = "github:hyprwm/hyprlock";
-
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        systems.follows = "systems";
-        hyprutils.follows = "hyprutils";
-        hyprlang.follows = "hyprlang";
-        hyprwayland-scanner.follows = "hyprwayland-scanner";
-        hyprgraphics.follows = "hyprgraphics";
-      };
-    };
-
-    hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins";
-
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        systems.follows = "systems";
-        hyprland.follows = "hyprland";
+        flake-compat.follows = "flake-compat";
       };
     };
 
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # NOTE: Building Zed may cause LimitNOFILE error.
-    # Build it with:
-    # sudo bash -lc 'ulimit -n 1048576; nixos-rebuild switch --option cores 4 --option max-jobs 4'
-    zed-editor = {
-      url = "github:zed-industries/zed";
-
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        rust-overlay.follows = "rust-overlay";
-      };
-    };
-
-    claude-desktop = {
-      url = "github:k3d3/claude-desktop-linux-flake";
-
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-      };
-    };
-
-    stylix = {
-      url = "github:nix-community/stylix";
-
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        systems.follows = "systems";
-        flake-parts.follows = "flake-parts";
-        nur.follows = "nur";
-      };
     };
   };
 
