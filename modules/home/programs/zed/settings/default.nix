@@ -35,9 +35,31 @@ in
         vim_mode = true;
         soft_wrap = "none";
 
-        terminal = lib.mkIf modules.stylix.enable {
-          font_size = stylix.fonts.sizes.terminal * 4.0 / 3.0;
+        project_panel = {
+          default_width = 270;
         };
+
+        collaboration_panel = {
+          default_width = 270;
+        };
+
+        git_panel = {
+          default_width = 270;
+        };
+
+        outline_panel = {
+          default_width = 270;
+        };
+
+        terminal = lib.mkMerge [
+          {
+            default_height = 310;
+          }
+
+          (lib.mkIf modules.stylix.enable {
+            font_size = stylix.fonts.sizes.terminal * 4.0 / 3.0;
+          })
+        ];
 
         features.edit_prediction_provider = "zed";
 
