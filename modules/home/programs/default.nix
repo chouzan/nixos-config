@@ -4,6 +4,7 @@
   imports = [
     ./zsh.nix
     ./git.nix
+    ./gh.nix
     ./ripgrep.nix
     ./bat.nix
     ./eza.nix

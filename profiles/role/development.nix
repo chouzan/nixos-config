@@ -10,6 +10,7 @@
 
     programs = {
       git.enable = lib.mkDefault true;
+      gh.enable = lib.mkDefault true;
       ripgrep.enable = lib.mkDefault true;
       bat.enable = lib.mkDefault true;
       eza.enable = lib.mkDefault true;

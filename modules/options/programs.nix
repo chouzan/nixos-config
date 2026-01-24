@@ -5,6 +5,7 @@
     zsh.enable = lib.mkEnableOption "Zsh shell with custom configuration";
     vim.enable = lib.mkEnableOption "Vim text editor";
     git.enable = lib.mkEnableOption "Git version control with custom configuration";
+    gh.enable = lib.mkEnableOption "GitHub CLI tool";
     ripgrep.enable = lib.mkEnableOption "ripgrep with custom configuration (includes ripgrep-all)";
     bat.enable = lib.mkEnableOption "bat (cat alternative) with custom configuration";
     eza.enable = lib.mkEnableOption "eza (ls alternative) with custom configuration";
