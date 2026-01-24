@@ -20,7 +20,11 @@
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot/efi";
-                extraArgs = [ "-n" "lab-uefi" ];
+
+                extraArgs = [
+                  "-n"
+                  "lab-uefi"
+                ];
 
                 mountOptions = [
                   "defaults"
@@ -42,7 +46,11 @@
                 type = "filesystem";
                 format = "ext4";
                 mountpoint = "/boot";
-                extraArgs = [ "-L" "lab-boot" ];
+
+                extraArgs = [
+                  "-L"
+                  "lab-boot"
+                ];
 
                 mountOptions = [
                   "defaults"
@@ -62,7 +70,11 @@
               content = {
                 type = "swap";
                 randomEncryption = false;
-                extraArgs = [ "-L" "lab-swap" ];
+
+                extraArgs = [
+                  "-L"
+                  "lab-swap"
+                ];
               };
             };
 
@@ -72,7 +84,11 @@
 
               content = {
                 type = "btrfs";
-                extraArgs = [ "-L" "lab-root" ];
+
+                extraArgs = [
+                  "-L"
+                  "lab-root"
+                ];
 
                 subvolumes = {
                   "@" = {
@@ -96,7 +112,11 @@
 
               content = {
                 type = "btrfs";
-                extraArgs = [ "-L" "lab-home" ];
+
+                extraArgs = [
+                  "-L"
+                  "lab-home"
+                ];
 
                 subvolumes = {
                   "@home" = {
