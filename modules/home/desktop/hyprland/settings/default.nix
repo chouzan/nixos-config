@@ -45,8 +45,10 @@ in
       "$musicPlayer" = "spotify";
 
       env = [
-        "XCURSOR_SIZE,24"
+        "HYPRCURSOR_THEME,Nordzy-hyprcursors"
         "HYPRCURSOR_SIZE,24"
+        "XCURSOR_THEME,Nordzy-cursors"
+        "XCURSOR_SIZE,24"
       ];
 
       exec-once = [
