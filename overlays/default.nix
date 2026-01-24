@@ -9,8 +9,10 @@
   inputs.hyprlock.overlays.default
   inputs.hyprland-plugins.overlays.default
   inputs.zed-editor.overlays.default
+  inputs.claude-code.overlays.default
 
   # Custom overlays (no upstream available)
+  (import ./claude-code.nix { })
   (import ./claude-desktop.nix { inherit inputs system; })
   (import ./mcp-proxy.nix { inherit inputs; })
 ]

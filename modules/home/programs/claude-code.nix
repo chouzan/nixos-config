@@ -2,6 +2,7 @@
   osConfig,
   lib,
   libs,
+  pkgs,
   ...
 }:
 
@@ -13,6 +14,7 @@ in
   config = lib.mkIf cfg.enable {
     programs.claude-code = {
       enable = true;
+      package = pkgs.claude-code-bun;
 
       mcpServers = {
         "${servers.sequential-thinking.name}" = {

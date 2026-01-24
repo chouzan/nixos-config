@@ -139,6 +139,15 @@
       };
     };
 
+    claude-code = {
+      url = "github:sadjow/claude-code-nix";
+
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
+
     mcp-proxy = {
       url = "github:tidewave-ai/mcp_proxy_rust";
       flake = false;
