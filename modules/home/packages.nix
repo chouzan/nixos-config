@@ -6,12 +6,15 @@
 }:
 
 let
-  cfg = osConfig.modules.packages;
+  inherit (osConfig) modules;
+  cfg = modules.packages;
 in
 {
   config = lib.mkMerge [
     (lib.mkIf cfg.admin.enable {
-      home.packages = with pkgs; [ btop ];
+      home.packages = [
+        (if modules.hardware.gpu.amd.enable then pkgs.btop-rocm else pkgs.btop)
+      ];
     })
 
     (lib.mkIf cfg.cli.enable {
