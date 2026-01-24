@@ -13,8 +13,10 @@ in
 {
   config = lib.mkIf cfg.ai.enable {
     home.packages = with pkgs; [
-      mcp-proxy
       claudeDesktopPackages.claude-desktop
+
+      # From mcp-proxy overlay
+      mcp-proxy
     ];
   };
 }

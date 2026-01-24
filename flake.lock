@@ -749,6 +749,22 @@
         "type": "github"
       }
     },
+    "mcp-proxy": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1760522229,
+        "narHash": "sha256-pU4a9cpMltu8dRkYtq/ge84RHLCqEDtbhItN7rarSOc=",
+        "owner": "tidewave-ai",
+        "repo": "mcp_proxy_rust",
+        "rev": "e5c51af0980ab0e3185fa1c911348de82d93e6b6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tidewave-ai",
+        "repo": "mcp_proxy_rust",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1767892417,
@@ -836,6 +852,7 @@
         "hyprlock": "hyprlock",
         "hyprutils": "hyprutils",
         "hyprwayland-scanner": "hyprwayland-scanner",
+        "mcp-proxy": "mcp-proxy",
         "nixpkgs": "nixpkgs",
         "nixpkgs-lib": "nixpkgs-lib",
         "nur": "nur",
