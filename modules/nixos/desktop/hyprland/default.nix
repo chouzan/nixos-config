@@ -24,8 +24,24 @@ in
         # Let Hyprland launch via the Unified Wayland Session Manager (UWSM)
         withUWSM = true;
 
-        # Use the one from flake
+        # Set Hyprland and XDPH packages to use the ones from the flake
         package = hyprlandPackages.hyprland;
+        portalPackage = hyprlandPackages.xdg-desktop-portal-hyprland;
+      };
+    };
+
+    xdg.portal = {
+      enable = true;
+
+      extraPortals = with pkgs; [
+        kdePackages.xdg-desktop-portal-kde
+      ];
+
+      config.hyprland = {
+        default = [
+          "hyprland"
+          "kde"
+        ];
       };
     };
 

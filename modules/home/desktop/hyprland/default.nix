@@ -7,12 +7,8 @@
 }:
 
 let
-  inherit (inputs) hyprland hyprland-plugins;
-
   cfg = osConfig.modules.desktop.hyprland;
-
-  hyprlandPackages = hyprland.packages.${pkgs.stdenv.hostPlatform.system};
-  hyprlandPlugins = hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system};
+  hyprlandPlugins = inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system};
 in
 {
   imports = [
@@ -60,32 +56,13 @@ in
     wayland.windowManager.hyprland = {
       enable = true;
 
-      # Set to null because it's being installed via NixOS module
+      # Set Hyprland and XDPH packages to null to use the ones from the NixOS module
       package = null;
-
-      # Use the one from flake
-      portalPackage = hyprlandPackages.xdg-desktop-portal-hyprland;
+      portalPackage = null;
 
       plugins = with hyprlandPlugins; [
         hyprbars
       ];
-    };
-
-    xdg.portal = {
-      enable = true;
-      xdgOpenUsePortal = true;
-
-      extraPortals = with pkgs; [
-        kdePackages.xdg-desktop-portal-kde
-        xdg-desktop-portal-gtk
-      ];
-
-      config.hyprland = {
-        default = [
-          "hyprland"
-          "kde"
-        ];
-      };
     };
 
     services = {
