@@ -84,7 +84,7 @@ let
         if machine.nixosConfig != null then machine.nixosConfig else configDir + "/configuration.nix";
 
       homeManagerConfig =
-        if machine.homeManager == false then
+        if !machine.homeManager then
           null
         else if machine.homeManagerConfig != null then
           machine.homeManagerConfig

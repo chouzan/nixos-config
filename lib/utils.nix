@@ -4,7 +4,7 @@ let
   getEnabledMonitors = monitors: lib.filter (m: !m.disabled) monitors;
 
   # Returns value unless it's exactly false (allows null and other falsy values)
-  orUnless = fallback: value: if value != false then value else fallback;
+  orUnless = fallback: value: if builtins.isBool value && !value then fallback else value;
   orIfNull = fallback: value: if value != null then value else fallback;
   orIfEmpty = fallback: value: if value != [ ] then value else fallback;
 
