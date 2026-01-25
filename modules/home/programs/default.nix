@@ -11,7 +11,7 @@
     ./fzf.nix
     ./firefox
     ./zed
-    ./claude-code.nix
+    ./claude-code
     ./bitwarden.nix
   ];
 }

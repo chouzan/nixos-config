@@ -8,10 +8,27 @@
 
 let
   inherit (libs.mcp) servers;
+
   cfg = osConfig.modules.programs.claude-code;
+
+  skills = [
+    ./skills/skill-creator
+  ];
+
+  skillFiles = lib.listToAttrs (
+    map (
+      source:
+      lib.nameValuePair ".claude/skills/${baseNameOf source}" {
+        inherit source;
+        recursive = true;
+      }
+    ) skills
+  );
 in
 {
   config = lib.mkIf cfg.enable {
+    home.file = skillFiles;
+
     programs.claude-code = {
       enable = true;
       package = pkgs.claude-code-bun;
