@@ -1,13 +1,11 @@
 { machine, ... }:
 
 let
-  inherit (machine) hostname user;
+  inherit (machine) hostName user;
 in
 {
   networking = {
-    # TODO: Maybe rename to hostName
-    hostName = hostname;
-
+    inherit hostName;
     networkmanager.enable = true;
   };
 

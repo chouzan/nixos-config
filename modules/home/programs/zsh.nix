@@ -9,7 +9,7 @@
 
 let
   inherit (osConfig) modules;
-  inherit (machine) hostname;
+  inherit (machine) hostName;
 
   cfg = modules.programs.zsh;
 in
@@ -62,7 +62,7 @@ in
         initContent =
           let
             init = lib.mkOrder 500 ''
-              export HOSTNAME=${hostname}
+              export HOSTNAME=${hostName}
             '';
 
             zshZSettings = lib.mkOrder 1000 ''

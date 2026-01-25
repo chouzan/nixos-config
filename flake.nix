@@ -308,7 +308,7 @@
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
       overlays = import ./overlays { inherit inputs system; };
-      utils = import ./lib/utils.nix { inherit (nixpkgs) lib; };
+      builder = import ./lib/builder.nix { inherit (nixpkgs) lib; };
 
       mkUser = username: {
         inherit username;
@@ -318,7 +318,7 @@
 
       user = mkUser "chouzan";
 
-      mkMachine = utils.mkMachineDefaults { inherit inputs system user; };
+      mkMachine = builder.mkMachineDefaults { inherit inputs system user; };
 
       # TODO: Consider integrating leopardus (installer) into machines with aliases
       # Currently separate due to extraModules (sops, quadlet, stylix) not being needed for live ISO
@@ -329,23 +329,9 @@
       # - System maintenance, updates, garbage collection
       # - Explore integration with nh (github:nix-community/nh) for better UX
       machines = {
-        workstation = mkMachine {
-          hostname = "panthera";
-          aliases = [ "desktop" ];
-        };
-
-        lab = mkMachine {
-          hostname = "neofelis";
-        };
-
-        laptop = mkMachine {
-          hostname = "acinonyx";
-          user = mkUser "muhifauzan";
-        };
-
-        server = mkMachine {
-          homeManager = false;
-        };
+        panthera = mkMachine { };
+        neofelis = mkMachine { };
+        acinonyx = mkMachine { user = mkUser "muhifauzan"; };
       };
 
       extraModules = with inputs; [
@@ -362,7 +348,7 @@
     in
     {
       nixosConfigurations =
-        utils.buildConfigurations machines extraModules extraHomeManagerModules overlays
+        builder.buildConfigurations machines extraModules extraHomeManagerModules overlays
         // {
           leopardus = nixpkgs.lib.nixosSystem {
             inherit system;
@@ -382,7 +368,5 @@
         settings.global.includes = [ "*.nix" ];
         settings.global.excludes = [ ".knowledge/*" ];
       };
-
-      debug = { inherit machines utils; };
     };
 }
