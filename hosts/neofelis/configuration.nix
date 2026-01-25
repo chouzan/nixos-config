@@ -1,10 +1,9 @@
-{ inputs, ... }:
+{ ... }:
 
 {
   imports = [
     ./hardware-configuration.nix
 
-    inputs.disko.nixosModules.disko
     ./disko.nix
 
     ../shared/udev-rules.nix

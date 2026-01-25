@@ -1,21 +1,16 @@
-{
-  config,
-  lib,
-  machine,
-  ...
-}:
+{ config, lib, ... }:
 
 let
+  inherit (config) modules;
   inherit (lib) types;
-  inherit (machine) user;
 
-  cfg = config.modules.my;
+  cfg = modules.my;
 in
 {
   options.modules.my = {
     home = lib.mkOption {
       type = types.str;
-      default = "${user.homeDir}/.my";
+      default = "${modules.user.homeDirectory}/.my";
     };
 
     scriptHome = lib.mkOption {

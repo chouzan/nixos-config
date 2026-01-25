@@ -1,13 +1,17 @@
 {
   osConfig,
+  config,
   lib,
-  machine,
   ...
 }:
 
 let
-  inherit (machine) user;
-  cfg = osConfig.modules.bundles;
+  inherit (osConfig) modules;
+
+  cfg = modules.bundles;
+
+  home = config.home.homeDirectory;
+  dataHome = config.xdg.dataHome or "${home}/.local/share";
 in
 {
   config = lib.mkIf cfg.container.enable {
@@ -24,9 +28,9 @@ in
           # which I don't know where, which change the rootless podman SUID/SGID mapping
           # which cause error with layer something which can only be solved with
           # podman system migrate
-          graphroot = "${user.dataHome}/containers/storage";
+          graphroot = "${dataHome}/containers/storage";
 
-          runroot = "${user.runtimeDir}/containers/storage";
+          runroot = "${modules.user.runtimeDirectory}/containers/storage";
         };
       };
     };

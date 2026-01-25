@@ -1,6 +1,7 @@
-{ machine, ... }:
+{ osConfig, machine, ... }:
 
 let
+  inherit (osConfig) modules;
   inherit (machine) user;
 in
 {
@@ -17,6 +18,7 @@ in
 
   home = {
     inherit (user) username;
-    homeDirectory = user.homeDir;
+    inherit (modules.user) homeDirectory;
+    preferXdgDirectories = modules.system.xdg.enable;
   };
 }

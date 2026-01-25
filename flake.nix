@@ -305,51 +305,23 @@
   outputs =
     { self, nixpkgs, ... }@inputs:
     let
-      utils = import ./lib/utils.nix { inherit (nixpkgs) lib; };
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
       overlays = import ./overlays { inherit inputs system; };
+      utils = import ./lib/utils.nix { inherit (nixpkgs) lib; };
 
-      # TODO: Consider moving user/XDG configuration to proper options system
-      # Options:
-      # 1. Create modules/options/user.nix with config.modules.user.*
-      # 2. Profiles/hosts set these options, modules read them
-      # 3. Keep mkUser here for "obvious" entry point, but derive XDG in modules
-      # Current approach is fine for personal config, but adds coupling to flake.nix
-      mkUser = username: rec {
+      mkUser = username: {
         inherit username;
-        homeDir = "/home/${username}";
-        dataHome = "${homeDir}/.local/share";
-        stateHome = "${homeDir}/.local/state";
-        configHome = "${homeDir}/.config";
-        cacheHome = "${homeDir}/.cache";
-        runtimeDir = "/run/user/1000";
         name = "Muhammad H. Fauzan";
         gitEmail = "14904191+chouzan@users.noreply.github.com";
       };
 
-      # Default user for most hosts
       user = mkUser "chouzan";
 
       mkMachine = utils.mkMachineDefaults { inherit inputs system user; };
 
-      # TODO: Consider hosts/shared/ for common configs (e.g., home.nix)
-      # Currently home.nix files are duplicated across hosts with little difference
-      # Options:
-      # - hosts/shared/home.nix imported by hosts
-      # - profiles/home/base.nix following profile pattern
-      # - Explicit homeManagerConfig paths instead of utils.nix magic
-      # See also: lib/utils.nix autoResolveHomeManagerConfig magic
-      #
-      # TODO: Add per-host extraModules support to machine definitions
-      # e.g., extraModules = [ inputs.disko.nixosModules.disko ];
-      # This would allow hosts like panthera to declare disko without affecting acinonyx
-      #
       # TODO: Consider integrating leopardus (installer) into machines with aliases
       # Currently separate due to extraModules (sops, quadlet, stylix) not being needed for live ISO
-      #
-      # TODO: Evaluate folder structure as project grows
-      # Current: hosts/, profiles/, modules/, lib/, scripts/, docs/, overlays/
       #
       # TODO: Introduce `nixosadm` command for unified admin tasks
       # - Similar to `eos` from EndeavourOS
@@ -376,13 +348,10 @@
         };
       };
 
-      # TODO: Make extraModules more flexible to support per-host modules
-      # Currently these are applied to ALL hosts. Consider adding a mechanism
-      # for hosts to declare additional modules (e.g., disko for panthera only)
-      # without polluting other host configurations.
       extraModules = with inputs; [
         sops-nix.nixosModules.sops
         quadlet-nix.nixosModules.quadlet
+        disko.nixosModules.disko
         stylix.nixosModules.stylix
       ];
 
