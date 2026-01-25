@@ -13,6 +13,7 @@ let
 
   skills = [
     ./skills/skill-creator
+    ./skills/nix-patterns
   ];
 
   skillFiles = lib.listToAttrs (
