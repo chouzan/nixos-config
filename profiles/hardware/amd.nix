@@ -1,8 +1,11 @@
-{ lib, ... }:
+{ libs, ... }:
 
+let
+  inherit (libs) utils;
+in
 {
   modules.hardware = {
-    cpu.amd.enable = lib.mkDefault true;
-    gpu.amd.enable = lib.mkDefault true;
+    cpu.amd.enable = utils.mkProfileDefault true;
+    gpu.amd.enable = utils.mkProfileDefault true;
   };
 }

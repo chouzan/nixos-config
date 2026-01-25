@@ -1,5 +1,8 @@
-{ lib, ... }:
+{ libs, ... }:
 
+let
+  inherit (libs) utils;
+in
 {
-  modules.hardware.battery.enable = lib.mkDefault true;
+  modules.hardware.battery.enable = utils.mkProfileDefault true;
 }

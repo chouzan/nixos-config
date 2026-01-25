@@ -1,37 +1,40 @@
-{ lib, ... }:
+{ libs, ... }:
 
+let
+  inherit (libs) utils;
+in
 {
   modules = {
     packages = {
-      network.enable = lib.mkDefault true;
-      archive.enable = lib.mkDefault true;
-      cli.enable = lib.mkDefault true;
+      network.enable = utils.mkProfileDefault true;
+      archive.enable = utils.mkProfileDefault true;
+      cli.enable = utils.mkProfileDefault true;
     };
 
     programs = {
-      git.enable = lib.mkDefault true;
-      gh.enable = lib.mkDefault true;
-      ripgrep.enable = lib.mkDefault true;
-      bat.enable = lib.mkDefault true;
-      eza.enable = lib.mkDefault true;
-      fzf.enable = lib.mkDefault true;
-      zed.enable = lib.mkDefault true;
-      claude-code.enable = lib.mkDefault true;
+      git.enable = utils.mkProfileDefault true;
+      gh.enable = utils.mkProfileDefault true;
+      ripgrep.enable = utils.mkProfileDefault true;
+      bat.enable = utils.mkProfileDefault true;
+      eza.enable = utils.mkProfileDefault true;
+      fzf.enable = utils.mkProfileDefault true;
+      zed.enable = utils.mkProfileDefault true;
+      claude-code.enable = utils.mkProfileDefault true;
     };
 
     bundles = {
-      container.enable = lib.mkDefault true;
-      ai.enable = lib.mkDefault true;
+      container.enable = utils.mkProfileDefault true;
+      ai.enable = utils.mkProfileDefault true;
 
       dev = {
-        enable = lib.mkDefault true;
-        ruby.enable = lib.mkDefault true;
-        python.enable = lib.mkDefault true;
-        node.enable = lib.mkDefault true;
+        enable = utils.mkProfileDefault true;
+        ruby.enable = utils.mkProfileDefault true;
+        python.enable = utils.mkProfileDefault true;
+        node.enable = utils.mkProfileDefault true;
 
         elixir = {
-          enable = lib.mkDefault true;
-          phoenix.enable = lib.mkDefault true;
+          enable = utils.mkProfileDefault true;
+          phoenix.enable = utils.mkProfileDefault true;
         };
       };
     };

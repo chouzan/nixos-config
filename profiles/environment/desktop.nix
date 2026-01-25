@@ -1,8 +1,11 @@
-{ lib, ... }:
+{ libs, ... }:
 
+let
+  inherit (libs) utils;
+in
 {
   modules = {
-    system.xdg.enable = lib.mkDefault true;
-    stylix.enable = lib.mkDefault true;
+    system.xdg.enable = utils.mkProfileDefault true;
+    stylix.enable = utils.mkProfileDefault true;
   };
 }

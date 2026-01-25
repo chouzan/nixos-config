@@ -343,6 +343,15 @@ let
   orIfNull = fallback: value: if value != null then value else fallback;
   orIfEmpty = fallback: value: if value != [ ] then value else fallback;
 
+  # Priority hierarchy:
+  # - mkOptionDefault(1500)
+  # - * mkModuleDefault(1450)
+  # - * mkProfileDefault(1350)
+  # - mkDefault(1000)
+  # - mkForce(50)
+  mkModuleDefault = lib.mkOverride 1450;
+  mkProfileDefault = lib.mkOverride 1350;
+
   withNormalization = f: machines: f (lib.mapAttrs (_: machine: defaultMachine // machine) machines);
 
   test = {
@@ -355,6 +364,8 @@ in
     buildConfigurations
     getEnabledMonitors
     mkMachineDefaults
+    mkModuleDefault
+    mkProfileDefault
     orUnless
     orIfNull
     orIfEmpty

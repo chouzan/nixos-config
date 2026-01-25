@@ -1,13 +1,16 @@
-{ lib, ... }:
+{ libs, ... }:
 
+let
+  inherit (libs) utils;
+in
 {
   modules = {
-    packages.admin.enable = lib.mkDefault true;
-    bundles.dev.nix.enable = lib.mkDefault true;
+    packages.admin.enable = utils.mkProfileDefault true;
+    bundles.dev.nix.enable = utils.mkProfileDefault true;
 
     programs = {
-      zsh.enable = lib.mkDefault true;
-      vim.enable = lib.mkDefault true;
+      zsh.enable = utils.mkProfileDefault true;
+      vim.enable = utils.mkProfileDefault true;
     };
   };
 }
