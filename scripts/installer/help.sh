@@ -5,7 +5,7 @@
 # Displays help information and available commands for the installer.
 #
 # Usage:
-#   install-help
+#   help
 
 cat << 'EOF'
 ╔═══════════════════════════════════════════════════════════════════════╗
@@ -28,7 +28,7 @@ Useful Commands:
 
   Disks:
     $ lsblk -f                 # List disks and filesystems
-    $ sudo gparted             # Partition editor (GUI)
+    $ sudo parted -l            # List partition tables
 
   Manual disko (if needed):
     $ cd /etc/nixos-config

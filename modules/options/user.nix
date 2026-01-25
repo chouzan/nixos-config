@@ -13,6 +13,12 @@ let
 in
 {
   options.modules.user = {
+    enable = lib.mkOption {
+      type = types.bool;
+      default = true;
+      description = "Whether to create the default user account.";
+    };
+
     uid = lib.mkOption {
       type = types.int;
       default = 1000;

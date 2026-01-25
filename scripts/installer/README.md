@@ -1,23 +1,16 @@
 # NixOS Installer
 
-> **Note:** The installer has been refactored into a proper host configuration.
-> See the new locations below.
-
-## New Structure
-
-The installer is now organized as:
+## Structure
 
 ```
 hosts/leopardus/
 └── configuration.nix      # Installer ISO host config
 
-profiles/role/
-└── installer.nix          # Installer profile (packages, services)
-
 scripts/installer/
 ├── menu.sh                # Main interactive installer
 ├── help.sh                # Help and command reference
-└── manual-partition.sh    # Manual partition format/mount
+├── manual-partition.sh    # Manual partition format/mount
+└── welcome.sh             # TTY1 welcome message
 ```
 
 ## Build
@@ -26,15 +19,13 @@ scripts/installer/
 nix build .#installer
 ```
 
-The ISO will be at `result/iso/nixos-installer.iso`.
+The ISO will be at `result/iso/*.iso`.
 
 ## Usage
 
-See [hosts/leopardus/configuration.nix](../hosts/leopardus/configuration.nix) for full documentation.
-
 1. Write ISO to USB:
    ```bash
-   sudo dd if=result/iso/nixos-installer.iso of=/dev/sdX bs=4M status=progress
+   sudo dd if=result/iso/*.iso of=/dev/sdX bs=4M status=progress
    ```
 
 2. Boot from USB
@@ -52,6 +43,5 @@ See [hosts/leopardus/configuration.nix](../hosts/leopardus/configuration.nix) fo
 ## Related Files
 
 - **Host config:** `hosts/leopardus/configuration.nix`
-- **Profile:** `profiles/role/installer.nix`
 - **Scripts:** `scripts/installer/`
 - **Docs:** `docs/PARTITIONING.md`

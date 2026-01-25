@@ -15,7 +15,7 @@
 #       - System maintenance, updates, garbage collection
 #       - Integration with nh (nix-community/nh) for better UX
 
-set -e
+set -euo pipefail
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Configuration
@@ -24,10 +24,15 @@ CONFIG_DIR="/etc/nixos-config"
 GIT_REPO="git@github.com:chouzan/nixos-config.git"
 GIT_REPO_HTTPS="https://github.com/chouzan/nixos-config.git"
 TARGET_DIR="/mnt/etc/nixos"
-USERNAME="chouzan"
+USER_UID=1000
 
-# Available hosts (add new hosts here)
+# Available hosts and their usernames (add new hosts here)
 HOSTS=("panthera" "acinonyx" "neofelis")
+declare -A HOST_USERS=(
+    ["panthera"]="chouzan"
+    ["acinonyx"]="muhifauzan"
+    ["neofelis"]="chouzan"
+)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Colors and Helpers
@@ -78,7 +83,7 @@ select_method() {
     echo "     └─ Best for: single-boot, fresh installs"
     echo ""
     echo "  2) Manual (dual-boot safe)"
-    echo "     └─ Requires manual partitioning with GParted first"
+    echo "     └─ Requires manual partitioning with parted/fdisk first"
     echo "     └─ Best for: dual-boot, preserving existing partitions"
     echo ""
 
@@ -156,9 +161,8 @@ install_disko() {
     fi
 
     log_step "Running disko (partition, format, mount)..."
-    nix run github:nix-community/disko -- \
-        --mode destroy,format,mount \
-        "$disko_config"
+    disko --mode destroy,format,mount \
+        --flake "path:${CONFIG_DIR}#$HOST"
     log_success "Disk configured and mounted"
 
     setup_config
@@ -176,7 +180,7 @@ install_manual() {
     echo -e "${BOLD}Manual Installation for $HOST${NC}"
     echo ""
     echo "This method requires you to:"
-    echo "  1. Create partitions manually with GParted"
+    echo "  1. Create partitions manually with parted or fdisk"
     echo "  2. Run the setup script to format and mount"
     echo ""
 
@@ -189,30 +193,19 @@ install_manual() {
 
     echo ""
     echo "Options:"
-    echo "  1) Open GParted (create partitions first)"
-    echo "  2) Run setup script (after partitions exist)"
-    echo "  3) Skip to config setup (partitions already mounted)"
-    echo "  4) Cancel"
+    echo "  1) Run setup script (after partitions exist)"
+    echo "  2) Skip to config setup (partitions already mounted)"
+    echo "  3) Cancel"
     echo ""
 
     while true; do
-        read -p "Enter choice [1-4]: " choice
+        read -p "Enter choice [1-3]: " choice
         case $choice in
             1)
-                log_info "Opening GParted..."
-                gparted
-                echo ""
-                read -p "Partitions created? Continue to setup script? [y/N]: " cont
-                if [[ "$cont" =~ ^[yY] ]]; then
-                    run_setup_script "$setup_script"
-                    break
-                fi
-                ;;
-            2)
                 run_setup_script "$setup_script"
                 break
                 ;;
-            3)
+            2)
                 if mountpoint -q /mnt; then
                     log_success "/mnt is mounted, continuing..."
                     break
@@ -220,7 +213,7 @@ install_manual() {
                     log_error "/mnt is not mounted. Mount your partitions first."
                 fi
                 ;;
-            4)
+            3)
                 log_warn "Aborted."
                 exit 0
                 ;;
@@ -274,7 +267,7 @@ setup_config() {
 
     # Fix ownership so user can edit and use git without permission issues
     log_info "Setting ownership to $USERNAME..."
-    chown -R 1000:users "$TARGET_DIR"
+    chown -R "$USER_UID":users "$TARGET_DIR"
     log_success "Ownership set"
 }
 
@@ -282,11 +275,13 @@ update_state_version() {
     log_step "Updating stateVersion..."
 
     local host_config="$TARGET_DIR/hosts/$HOST/configuration.nix"
+    local tmpdir
+    tmpdir=$(mktemp -d)
 
-    # Generate a temporary config just to get the current NixOS stateVersion
-    nixos-generate-config --root /mnt --no-filesystems 2>/dev/null || true
+    # Generate config to a temp dir to extract stateVersion without clobbering our config
+    nixos-generate-config --root /mnt --dir "$tmpdir" --no-filesystems 2>/dev/null || true
 
-    local generated_config="/mnt/etc/nixos/configuration.nix"
+    local generated_config="$tmpdir/configuration.nix"
 
     if [ -f "$generated_config" ] && [ -f "$host_config" ]; then
         local state_version
@@ -297,9 +292,7 @@ update_state_version() {
         fi
     fi
 
-    # Clean up generated files (we use our own config)
-    rm -f /mnt/etc/nixos/configuration.nix /mnt/etc/nixos/hardware-configuration.nix 2>/dev/null || true
-
+    rm -rf "$tmpdir"
     log_success "stateVersion updated"
 }
 
@@ -334,7 +327,7 @@ show_complete() {
     echo ""
     echo "Next steps:"
     echo "  1. Set user password:"
-    echo "     nixos-enter --root /mnt -c 'passwd $USERNAME'"
+    echo "     nixos-enter --root /mnt -c 'passwd ${USERNAME}'"
     echo ""
     echo "  2. Reboot:"
     echo "     reboot"
@@ -344,7 +337,7 @@ show_complete() {
         echo "  3. After reboot (when online), set up git:"
         echo "     cd /etc/nixos"
         echo "     git init && git remote add origin $GIT_REPO"
-        echo "     git fetch && git reset --hard origin/main"
+        echo "     git fetch && git reset --hard origin/master"
         echo ""
     fi
 }
@@ -368,9 +361,12 @@ main() {
     select_method
     select_host
 
+    USERNAME="${HOST_USERS[$HOST]:-chouzan}"
+
     echo ""
     log_info "Method: $METHOD"
     log_info "Host: $HOST"
+    log_info "User: $USERNAME"
     log_info "Online: $ONLINE"
     echo ""
 

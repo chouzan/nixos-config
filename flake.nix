@@ -334,9 +334,6 @@
 
       mkMachine = builder.mkMachineDefaults { inherit inputs system user; };
 
-      # TODO: Consider integrating leopardus (installer) into machines with aliases
-      # Currently separate due to extraModules (sops, quadlet, stylix) not being needed for live ISO
-      #
       # TODO: Introduce `nixosadm` command for unified admin tasks
       # - Similar to `eos` from EndeavourOS
       # - Commit hardware-configuration.nix and stateVersion changes after install
@@ -346,6 +343,11 @@
         panthera = mkMachine { };
         neofelis = mkMachine { };
         acinonyx = mkMachine { user = mkUser "muhifauzan"; };
+
+        leopardus = mkMachine {
+          homeManager = false;
+          aliases = [ "installer" ];
+        };
       };
 
       extraModules = with inputs; [
@@ -362,18 +364,11 @@
     in
     {
       nixosConfigurations =
-        builder.buildConfigurations machines extraModules extraHomeManagerModules overlays
-        // {
-          leopardus = nixpkgs.lib.nixosSystem {
-            inherit system;
-            modules = [ ./hosts/leopardus/configuration.nix ];
-          };
-        };
+        builder.buildConfigurations machines extraModules extraHomeManagerModules
+          overlays;
 
-      # Convenience package outputs
       packages.${system} = {
-        leopardus = self.nixosConfigurations.leopardus.config.system.build.isoImage;
-        installer = self.nixosConfigurations.leopardus.config.system.build.isoImage; # Alias
+        installer = self.nixosConfigurations.installer.config.system.build.isoImage;
       };
 
       formatter.${system} = inputs.treefmt-nix.lib.mkWrapper pkgs {

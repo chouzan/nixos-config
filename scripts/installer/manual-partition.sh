@@ -6,7 +6,7 @@
 # This script uses partition LABELS, making it disk-agnostic.
 #
 # Prerequisites:
-#   Create partitions with GParted using these LABELS:
+#   Create partitions with parted/fdisk using these LABELS:
 #     - uefi  (512M-1G, EFI System Partition)
 #     - boot  (2G)
 #     - swap  (RAM + 2GB for hibernation)
@@ -14,14 +14,14 @@
 #     - home  (remaining space)
 #
 # Usage:
-#   ./manual-setup.sh          # Interactive mode
-#   ./manual-setup.sh --check  # Check partitions only
-#   ./manual-setup.sh --force  # Skip confirmations
+#   ./manual-partition.sh          # Interactive mode
+#   ./manual-partition.sh --check  # Check partitions only
+#   ./manual-partition.sh --force  # Skip confirmations
 
 set -euo pipefail
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Partition Labels (must match what you create in GParted)
+# Partition Labels (must match what you create with parted/fdisk)
 # ─────────────────────────────────────────────────────────────────────────────
 LABEL_EFI="uefi"
 LABEL_BOOT="boot"
@@ -74,7 +74,7 @@ Manual Setup Script
 Formats and mounts partitions for NixOS installation using partition LABELS.
 This makes it disk-agnostic - works on any disk (NVMe, SATA, etc.)
 
-Usage: ./manual-setup.sh [OPTIONS]
+Usage: ./manual-partition.sh [OPTIONS]
 
 Options:
   --check   Check partitions only (no formatting)
@@ -82,7 +82,7 @@ Options:
   --help    Show this help
 
 Prerequisites:
-  Create partitions in GParted with these LABELS:
+  Create partitions with parted or fdisk using these LABELS:
 
   ┌─────────┬────────────────┬────────────────────────────┐
   │ Label   │ Size           │ Notes                      │
@@ -94,10 +94,10 @@ Prerequisites:
   │ home    │ Remaining      │ User data                  │
   └─────────┴────────────────┴────────────────────────────┘
 
-  In GParted:
+  With parted:
     1. Create GPT partition table (if new disk)
     2. Create partitions with sizes above
-    3. Right-click each → "Name Partition" → set label
+    3. Set partition name: parted /dev/sdX name <num> <label>
 
 Filesystem Layout:
   /boot/efi  (vfat)           ← uefi partition
@@ -189,11 +189,11 @@ if [ "$missing" -gt 0 ]; then
     echo ""
     log_error "Missing $missing partition(s)!"
     echo ""
-    echo "Create partitions in GParted with these labels:"
+    echo "Create partitions with parted or fdisk using these labels:"
     echo "  uefi, boot, swap, root, home"
     echo ""
-    echo "To set a partition label in GParted:"
-    echo "  Right-click partition → 'Name Partition' → enter label"
+    echo "To set a partition label with parted:"
+    echo "  parted /dev/sdX name <partition-number> <label>"
     exit 1
 fi
 
