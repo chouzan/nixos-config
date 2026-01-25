@@ -185,7 +185,7 @@ See [hosts/leopardus/configuration.nix](hosts/leopardus/configuration.nix) for d
 
 3. **Create your host:**
    ```bash
-   cp -r hosts/default hosts/<hostname>
+   cp -r hosts/template hosts/<hostname>
    nixos-generate-config --show-hardware-config > hosts/<hostname>/hardware-configuration.nix
    ```
 
