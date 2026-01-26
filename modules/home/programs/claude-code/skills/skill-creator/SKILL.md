@@ -1,6 +1,6 @@
 ---
 name: skill-creator
-description: Guide for creating effective skills. Use when creating a new skill or updating an existing skill that extends Claude's capabilities with specialized knowledge, workflows, or tool integrations.
+description: Guide for creating effective skills. Use when creating, reviewing, or updating a skill that extends Claude's capabilities with specialized knowledge, workflows, or tool integrations.
 ---
 
 # Skill Creator
