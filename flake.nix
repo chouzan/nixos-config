@@ -37,7 +37,7 @@
     };
 
     hyprland = {
-      url = "github:hyprwm/Hyprland";
+      url = "github:hyprwm/Hyprland/v0.53.1";
 
       inputs = {
         nixpkgs.follows = "nixpkgs";
@@ -117,18 +117,19 @@
       };
     };
 
+    # TODO: Maybe remove zed-editor flake
     # NOTE: Building Zed may cause LimitNOFILE error.
     # Build it with:
     # sudo bash -lc 'ulimit -n 1048576; nixos-rebuild switch --option cores 4 --option max-jobs 4'
-    zed-editor = {
-      url = "github:zed-industries/zed";
-
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-compat.follows = "flake-compat";
-        rust-overlay.follows = "rust-overlay";
-      };
-    };
+    # zed-editor = {
+    #   url = "github:zed-industries/zed";
+    #
+    #   inputs = {
+    #     nixpkgs.follows = "nixpkgs";
+    #     flake-compat.follows = "flake-compat";
+    #     rust-overlay.follows = "rust-overlay";
+    #   };
+    # };
 
     claude-desktop = {
       url = "github:k3d3/claude-desktop-linux-flake";
@@ -178,7 +179,8 @@
       inputs.nixpkgs-lib.follows = "nixpkgs-lib";
     };
 
-    flake-compat.url = "github:NixOS/flake-compat";
+    # TODO: Maybe remove zed-editor flake
+    # flake-compat.url = "github:NixOS/flake-compat";
 
     hyprutils = {
       url = "github:hyprwm/hyprutils";
@@ -292,14 +294,17 @@
 
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        flake-compat.follows = "flake-compat";
+
+        # TODO: Maybe remove zed-editor flake
+        # flake-compat.follows = "flake-compat";
       };
     };
 
-    rust-overlay = {
-      url = "github:oxalica/rust-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # TODO: Maybe remove zed-editor flake
+    # rust-overlay = {
+    #   url = "github:oxalica/rust-overlay";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
   };
 
   outputs =

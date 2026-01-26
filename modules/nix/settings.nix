@@ -22,15 +22,16 @@ let
       hash = "a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=";
     }
 
-    {
-      name = "zed-industries.cachix.org";
-      hash = "fgVpvtdF+ssrgP1lB6EusuR3uM6bNcncWduKxri3u6Y=";
-    }
-
-    {
-      name = "zed.cachix.org";
-      hash = "/pHQ6dpMsAZk2DiP4WCL0p9YDNKWj2Q5FL20bNmw1cU=";
-    }
+    # TODO: Maybe remove zed-editor flake
+    # {
+    #   name = "zed.cachix.org";
+    #   hash = "/pHQ6dpMsAZk2DiP4WCL0p9YDNKWj2Q5FL20bNmw1cU=";
+    # }
+    #
+    # {
+    #   name = "zed-industries.cachix.org";
+    #   hash = "fgVpvtdF+ssrgP1lB6EusuR3uM6bNcncWduKxri3u6Y=";
+    # }
 
     {
       name = "devenv.cachix.org";

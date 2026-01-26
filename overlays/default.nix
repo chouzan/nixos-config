@@ -8,7 +8,10 @@
   inputs.hypridle.overlays.default
   inputs.hyprlock.overlays.default
   inputs.hyprland-plugins.overlays.default
-  inputs.zed-editor.overlays.default
+
+  # TODO: Maybe remove zed-editor flake
+  # inputs.zed-editor.overlays.default
+
   inputs.claude-code.overlays.default
 
   # Custom overlays (no upstream available)
