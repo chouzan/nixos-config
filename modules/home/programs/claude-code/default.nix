@@ -12,8 +12,14 @@ let
   cfg = osConfig.modules.programs.claude-code;
 
   skills = [
-    ./skills/skill-creator
+    ./skills/git-commit
+    ./skills/git-rebase
     ./skills/nix-patterns
+    ./skills/skill-creator
+  ];
+
+  agents = [
+    ./agents/git-rebaser.md
   ];
 
   skillFiles = lib.listToAttrs (
@@ -25,10 +31,19 @@ let
       }
     ) skills
   );
+
+  agentFiles = lib.listToAttrs (
+    map (
+      source:
+      lib.nameValuePair ".claude/agents/${baseNameOf source}" {
+        inherit source;
+      }
+    ) agents
+  );
 in
 {
   config = lib.mkIf cfg.enable {
-    home.file = skillFiles;
+    home.file = skillFiles // agentFiles;
 
     programs.claude-code = {
       enable = true;
