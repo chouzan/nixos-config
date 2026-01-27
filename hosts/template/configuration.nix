@@ -11,9 +11,9 @@
 
     ./storage.nix
 
-    ../shared/udev-rules.nix
-    ../shared/locale.nix
-    ../shared/user.nix
+    ../shared/system/locale.nix
+    ../shared/system/user.nix
+    ../shared/hardware/logitech/udev-rules.nix
 
     ../../modules/nixos
 

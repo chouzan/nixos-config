@@ -7,9 +7,10 @@
     ./disko.nix
     ./grub-chainload.nix
 
-    ../shared/udev-rules.nix
-    ../shared/locale.nix
-    ../shared/user.nix
+    ../shared/system/locale.nix
+    ../shared/system/user.nix
+    ../shared/hardware/logitech/udev-rules.nix
+    ../shared/hardware/x870e-tomahawk/power-management.nix
 
     ../../modules/nixos
 
