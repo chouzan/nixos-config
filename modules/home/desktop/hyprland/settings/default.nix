@@ -75,11 +75,10 @@ in
       };
 
       misc = {
-        animate_manual_resizes = true;
-        animate_mouse_windowdragging = true;
         enable_swallow = true;
         swallow_regex = "kitty";
         focus_on_activate = true;
+        middle_click_paste = false;
       };
     };
   };

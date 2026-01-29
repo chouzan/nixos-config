@@ -46,6 +46,11 @@ in
         enable = true;
         shellIntegration.enableZshIntegration = true;
 
+        keybindings = {
+          # \x17 = Ctrl+W (backward-kill-word)
+          "ctrl+backspace" = "send_text all \\x17";
+        };
+
         # font = {
         #   package = pkgs.nerd-fonts.jetbrains-mono;
         #   name = "JetBrainsMono Nerd Font";
