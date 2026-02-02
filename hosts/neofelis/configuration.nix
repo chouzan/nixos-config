@@ -35,7 +35,7 @@
         position = "0x0";
         # scale = 1;
         scale = 1.07;
-        hyprland.workspace = "main";
+        hyprland.workspace = "primary";
       }
 
       {

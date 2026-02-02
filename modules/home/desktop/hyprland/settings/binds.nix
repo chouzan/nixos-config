@@ -79,8 +79,8 @@ in
           #########################
           # Switch workspace to
 
-          "$shiftAltMod, 1, workspace, name:main"
-          "$shiftAltMod, 2, workspace, name:workspace"
+          "$shiftAltMod, 1, workspace, name:primary"
+          "$shiftAltMod, 2, workspace, name:auxiliary"
           "$shiftAltMod, 3, workspace, name:other"
           # "$shiftAltMod, 1, workspace, 1"
           # "$shiftAltMod, 2, workspace, 2"
@@ -92,8 +92,8 @@ in
           ####################
           # Move window to
 
-          "$shiftCtrlMod, 1, movetoworkspace, name:main"
-          "$shiftCtrlMod, 2, movetoworkspace, name:workspace"
+          "$shiftCtrlMod, 1, movetoworkspace, name:primary"
+          "$shiftCtrlMod, 2, movetoworkspace, name:auxiliary"
           "$shiftCtrlMod, 3, movetoworkspace, name:other"
           # "$shiftCtrlMod, 1, movetoworkspace, 1"
           # "$shiftCtrlMod, 2, movetoworkspace, 2"

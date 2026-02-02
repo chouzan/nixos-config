@@ -36,7 +36,7 @@
         refreshRate = 90;
         position = "0x0";
         scale = 1.5;
-        hyprland.workspace = "main";
+        hyprland.workspace = "other";
       }
 
       {
@@ -46,7 +46,7 @@
         refreshRate = 144;
         position = "auto";
         scale = 1;
-        hyprland.workspace = "workspace";
+        hyprland.workspace = "primary";
       }
     ];
 
