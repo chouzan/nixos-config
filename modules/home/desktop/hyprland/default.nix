@@ -14,6 +14,7 @@ in
     ./hyprlock.nix
     ./hypridle.nix
     ./plugins.nix
+    ./hypr-auto-mfact.nix
   ];
 
   config = lib.mkIf cfg.enable {
