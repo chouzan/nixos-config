@@ -43,37 +43,34 @@ let
       ${hyprctl} workspaces -j | ${jq} -r --arg name "$workspace_name" '.[] | select(.name == $name) | .windows'
     }
 
-    get_active_workspace_window_count() {
-      get_workspace_window_count "$(get_active_workspace_name)"
-    }
-
-    apply_mfact() {
-      local mfact=$1
+    update_mfact_for_active_workspace() {
+      local window_count mfact
+      window_count=$(get_workspace_window_count "$(get_active_workspace_name)")
+      mfact=$(get_mfact_for_window_count "$window_count")
 
       if [[ -n "$mfact" ]]; then
         ${hyprctl} dispatch layoutmsg mfact exact "$mfact"
       fi
     }
 
-    update_mfact_for_active_workspace() {
+    handle_event() {
       is_master_layout || return 0
-      apply_mfact "$(get_mfact_for_window_count "$(get_active_workspace_window_count)")"
-    }
+      sleep 0.05
 
-    on_window_or_workspace_change() {
       case $1 in
-        openwindow*|closewindow*|movewindow*|workspace*|activespecial*)
-          sleep 0.05
+        workspace">>"*|focusedmon">>"*|activespecial">>"*|openwindow">>"*|closewindow">>"*|movewindow">>"*|changefloatingmode">>"*)
           update_mfact_for_active_workspace
           ;;
       esac
     }
 
-    update_mfact_for_active_workspace
+    if is_master_layout; then
+      update_mfact_for_active_workspace
+    fi
 
     ${socat} -U - "UNIX-CONNECT:$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock" \
       | while read -r event; do
-          on_window_or_workspace_change "$event"
+          handle_event "$event"
         done
   '';
 in
