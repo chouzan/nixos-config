@@ -2,6 +2,7 @@
 
 {
   osConfig,
+  config,
   lib,
   pkgs,
   machine,
@@ -61,6 +62,8 @@ in
 
           rerere.enabled = true;
           help.autoCorrect = "prompt";
+
+          core.hooksPath = "${config.xdg.configHome}/git/hooks";
 
           alias = {
             st = "status";
@@ -169,6 +172,18 @@ in
       enableSshSupport = true;
       enableZshIntegration = modules.programs.zsh.enable;
       pinentry.package = pkgs.pinentry-rofi;
+    };
+
+    xdg.configFile."git/hooks/pre-commit" = {
+      text = ''
+        #!/usr/bin/env sh
+        if git diff --cached --diff-filter=ACM | grep -qE '^[+].*(<<<<<<|======|>>>>>>)'; then
+          echo "Error: Conflict markers found in staged files"
+          exit 1
+        fi
+      '';
+
+      executable = true;
     };
   };
 }
