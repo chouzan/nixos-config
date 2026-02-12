@@ -7,7 +7,6 @@
     ./disko.nix
 
     ../shared/system/locale.nix
-    ../shared/system/user.nix
     ../shared/hardware/logitech/udev-rules.nix
     ../shared/hardware/x870e-tomahawk/power-management.nix
 

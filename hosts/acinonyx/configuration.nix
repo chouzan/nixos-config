@@ -10,7 +10,6 @@
     ./storage.nix
 
     ../shared/system/locale.nix
-    ../shared/system/user.nix
     ../shared/hardware/logitech/udev-rules.nix
 
     ../../modules/nixos
