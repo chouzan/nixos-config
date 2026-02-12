@@ -3,6 +3,7 @@
 {
   imports = [
     ./boot
+    ./btrfs.nix
     ./user.nix
     ./networking.nix
     ./security.nix
