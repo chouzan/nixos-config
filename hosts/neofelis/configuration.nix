@@ -25,5 +25,33 @@
 
   system.stateVersion = "26.05";
 
-  modules = { };
+  modules = {
+    desktop.hyprland.extraWindowRules = [
+      {
+        name = "zed-nixos";
+        "match:class" = "dev.zed.Zed";
+        "match:title" = "nixos";
+        workspace = "special:terminal silent";
+      }
+
+      {
+        name = "kitty-btop";
+        "match:class" = "kitty";
+        "match:title" = "btop";
+        workspace = "special:terminal silent";
+      }
+
+      {
+        name = "claude-desktop";
+        "match:class" = "Claude";
+        workspace = "auxiliary silent";
+      }
+
+      {
+        name = "spotify";
+        "match:class" = "spotify";
+        workspace = "auxiliary silent";
+      }
+    ];
+  };
 }

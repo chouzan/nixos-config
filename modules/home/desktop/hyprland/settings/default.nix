@@ -56,10 +56,11 @@ in
         "waybar &"
         "hyprpaper &"
         "$editor"
-        "$terminal"
-        "$ai"
-        "$webBrowser"
-        "$musicPlayer"
+        "[workspace special:terminal silent] $terminal --hold btop"
+        "[workspace name:primary silent] $terminal"
+        "[workspace name:primary silent] $webBrowser"
+        "[workspace name:auxiliary silent] $ai"
+        "[workspace name:auxiliary silent] $musicPlayer"
       ];
 
       general = {
