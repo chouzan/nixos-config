@@ -40,6 +40,11 @@ in
     };
 
     services = {
+      # Enable X server for SDDM greeter
+      # Weston (used by SDDM's Wayland greeter) crashes on RDNA 4 GPUs
+      # TODO: Re-enable wayland.enable once Weston supports RDNA 4
+      xserver.enable = true;
+
       displayManager = {
         enable = true;
         defaultSession = "hyprland";
@@ -48,8 +53,9 @@ in
           # Enable SDDM as the graphical login manager
           enable = true;
 
-          # Enable experimental Wayland support
-          wayland.enable = true;
+          # Disable experimental Wayland support
+          # Weston crashes on RDNA 4 GPUs
+          wayland.enable = false;
         };
       };
     };
