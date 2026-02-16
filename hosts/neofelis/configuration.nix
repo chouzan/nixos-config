@@ -19,34 +19,11 @@
     ../../profiles/environment/hyprland.nix
     ../../profiles/role/development.nix
     ../../profiles/role/media.nix
+
+    ../shared/settings/desktop/monitors.nix
   ];
 
   system.stateVersion = "26.05";
 
-  modules = {
-    monitors = [
-      {
-        name = "DP-2";
-        primary = true;
-        width = 5120;
-        height = 2160;
-        refreshRate = 165;
-        position = "0x0";
-        # scale = 1;
-        scale = 1.07;
-        hyprland.workspace = "primary";
-      }
-
-      {
-        name = "DP-3";
-        width = 3440;
-        height = 1440;
-        refreshRate = 144;
-        # position = "840x-1440";
-        position = "680x-1440";
-        scale = 1;
-        hyprland.workspace = "auxiliary";
-      }
-    ];
-  };
+  modules = { };
 }
