@@ -39,6 +39,15 @@ in
           };
         };
 
+        Elixir = {
+          language_servers = [
+            "expert"
+            "!elixir-ls"
+            "!next-ls"
+            "!lexical"
+          ];
+        };
+
         Nix = {
           language_servers = [
             "nixd"

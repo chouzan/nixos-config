@@ -44,7 +44,10 @@ in
     })
 
     (lib.mkIf cfg.dev.elixir.enable {
-      home.packages = with pkgs; [ elixir ];
+      home.packages = with pkgs; [
+        elixir
+        elixir-expert
+      ];
     })
 
     (lib.mkIf cfg.dev.elixir.phoenix.enable {
