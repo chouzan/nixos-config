@@ -20,6 +20,17 @@ in
       fzf.enable = utils.mkProfileDefault true;
       zed.enable = utils.mkProfileDefault true;
       claude-code.enable = utils.mkProfileDefault true;
+      opencode.enable = utils.mkProfileDefault true;
+
+      mcp = {
+        enable = utils.mkProfileDefault true;
+
+        servers = {
+          sequential-thinking.enable = utils.mkProfileDefault true;
+          context7.enable = utils.mkProfileDefault true;
+          tidewave.enable = utils.mkProfileDefault true;
+        };
+      };
     };
 
     bundles = {

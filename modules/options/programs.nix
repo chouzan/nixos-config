@@ -13,6 +13,19 @@
     firefox.enable = lib.mkEnableOption "Firefox web browser with extensions";
     zed.enable = lib.mkEnableOption "Zed code editor (program name: zed-editor)";
     claude-code.enable = lib.mkEnableOption "Claude Code agentic coding tool";
+    opencode.enable = lib.mkEnableOption "OpenCode AI coding agent";
+
+    mcp = {
+      enable = lib.mkEnableOption "MCP server configuration";
+
+      servers = {
+        sequential-thinking.enable = lib.mkEnableOption "sequential-thinking MCP server";
+        context7.enable = lib.mkEnableOption "context7 MCP server";
+        graphiti-memory.enable = lib.mkEnableOption "graphiti-memory MCP server";
+        tidewave.enable = lib.mkEnableOption "tidewave MCP server";
+      };
+    };
+
     bitwarden.enable = lib.mkEnableOption "Bitwarden password manager";
     spotify.enable = lib.mkEnableOption "Spotify music player";
   };

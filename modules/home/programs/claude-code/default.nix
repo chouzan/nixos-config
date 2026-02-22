@@ -7,9 +7,11 @@
 }:
 
 let
+  inherit (osConfig) modules;
   inherit (libs.mcp) servers;
 
-  cfg = osConfig.modules.programs.claude-code;
+  cfg = modules.programs.claude-code;
+  mcpCfg = modules.programs.mcp;
 
   skills = [
     ./skills/git-commit
@@ -49,27 +51,35 @@ in
       enable = true;
       package = pkgs.claude-code-bun;
 
-      mcpServers = {
-        "${servers.sequential-thinking.name}" = {
-          inherit (servers.sequential-thinking) command args env;
-          type = "stdio";
-        };
+      mcpServers = lib.mkMerge [
+        (lib.mkIf mcpCfg.servers.sequential-thinking.enable {
+          "${servers.sequential-thinking.name}" = {
+            inherit (servers.sequential-thinking) command args env;
+            type = "stdio";
+          };
+        })
 
-        "${servers.context7.name}" = {
-          inherit (servers.context7) command args env;
-          type = "stdio";
-        };
+        (lib.mkIf mcpCfg.servers.context7.enable {
+          "${servers.context7.name}" = {
+            inherit (servers.context7) command args env;
+            type = "stdio";
+          };
+        })
 
-        "${servers.graphiti-memory.name}" = {
-          inherit (servers.graphiti-memory) command args env;
-          type = "stdio";
-        };
+        (lib.mkIf mcpCfg.servers.graphiti-memory.enable {
+          "${servers.graphiti-memory.name}" = {
+            inherit (servers.graphiti-memory) command args env;
+            type = "stdio";
+          };
+        })
 
-        "${servers.tidewave.name}" = {
-          inherit (servers.tidewave) command args env;
-          type = "stdio";
-        };
-      };
+        (lib.mkIf mcpCfg.servers.tidewave.enable {
+          "${servers.tidewave.name}" = {
+            inherit (servers.tidewave) command args env;
+            type = "stdio";
+          };
+        })
+      ];
     };
   };
 }

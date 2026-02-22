@@ -11,6 +11,7 @@ in
       targets = {
         firefox.enable = false;
         kde.enable = false;
+        opencode.enable = false;
         qt.enable = osConfig.stylix.targets.qt.enable;
       };
     };
