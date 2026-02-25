@@ -11,6 +11,25 @@ in
     programs.opencode = {
       enable = true;
       enableMcpIntegration = mcpCfg.enable;
+
+      settings = {
+        lsp = {
+          elixir-ls.disabled = true;
+
+          elixir-expert = {
+            command = [
+              "expert"
+              "--stdio"
+            ];
+
+            extensions = [
+              ".ex"
+              ".exs"
+              ".heex"
+            ];
+          };
+        };
+      };
     };
   };
 }

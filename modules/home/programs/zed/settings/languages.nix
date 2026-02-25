@@ -27,6 +27,8 @@ in
         })
       ];
 
+      # -- Languages -----------------------------------------------------------
+
       # TODO: Set based on modules
       languages = {
         JSON = {
@@ -48,10 +50,29 @@ in
           ];
         };
 
+        HEEX = {
+          language_servers = [
+            "expert"
+            "!elixir-ls"
+            "!next-ls"
+            "!lexical"
+          ];
+        };
+
         Nix = {
           language_servers = [
             "nixd"
           ];
+        };
+      };
+
+      # -- LSPs ----------------------------------------------------------------
+
+      lsp = {
+        expert = {
+          binary = {
+            arguments = [ "--stdio" ];
+          };
         };
       };
     };
