@@ -61,7 +61,7 @@ in
           })
         ];
 
-        features.edit_prediction_provider = "zed";
+        edit_predictions.provider = "zed";
 
         agent = {
           default_model = {
@@ -69,7 +69,7 @@ in
             model = "claude-sonnet-4-5-thinking-latest";
           };
 
-          always_allow_tool_actions = true;
+          tool_permissions.default = "allow";
           play_sound_when_agent_done = true;
           use_modifier_to_send = true;
         };

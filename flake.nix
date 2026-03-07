@@ -37,7 +37,7 @@
     };
 
     hyprland = {
-      url = "github:hyprwm/Hyprland/v0.53.1";
+      url = "github:hyprwm/Hyprland/v0.53.0";
 
       inputs = {
         nixpkgs.follows = "nixpkgs";
@@ -108,7 +108,7 @@
     };
 
     hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins";
+      url = "github:hyprwm/hyprland-plugins/v0.53.0";
 
       inputs = {
         nixpkgs.follows = "nixpkgs";

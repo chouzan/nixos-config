@@ -25,14 +25,14 @@ in
     resumeDevice = utils.mkModuleDefault "/dev/disk/by-partlabel/swap";
   };
 
-  systemd.sleep.extraConfig = ''
-    AllowSuspend=yes
-    AllowHibernation=yes
-    AllowHybridSleep=no
-    AllowSuspendThenHibernate=yes
-    SuspendState=mem
-    MemorySleepMode=deep
-    HibernateDelaySec=36h
-    HibernateOnACPower=yes
-  '';
+  systemd.sleep.settings.Sleep = {
+    AllowSuspend = "yes";
+    AllowHibernation = "yes";
+    AllowHybridSleep = "no";
+    AllowSuspendThenHibernate = "yes";
+    SuspendState = "mem";
+    MemorySleepMode = "deep";
+    HibernateDelaySec = "36h";
+    HibernateOnACPower = "yes";
+  };
 }
