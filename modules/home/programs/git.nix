@@ -67,61 +67,86 @@ in
 
           alias = {
             st = "status";
-            ss = "st --short --branch";
-            su = "st --untracked-files=no";
-            si = "st --ignored";
-            sh = "st --show-stash";
-            sv = "st --verbose";
-            svv = "st -vv";
+            stsb = "st --short --branch";
+            stu = "st --untracked-files=no";
+            sti = "st --ignored";
+            sts = "st --show-stash";
+            stv = "st --verbose";
+            stvv = "st -vv";
+
+            sw = "show";
 
             di = "diff";
-            dx = "di --stat";
-            df = "di --function-context";
-            dz = "di --color-moved=dimmed-zebra";
-            ds = "di --staged";
-            dsx = "dx --staged";
-            dsf = "df --staged";
-            dsz = "dz --staged";
-            da = "di HEAD";
-            dup = "di @{upstream}...HEAD";
+            dit = "di --stat";
+            dif = "di --function-context";
+            dic = "di --color-moved=dimmed-zebra";
+            dig = "di --staged";
+            digt = "dig --stat";
+            digf = "dig --function-context";
+            digc = "dig --color-moved=dimmed-zebra";
+            dih = "di HEAD";
+            diuh = "di @{upstream}...HEAD";
 
             lo = "log --graph --pretty=format:'%C(yellow)%h%Creset%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'";
-            lop = "!git --no-pager lo --no-graph --color=always";
-            lh = "log -1 HEAD --stat";
-
-            ch = "checkout";
-
-            br = "branch";
+            lonc = "!git --no-pager lo --no-graph --color=always";
+            loht = "log -1 HEAD --stat";
 
             ad = "add";
-            aa = "add --all";
+            ada = "ad --all";
 
-            xx = "reset HEAD --";
+            sh = "stash";
+            shp = "sh pop";
+            shl = "sh list";
+            shs = "sh show";
+            shd = "sh drop";
 
-            co = "commit";
-            cm = "co --message";
-            cf = "co --fixup";
-            ca = "co --amend --no-edit";
+            cm = "commit";
+            cmm = "cm --message";
+            cmf = "cm --fixup";
+            cman = "cm --amend --no-edit";
 
-            eb = "rebase";
-            ei = "eb --interactive";
-            es = "ei --autosquash";
+            rs = "reset";
+            rsh = "rs HEAD --";
 
-            re = "remote";
-            rv = "remote --verbose";
+            br = "branch";
+            brd = "br --delete";
+            brdf = "brd --force";
+
+            co = "checkout";
+
+            rb = "rebase";
+            rbi = "rb --interactive";
+            rbin = "rbi --no-autosquash";
+            rbc = "rb --continue";
+            rbs = "rb --skip";
+            rba = "rb --abort";
+
+            arbi = "!GIT_SEQUENCE_EDITOR=: git rbi";
+
+            me = "merge";
+
+            ro = "remote";
+            rov = "ro --verbose";
+
+            fe = "fetch";
+
+            pl = "pull";
+
+            ps = "push";
+            psf = "ps --force-with-lease";
 
             # Fixup and autosquash
-            cfes = "!f() { git cf \"$1\" && git es \"$1\"^; }; f";
+            cmfrbi = "!f() { git cmf \"$1\" && git rbi \"$1\"^; }; f";
 
             # Search for a string across all commit messages output
             grm = "!f() { git lo --color=always | grep --ignore-case \"$1\" --context=2 --color=always; }; f";
 
             # Search for a string across all commits in the repository
-            gri = "!git rev-list --all | xargs git grep -F";
+            grc = "!git rev-list --all | xargs git grep -F";
           }
           // lib.optionalAttrs modules.programs.fzf.enable {
-            fzow = "!f() { line=$(git lop | fzf --ansi --no-sort) || exit; set -- $line; git show $1; }; f";
-            fzcfes = "!f() { line=$(git lop --max-count=35 | fzf --ansi --no-sort) || exit; set -- $line; git cfes $1; }; f";
+            fzsw = "!f() { line=$(git lonc | fzf --ansi --no-sort) || exit; set -- $line; git sw $1; }; f";
+            fzcmfrbi = "!f() { line=$(git lonc --max-count=35 | fzf --ansi --no-sort) || exit; set -- $line; git cmfrbi $1; }; f";
           };
 
           url = {
