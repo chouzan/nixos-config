@@ -90,12 +90,6 @@ in
     };
 
     optimise.automatic = true;
-
-    gc = {
-      automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than=30d";
-    };
   };
 
   systemd.tmpfiles.rules = [ "D /nix/var/nix/builds 0755 root root 0 -" ];
