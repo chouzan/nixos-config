@@ -78,8 +78,6 @@ in
 
       build-dir = "/nix/var/nix/builds";
 
-      auto-optimise-store = true;
-
       # Auto-cleanup store when free space falls below 10 GiB
       min-free = 10 * 1024 * 1024 * 1024;
 
@@ -90,6 +88,8 @@ in
       trusted-substituters = map mkUrl caches;
       trusted-public-keys = map mkKey caches;
     };
+
+    optimise.automatic = true;
 
     gc = {
       automatic = true;
