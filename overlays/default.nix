@@ -18,5 +18,6 @@
   (import ./claude-code.nix { })
   (import ./claude-desktop.nix { inherit inputs system; })
   (import ./elixir-expert.nix { inherit inputs system; })
+  (import ./less.nix { inherit inputs system; })
   (import ./mcp-proxy.nix { inherit inputs; })
 ]
