@@ -31,14 +31,14 @@
         name = "zed-nixos";
         "match:class" = "dev.zed.Zed";
         "match:title" = "nixos";
-        workspace = "special:terminal silent";
+        workspace = "special:system silent";
       }
 
       {
         name = "kitty-btop";
         "match:class" = "kitty";
         "match:title" = "btop";
-        workspace = "special:terminal silent";
+        workspace = "special:system silent";
       }
 
       {

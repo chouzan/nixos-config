@@ -14,7 +14,7 @@ let
   hypUtils = hyprland.utils;
 
   extraWorkspace = [
-    "special:terminal, on-created-empty:kitty"
+    "special:system, on-created-empty:kitty"
   ];
 
   enabledMonitors = utils.getEnabledMonitors modules.monitors;
@@ -56,7 +56,7 @@ in
         "waybar &"
         "hyprpaper &"
         "$editor"
-        "[workspace special:terminal silent] $terminal --hold btop"
+        "[workspace special:system silent] $terminal --hold btop"
         "[workspace name:primary silent] $terminal"
         "[workspace name:primary silent] $webBrowser"
         "[workspace name:auxiliary silent] $ai"

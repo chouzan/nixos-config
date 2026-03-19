@@ -2,26 +2,44 @@
   osConfig,
   config,
   lib,
+  pkgs,
   ...
 }:
 
 let
   inherit (config.xdg) userDirs;
   cfg = osConfig.modules.desktop.hyprland;
+
+  hyprctl = "${pkgs.hyprland}/bin/hyprctl";
+  jq = "${pkgs.jq}/bin/jq";
+
+  hypr-toggle-focus-layer = pkgs.writeShellScript "hypr-toggle-focus-layer" ''
+    if ${hyprctl} activewindow -j | ${jq} -e '.floating' > /dev/null; then
+      ${hyprctl} dispatch focuswindow tiled
+    else
+      ${hyprctl} dispatch focuswindow floating
+    fi
+  '';
 in
 {
   config = lib.mkIf cfg.enable {
     wayland.windowManager.hyprland.settings = {
+      # Focus, navigate, launch
       "$mainMod" = "SUPER";
-      "$ctrlMod" = "$mainMod CTRL";
-      "$altMod" = "$mainMod ALT";
-      "$shiftMod" = "$mainMod SHIFT";
-      "$altCtrlMod" = "$ctrlMod ALT";
-      "$shiftCtrlMod" = "$ctrlMod SHIFT";
-      "$shiftAltMod" = "$altMod SHIFT";
-      "$hyperMod" = "$mainMod CTRL ALT SHIFT";
 
-      # Bind flags
+      # Swap/move window
+      "$shiftMod" = "$mainMod SHIFT";
+
+      # Alter window/layout
+      "$altMod" = "$mainMod ALT";
+
+      # Resize window
+      "$ctrlMod" = "$mainMod CTRL";
+
+      # Special mod
+      "$hyperMod" = "$mainMod SHIFT CTRL ALT";
+
+      # -- Bind flags ----------------------------------------------------------
       # c  Click             Will trigger on release of a key or button as long as the mouse cursor stays inside `binds:drag_threshold`
       # d  Has description   Will allow you to write a description for your bind
       # e  Repeat            Will repeat when held
@@ -45,6 +63,8 @@ in
           "$mainMod, W, killactive,"
           "$mainMod, Q, forcekillactive,"
 
+          # -- Launchers -------------------------------------------------------
+
           "$mainMod, A, exec, $menu"
           "$mainMod, E, exec, $fileManager"
           "$mainMod, T, exec, $terminal"
@@ -52,6 +72,8 @@ in
           "$mainMod, I, exec, $ai"
           "$mainMod, B, exec, $webBrowser"
           "$mainMod, U, exec, $musicPlayer"
+
+          # -- Screenshots -----------------------------------------------------
 
           ''
             , Print, exec, grim -g "$(slurp -doc '##ff0000ff')" -t png -\
@@ -66,91 +88,85 @@ in
             | satty --filename - --output-filename ${userDirs.pictures}/Screenshot/$(date '+%Y%m%d%H%M%S')_screenshot.png
           ''
 
+          # -- Window state ----------------------------------------------------
+
           "$mainMod, RETURN, fullscreen, 1"
           "$altMod, RETURN, fullscreen, 0"
 
           "$mainMod, F, togglefloating, active"
+          "$mainMod, P, pin, active"
+
+          # -- Focus -----------------------------------------------------------
 
           "$mainMod, left, movefocus, l"
           "$mainMod, down, movefocus, d"
           "$mainMod, up, movefocus, u"
           "$mainMod, right, movefocus, r"
 
-          #########################
-          # Switch workspace to
+          # Toggle focus between tiled/floating
+          "$mainMod, Tab, exec, ${hypr-toggle-focus-layer}"
 
-          "$shiftAltMod, 1, workspace, name:primary"
-          "$shiftAltMod, 2, workspace, name:auxiliary"
-          "$shiftAltMod, 3, workspace, name:other"
-          # "$shiftAltMod, 1, workspace, 1"
-          # "$shiftAltMod, 2, workspace, 2"
-          # "$shiftAltMod, 3, workspace, 3"
+          # -- Move window -----------------------------------------------------
 
-          # Switch workspace to end
-          #########################
+          "$shiftMod, left, movewindow, l"
+          "$shiftMod, down, movewindow, d"
+          "$shiftMod, up, movewindow, u"
+          "$shiftMod, right, movewindow, r"
 
-          ####################
-          # Move window to
+          # -- Move window to workspace ----------------------------------------
 
-          "$shiftCtrlMod, 1, movetoworkspace, name:primary"
-          "$shiftCtrlMod, 2, movetoworkspace, name:auxiliary"
-          "$shiftCtrlMod, 3, movetoworkspace, name:other"
-          # "$shiftCtrlMod, 1, movetoworkspace, 1"
-          # "$shiftCtrlMod, 2, movetoworkspace, 2"
-          # "$shiftCtrlMod, 3, movetoworkspace, 3"
+          "$shiftMod, 1, movetoworkspace, name:primary"
+          "$shiftMod, 2, movetoworkspace, name:auxiliary"
+          "$shiftMod, 3, movetoworkspace, name:other"
 
-          # Move window to end
-          ####################
+          # -- Switch workspace ------------------------------------------------
 
-          ########################
-          # Special workspace
+          "$mainMod, 1, workspace, name:primary"
+          "$mainMod, 2, workspace, name:auxiliary"
+          "$mainMod, 3, workspace, name:other"
 
-          "$mainMod, S, togglespecialworkspace, terminal"
-          "$shiftCtrlMod, S, movetoworkspace, special:terminal"
+          # -- Special workspace -----------------------------------------------
 
-          # Special workspaces end
-          ########################
+          "$mainMod, S, togglespecialworkspace, system"
 
-          # Scroll through existing workspaces with mainMod + scroll
-          # "$mainMod, mouse_down, workspace, e+1"
-          # "$mainMod, mouse_up, workspace, e-1"
+          "$shiftMod, S, movetoworkspace, special:system"
 
-          #########################
-          # Master layout binds
+          # -- Master layout ---------------------------------------------------
 
-          "$ctrlMod, RETURN, layoutmsg, focusmaster master"
+          "$mainMod, RETURN, layoutmsg, focusmaster master"
 
           "$shiftMod, RETURN, layoutmsg, swapwithmaster master"
 
           "$altMod, H, layoutmsg, orientationleft"
           "$altMod, J, layoutmsg, orientationcenter"
-          "$altMod, SPACE, layoutmsg, orientationcycle left center"
+          "$altMod, Tab, layoutmsg, orientationcycle left center"
 
           "$altMod, 1, layoutmsg, mfact exact 0.382" # Inverse golden ratio
           "$altMod, 2, layoutmsg, mfact exact 0.414" # Silver ratio
           "$altMod, 3, layoutmsg, mfact exact 0.45" # More usable sides
           "$altMod, 4, layoutmsg, mfact exact 0.55" # Simple 50/50
           "$altMod, 5, layoutmsg, mfact exact 0.618" # Golden ratio
-
-          # Master layout binds end
-          #########################
-
-          ##########################
-          # Dwindle layout binds
-
-          "$mainMod, P, pseudo,"
-
-          "$altMod, J, layoutmsg, togglesplit"
-          "$altMod, K, layoutmsg, togglesplit"
-
-          # Dwindle layout binds end
-          ##########################
         ]
 
         # Clipboard manager
         (lib.mkIf config.services.clipse.enable [
           "$mainMod, V, exec, $terminal --class clipse --execute clipse"
         ])
+      ];
+
+      # -- Move/resize window (floating) ---------------------------------------
+
+      binde = [
+
+        "$altMod, left, moveactive, -50 0"
+        "$altMod, right, moveactive, 50 0"
+        "$altMod, up, moveactive, 0 -50"
+        "$altMod, down, moveactive, 0 50"
+
+        "$ctrlMod, left, resizeactive, -50 0"
+        "$ctrlMod, right, resizeactive, 50 0"
+        "$ctrlMod, up, resizeactive, 0 -50"
+        "$ctrlMod, down, resizeactive, 0 50"
       ];
 
       bindl = [
