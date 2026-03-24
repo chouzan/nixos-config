@@ -90,7 +90,7 @@ in
 
           # -- Window state ----------------------------------------------------
 
-          "$mainMod, RETURN, fullscreen, 1"
+          "$ctrlMod, RETURN, fullscreen, 1"
           "$altMod, RETURN, fullscreen, 0"
 
           "$mainMod, F, togglefloating, active"
