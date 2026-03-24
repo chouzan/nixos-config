@@ -98,6 +98,11 @@ in
           (context "Editor && vim_mode == normal" "pane::CloseActiveItem")
         ])
 
+        (bindNormal "space p f n" "workspace::NewFile")
+        (bindNormal "space p f c" "project_panel::Duplicate")
+        (bindNormal "space p f r" "project_panel::Rename")
+        (bindNormal "space p f d" "project_panel::Delete")
+
         (bindNormal "space p s h" "pane::SplitLeft")
         (bindNormal "space p s j" "pane::SplitDown")
         (bindNormal "space p s k" "pane::SplitUp")
