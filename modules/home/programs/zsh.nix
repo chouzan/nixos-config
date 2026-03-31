@@ -18,6 +18,7 @@ in
     programs = {
       zsh = {
         enable = true;
+        autocd = true;
 
         # TODO: remove when upgrading home-manager
         # to version = > 26.05 (default behaviour)
@@ -84,6 +85,18 @@ in
             zshZSettings
             zshZvmEnv
           ];
+
+        history = {
+          size = 50000;
+          save = 50000;
+          share = true;
+          extended = true;
+          ignoreSpace = true;
+          ignoreDups = true;
+          saveNoDups = true;
+          findNoDups = true;
+          expireDuplicatesFirst = true;
+        };
       };
     };
   };
