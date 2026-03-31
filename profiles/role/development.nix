@@ -12,6 +12,7 @@ in
     };
 
     programs = {
+      starship.enable = utils.mkProfileDefault true;
       git.enable = utils.mkProfileDefault true;
       gh.enable = utils.mkProfileDefault true;
       ripgrep.enable = utils.mkProfileDefault true;

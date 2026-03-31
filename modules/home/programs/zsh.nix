@@ -85,12 +85,6 @@ in
             zshZvmEnv
           ];
       };
-
-      starship = {
-        enable = true;
-        enableZshIntegration = true;
-        settings = fromTOML (builtins.readFile ./starship-settings.toml);
-      };
     };
   };
 }

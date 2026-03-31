@@ -3,6 +3,7 @@
 {
   options.modules.programs = {
     zsh.enable = lib.mkEnableOption "Zsh shell with custom configuration";
+    starship.enable = lib.mkEnableOption "Starship cross-shell prompt";
     vim.enable = lib.mkEnableOption "Vim text editor";
     git.enable = lib.mkEnableOption "Git version control with custom configuration";
     gh.enable = lib.mkEnableOption "GitHub CLI tool";

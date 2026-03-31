@@ -3,6 +3,7 @@
 {
   imports = [
     ./zsh.nix
+    ./starship
     ./git.nix
     ./gh.nix
     ./ripgrep.nix
