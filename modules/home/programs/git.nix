@@ -1,4 +1,5 @@
 # TODO: Make git GPG sign settings configurable
+# Add %G? to --pretty=format for GPG signature status
 
 {
   osConfig,
@@ -41,6 +42,8 @@ in
           # NOTE: Uncomment for signed commits
           # commit.gpgSign = true;
 
+          fetch.prune = true;
+
           pull.rebase = true;
 
           push = {
@@ -63,7 +66,11 @@ in
           rerere.enabled = true;
           help.autoCorrect = "prompt";
 
-          core.hooksPath = "${config.xdg.configHome}/git/hooks";
+          core = {
+            autocrlf = "input";
+            hooksPath = "${config.xdg.configHome}/git/hooks";
+            whitespace = "tab-in-indent,incomplete-line";
+          };
 
           alias = {
             st = "status";
@@ -74,41 +81,51 @@ in
             stv = "st --verbose";
             stvv = "st -vv";
 
-            sw = "show";
+            so = "show";
+
+            sw = "switch";
+            swc = "sw --create";
 
             di = "diff";
             dit = "di --stat";
             dif = "di --function-context";
             dic = "di --color-moved=dimmed-zebra";
-            dig = "di --staged";
-            digt = "dig --stat";
-            digf = "dig --function-context";
-            digc = "dig --color-moved=dimmed-zebra";
+            din = "di --name-only";
+            dis = "di --staged";
+            dist = "dis --stat";
+            disf = "dis --function-context";
+            disc = "dis --color-moved=dimmed-zebra";
             dih = "di HEAD";
             diuh = "di @{upstream}...HEAD";
 
-            lo = "log --graph --pretty=format:'%C(yellow)%h%Creset%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'";
+            lo = "log --graph --pretty=format:'%C(auto)%h%C(reset)%C(auto)%d%C(reset) %s %C(dim cyan)(%cr)%C(reset) %C(dim blue)<%an>%C(reset)'";
+            loa = "lo --all";
             lonc = "!git --no-pager lo --no-graph --color=always";
             loht = "log -1 HEAD --stat";
 
             ad = "add";
+            adp = "ad --patch";
             ada = "ad --all";
 
             sh = "stash";
-            shp = "sh pop";
             shl = "sh list";
             shs = "sh show";
+            shp = "sh pop";
+            sha = "sh apply";
             shd = "sh drop";
 
             cm = "commit";
             cmm = "cm --message";
             cmf = "cm --fixup";
-            cman = "cm --amend --no-edit";
+            cma = "cm --amend";
+            cman = "cma --no-edit";
 
             rs = "reset";
-            rsh = "rs HEAD --";
+            rsf = "rs HEAD --";
+            rsh = "rs --soft HEAD^";
 
             br = "branch";
+            bra = "br --all";
             brd = "br --delete";
             brdf = "brd --force";
 
@@ -142,10 +159,13 @@ in
             grm = "!f() { git lo --color=always | grep --ignore-case \"$1\" --context=2 --color=always; }; f";
 
             # Search for a string across all commits in the repository
-            grc = "!git rev-list --all | xargs git grep -F";
+            grc = "!git rev-list --all | xargs git grep --fixed-strings";
+
+            wip = "cm --all --message 'WIP' --no-verify";
+            cleanup = "!git branch --merged | grep --extended-regexp --invert-match '\\*|master|main|develop' | xargs -n 1 git branch -d";
           }
           // lib.optionalAttrs modules.programs.fzf.enable {
-            fzsw = "!f() { line=$(git lonc | fzf --ansi --no-sort) || exit; set -- $line; git sw $1; }; f";
+            fzso = "!f() { line=$(git lonc | fzf --ansi --no-sort) || exit; set -- $line; git so $1; }; f";
             fzcmfrbi = "!f() { line=$(git lonc --max-count=35 | fzf --ansi --no-sort) || exit; set -- $line; git cmfrbi $1; }; f";
           };
 
@@ -165,6 +185,37 @@ in
           line-numbers = true;
           side-by-side = true;
           dark = true;
+
+          hyperlinks = true;
+          hyperlinks-file-link-format = "zed://file/{path}:{line}";
+
+          whitespace-error-style = "reverse red";
+
+          syntax-theme = "gruvbox-dark";
+
+          commit-style = "raw";
+          commit-decoration-style = "bold yellow box ul";
+
+          file-style = "yellow";
+          file-decoration-style = "bold blue box ul";
+
+          hunk-header-style = "file line-number syntax";
+          hunk-header-file-style = "cyan";
+          hunk-header-line-number-style = "cyan";
+          hunk-header-decoration-style = "blue box";
+
+          line-numbers-left-format = "┊{nm:>4}┊";
+          line-numbers-right-format = "│{np:>4}│";
+          line-numbers-left-style = "blue";
+          line-numbers-right-style = "blue";
+          line-numbers-minus-style = "red";
+          line-numbers-plus-style = "green";
+          line-numbers-zero-style = "brightblack";
+
+          # merge-conflict-begin-symbol = "⌃";
+          # merge-conflict-end-symbol = "⌄";
+          merge-conflict-ours-diff-header-style = "bold yellow";
+          merge-conflict-theirs-diff-header-style = "bold yellow";
         };
       };
 
@@ -202,7 +253,7 @@ in
     xdg.configFile."git/hooks/pre-commit" = {
       text = ''
         #!/usr/bin/env sh
-        if git diff --cached --diff-filter=ACM | grep -qE '^[+].*(<<<<<<|======|>>>>>>)'; then
+        if git diff --cached --diff-filter=ACM | grep --extended-regexp --quiet '^[+].*(<<<<<<|======|>>>>>>)'; then
           echo "Error: Conflict markers found in staged files"
           exit 1
         fi
