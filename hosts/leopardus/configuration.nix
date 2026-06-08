@@ -60,7 +60,11 @@
 
     (pkgs.writeScriptBin "menu" (builtins.readFile ../../scripts/installer/menu.sh))
     (pkgs.writeScriptBin "help" (builtins.readFile ../../scripts/installer/help.sh))
-    (pkgs.writeScriptBin "manual-partition" (builtins.readFile ../../scripts/installer/manual-partition.sh))
+
+    (pkgs.writeScriptBin "manual-partition" (
+      builtins.readFile ../../scripts/installer/manual-partition.sh
+    ))
+
     (pkgs.writeScriptBin "welcome" (builtins.readFile ../../scripts/installer/welcome.sh))
   ];
 

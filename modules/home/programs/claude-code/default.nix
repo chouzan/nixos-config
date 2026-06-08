@@ -1,9 +1,4 @@
-{
-  osConfig,
-  lib,
-  pkgs,
-  ...
-}:
+{ osConfig, lib, ... }:
 
 let
   cfg = osConfig.modules.programs.claude-code;
@@ -45,10 +40,6 @@ in
 
   config = lib.mkIf cfg.enable {
     home.file = skillFiles // agentFiles;
-
-    programs.claude-code = {
-      enable = true;
-      package = pkgs.claude-code-bun;
-    };
+    programs.claude-code.enable = true;
   };
 }

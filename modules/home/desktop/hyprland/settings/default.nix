@@ -46,6 +46,8 @@ in
           "$webBrowser" = "firefox";
           "$musicPlayer" = "spotify";
 
+          xwayland.force_zero_scaling = true;
+
           env = [
             "HYPRCURSOR_THEME,Nordzy-hyprcursors"
             "HYPRCURSOR_SIZE,24"
@@ -53,17 +55,27 @@ in
             "XCURSOR_SIZE,24"
           ];
 
-          exec-once = [
-            "nm-applet &"
-            "waybar &"
-            "hyprpaper &"
-            "$editor"
-            "[workspace special:system silent] $terminal --hold btop"
-            "[workspace name:primary silent] $terminal"
-            "[workspace name:primary silent] $webBrowser"
-            "[workspace name:auxiliary silent] $ai"
-            "[workspace name:auxiliary silent] $musicPlayer"
-          ];
+          # TODO: aquamarine page-flip race (aquamarine#240, fix in PR#312).
+          # Initial DRM commit fails with "Cannot commit when a page-flip is
+          # awaiting" and doesn't retry. A subsequent modeset retries and succeeds.
+          # Trigger a re-modeset after startup by briefly switching refresh rate.
+          exec-once =
+            lib.map (
+              m:
+              "sleep 7 && hyprctl keyword monitor ${m.name},preferred,auto,${toString m.scale}"
+              + " && hyprctl keyword monitor ${hypUtils.toHyprlandMonitor m}"
+            ) enabledMonitors
+            ++ [
+              "nm-applet &"
+              "waybar &"
+              "hyprpaper &"
+              "$editor"
+              "[workspace special:system silent] $terminal --hold btop"
+              "[workspace name:primary silent] $terminal"
+              "[workspace name:primary silent] $webBrowser"
+              "[workspace name:auxiliary silent] $ai"
+              "[workspace name:auxiliary silent] $musicPlayer"
+            ];
 
           general = {
             # TODO: Cleanup

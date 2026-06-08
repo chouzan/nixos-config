@@ -25,21 +25,20 @@ in
                   place monitors higher and positive Y values place them lower.
                   Coordinates can be negative (e.g., `"0x-1080"` places monitor above origin).
 
-                  Available Hyprland-specific positioning options:
+                  Available positioning options:
                   - Coordinates: `"1920x0"`, `"0x-1080"` (relative to other monitors)
-                  - `"auto"`: Automatically place to the right of existing monitors
-                  - `"auto-left/right/up/down"`: Place in specific direction relative to
-                    others, also based on each monitor's top left corner as the root
-                  - `"auto-center-right/left/up/down"`: Place in specific direction relative
-                    to others, but calculate placement from each monitor's center rather than its top left corner
+                  - `"auto"`: Place to the right of existing monitors
+                  - `"auto-left/right/up/down"`: Place in a specific direction,
+                    using each monitor's top left corner as the root
+                  - `"auto-center-right/left/up/down"`: Place in a specific direction,
+                    using each monitor's center as the root
 
                   Position is calculated using scaled resolution after transformations.
-
-                  Note: The first monitor will always be positioned at `(0,0)`
+                  The first monitor is always positioned at `(0,0)`.
                 '';
               };
 
-              rotate = lib.mkOption {
+              transform = lib.mkOption {
                 type = types.enum [
                   0
                   1
@@ -54,7 +53,7 @@ in
                 default = 0;
 
                 description = ''
-                  Monitor rotation.
+                  Monitor rotation and flip transform.
 
                   - `0`: Normal (no transform)
                   - `1`: 90° clockwise
@@ -71,32 +70,63 @@ in
                 type = types.nullOr types.str;
                 default = null;
                 example = "eDP-1";
-                description = ''Mirror the specified monitor to this monitor (e.g., `"eDP-1"`)'';
+
+                description = ''
+                  Mirror the specified monitor to this monitor.
+
+                  Mirroring does not re-render at the target's resolution;
+                  aspect ratio differences will cause stretching.
+                '';
               };
 
-              colour = lib.mkOption {
+              bitdepth = lib.mkOption {
                 type = types.enum [
-                  "auto"
+                  8
+                  10
+                ];
+
+                default = 8;
+
+                description = ''
+                  Color bit depth per channel.
+
+                  - `8` : Standard 8-bit (XRGB8888)
+                  - `10`: 10-bit (XRGB2101010) -- smoother gradients, less banding
+
+                  Note: Border colors and some screen capture tools do not support 10-bit.
+                '';
+              };
+
+              cm = lib.mkOption {
+                type = types.enum [
                   "srgb"
+                  "auto"
+                  "dcip3"
+                  "dp3"
+                  "adobe"
                   "wide"
                   "edid"
                   "hdr"
                   "hdredid"
                 ];
 
-                default = "auto";
+                default = "srgb";
                 example = "wide";
 
                 description = ''
-                  Color management presets.
+                  Color management preset.
 
-                  ### Options
-                  - `"auto"`    : sRGB for 8bpc, wide for 10bpc if supported (recommended)
                   - `"srgb"`    : sRGB primaries (default)
+                  - `"auto"`    : sRGB for 8bpc, wide for 10bpc if supported
+                  - `"dcip3"`   : DCI P3 primaries
+                  - `"dp3"`     : Apple Display P3 primaries
+                  - `"adobe"`   : Adobe RGB primaries
                   - `"wide"`    : Wide color gamut, BT2020 primaries
-                  - `"edid"`    : Primaries from edid (known to be inaccurate)
-                  - `"hdr"`     : Wide color gamut and HDR PQ transfer function (experimental)
-                  - `"hdredid"` : Same as hdr with edid primaries (experimental)
+                  - `"edid"`    : Primaries from EDID (known to be inaccurate)
+                  - `"hdr"`     : Wide gamut + HDR PQ transfer function (experimental)
+                  - `"hdredid"` : Same as `"hdr"` with EDID primaries (experimental)
+
+                  Fullscreen HDR is possible without `"hdr"` if `render:cm_auto_hdr` is enabled.
                 '';
               };
 
@@ -111,7 +141,7 @@ in
                 default = 0;
 
                 description = ''
-                  Variable Refresh Rate (VRR) setting.
+                  Variable Refresh Rate (VRR).
 
                   - `0`: Off
                   - `1`: On
@@ -123,13 +153,11 @@ in
               workspace = lib.mkOption {
                 type = types.nullOr types.str;
                 default = null;
-                example = "1";
+                example = "primary";
 
                 description = ''
                   Default workspace to assign to this monitor.
-
-                  Maps to Hyprland's workspace assignment for monitors.
-                  Examples: `"1"`, `"main"`, `"web"`, `"dev"`
+                  Examples: `"1"`, `"primary"`, `"web"`, `"dev"`
                 '';
               };
             };

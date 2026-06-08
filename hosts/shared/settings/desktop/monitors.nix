@@ -12,7 +12,12 @@
         position = "0x0";
         # scale = 1;
         scale = 1.07;
-        hyprland.workspace = "primary";
+
+        hyprland = {
+          workspace = "primary";
+          bitdepth = 10;
+          cm = "srgb";
+        };
       }
 
       {

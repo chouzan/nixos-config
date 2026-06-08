@@ -3,6 +3,49 @@
 let
   getEnabledMonitors = monitors: lib.filter (m: !m.disabled) monitors;
 
+  # Overlay that guards against a broken upstream package. Evaluates
+  # `isBroken pkg` at eval time -- if true, calls `fallback pkg` (the
+  # caller decides the response). Once upstream is fixed, uses it
+  # automatically and prints a trace warning to remove the overlay.
+  #
+  # Args:
+  #   pname           -- nixpkgs attribute name
+  #   isBroken        -- pkg -> bool, detection logic
+  #   fallback        -- pkg -> drv, what to use when broken
+  #   overlayLocation -- optional string shown in the trace message
+  #
+  #   mkPackageGuardOverlay {
+  #     pname = "kitty";
+  #     overlayLocation = "overlays/default.nix";
+  #     isBroken = pkg: builtins.readFile "${pkg}/path/to/file" == "";
+  #     fallback = pkg: pkg.overrideAttrs (old: { ... });
+  #   }
+  mkPackageGuardOverlay =
+    {
+      pname,
+      isBroken,
+      fallback,
+      overlayLocation ? null,
+    }:
+    (
+      _final: prev:
+      let
+        pkg = prev.${pname};
+        hint = lib.optionalString (overlayLocation != null) " in ${overlayLocation}";
+      in
+      {
+        ${pname} =
+          if isBroken pkg then
+            fallback pkg
+          else
+            builtins.trace "${pname}: upstream is FIXED. Remove its guard overlay${hint}." pkg;
+      }
+    );
+
+  # Strips SemVer build metadata (everything after `+`) from a version string.
+  # Flake packages often have versions like "0.55.3+date=2026-06-07_abc123".
+  stripVersionMeta = version: builtins.head (builtins.split "\\+" version);
+
   orIfNull = fallback: value: if value != null then value else fallback;
   orIfEmpty = fallback: value: if value != [ ] then value else fallback;
 
@@ -29,9 +72,11 @@ in
     getEnabledMonitors
     mkHostDefault
     mkModuleDefault
+    mkPackageGuardOverlay
     mkProfileDefault
     orIfEmpty
     orIfNull
     orUnless
+    stripVersionMeta
     ;
 }

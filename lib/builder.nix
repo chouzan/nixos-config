@@ -1,4 +1,4 @@
-{ lib }:
+{ lib, libs }:
 
 let
   defaultMachine = {
@@ -33,7 +33,6 @@ let
     }:
     let
       machine = { inherit hostName user; };
-      libs = import ./. { inherit lib; };
     in
     lib.nixosSystem {
       specialArgs = { inherit inputs machine libs; };

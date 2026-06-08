@@ -12,20 +12,20 @@ let
       hyprlandOpts = monitor.hyprland;
 
       optionalArgs =
-        lib.optional (hyprlandOpts.rotate != 0) "transform, ${toString hyprlandOpts.rotate}"
+        lib.optional (hyprlandOpts.transform != 0) "transform, ${toString hyprlandOpts.transform}"
         ++ lib.optional (hyprlandOpts.mirror != null) "mirror, ${hyprlandOpts.mirror}"
-        ++ lib.optional (hyprlandOpts.vrr != 0) "vrr, ${toString hyprlandOpts.vrr}"
-        ++ lib.optional (hyprlandOpts.colour != "auto") "cm, ${hyprlandOpts.colour}";
+        ++ lib.optional (hyprlandOpts.bitdepth != 8) "bitdepth, ${toString hyprlandOpts.bitdepth}"
+        ++ lib.optional (hyprlandOpts.cm != "srgb") "cm, ${hyprlandOpts.cm}"
+        ++ lib.optional (hyprlandOpts.vrr != 0) "vrr, ${toString hyprlandOpts.vrr}";
 
-      extraArgs = lib.concatStringsSep ", " optionalArgs;
+      base = [
+        name
+        resolution
+        position
+        scale
+      ];
     in
-    lib.concatStringsSep ", " [
-      name
-      resolution
-      position
-      scale
-      extraArgs
-    ];
+    lib.concatStringsSep ", " (base ++ optionalArgs);
 
   getWorkspaceAssignments =
     monitors:

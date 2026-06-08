@@ -37,7 +37,7 @@
     };
 
     hyprland = {
-      url = "github:hyprwm/Hyprland/v0.53.0";
+      url = "github:hyprwm/Hyprland/v0.55.3";
 
       inputs = {
         nixpkgs.follows = "nixpkgs";
@@ -61,7 +61,10 @@
         nixpkgs.follows = "nixpkgs";
         systems.follows = "systems";
         hyprutils.follows = "hyprutils";
-        hyprland-qt-support.follows = "hyprland-qt-support";
+        hyprlang.follows = "hyprlang";
+        hyprgraphics.follows = "hyprgraphics";
+        aquamarine.follows = "aquamarine";
+        hyprtoolkit.follows = "hyprtoolkit";
       };
     };
 
@@ -108,7 +111,7 @@
     };
 
     hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins/v0.53.0";
+      url = "github:hyprwm/hyprland-plugins/v0.55.0";
 
       inputs = {
         nixpkgs.follows = "nixpkgs";
@@ -288,16 +291,6 @@
       };
     };
 
-    hyprland-qt-support = {
-      url = "github:hyprwm/hyprland-qt-support";
-
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        systems.follows = "systems";
-        hyprlang.follows = "hyprlang";
-      };
-    };
-
     git-hooks = {
       url = "github:cachix/git-hooks.nix";
 
@@ -321,8 +314,13 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
-      overlays = import ./overlays { inherit inputs system; };
-      builder = import ./lib/builder.nix { inherit (nixpkgs) lib; };
+      libs = import ./lib { inherit (nixpkgs) lib; };
+      overlays = import ./overlays { inherit inputs system libs; };
+
+      builder = import ./lib/builder.nix {
+        inherit (nixpkgs) lib;
+        inherit libs;
+      };
 
       mkUser = username: {
         inherit username;

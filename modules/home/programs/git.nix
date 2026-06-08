@@ -223,19 +223,19 @@ in
         enable = true;
         enableDefaultConfig = false;
 
-        matchBlocks = {
+        settings = {
           "github.com" = {
-            hostname = "github.com";
-            user = "git";
-            identityFile = "~/.ssh/id_ed25519";
-            addKeysToAgent = "confirm";
+            HostName = "github.com";
+            User = "git";
+            IdentityFile = "~/.ssh/id_ed25519";
+            AddKeysToAgent = "confirm";
           };
 
           "gitlab.com" = {
-            hostname = "gitlab.com";
-            user = "git";
-            identityFile = "~/.ssh/id_ed25519";
-            addKeysToAgent = "confirm";
+            HostName = "gitlab.com";
+            User = "git";
+            IdentityFile = "~/.ssh/id_ed25519";
+            AddKeysToAgent = "confirm";
           };
         };
       };
