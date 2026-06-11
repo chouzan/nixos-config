@@ -48,16 +48,16 @@ in
   })
 
   # aquamarine#240: initial DRM commit drops page-flip with no retry.
-  # Fix: aquamarine PR#312. Workaround: exec-once re-modeset in
-  # modules/home/desktop/hyprland/settings/default.nix.
-  # Remove both this overlay and that workaround once the fix ships.
+  # Fix: aquamarine PR#312. Workaround: re-modeset in settings/default.nix
+  # and hypridle.nix. grep "TODO.*WORKAROUND.*aquamarine" to find all sites.
+  # Remove this overlay and all workaround markers once the fix ships.
   (_final: prev: {
     hyprland =
       let
         inherit (libs) utils;
       in
       if builtins.compareVersions (utils.stripVersionMeta prev.hyprland.version) "0.55.3" > 0 then
-        builtins.trace "hyprland: >0.55.3 detected. Test if page-flip workaround (aquamarine PR#312) is still needed. Remove exec-once in modules/home/desktop/hyprland/settings/default.nix and this overlay if fixed." prev.hyprland
+        builtins.trace "hyprland: >0.55.3 detected. Test if page-flip workaround (aquamarine PR#312) is still needed. Run: grep -rn 'TODO.*WORKAROUND.*aquamarine' modules/ overlays/" prev.hyprland
       else
         prev.hyprland;
   })
