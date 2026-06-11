@@ -17,6 +17,10 @@ let
   cfg = modules.programs.git;
 in
 {
+  imports = [
+    ./hooks
+  ];
+
   config = lib.mkIf cfg.enable {
     programs = {
       git = {
@@ -248,18 +252,6 @@ in
       enableSshSupport = true;
       enableZshIntegration = modules.programs.zsh.enable;
       pinentry.package = pkgs.pinentry-rofi;
-    };
-
-    xdg.configFile."git/hooks/pre-commit" = {
-      text = ''
-        #!/usr/bin/env sh
-        if git diff --cached --diff-filter=ACM | grep --extended-regexp --quiet '^[+].*(<<<<<<|======|>>>>>>)'; then
-          echo "Error: Conflict markers found in staged files"
-          exit 1
-        fi
-      '';
-
-      executable = true;
     };
   };
 }

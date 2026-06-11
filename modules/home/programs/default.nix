@@ -4,7 +4,7 @@
   imports = [
     ./zsh.nix
     ./starship
-    ./git.nix
+    ./git
     ./gh.nix
     ./ripgrep.nix
     ./bat.nix
