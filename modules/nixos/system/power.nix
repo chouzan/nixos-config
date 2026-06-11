@@ -1,7 +1,13 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  libs,
+  ...
+}:
 
 let
   inherit (config) modules;
+  inherit (libs) utils;
 in
 {
   config = lib.mkMerge [
@@ -9,7 +15,7 @@ in
       services.logind.settings.Login.HandlePowerKey = "suspend";
 
       powerManagement = {
-        enable = true;
+        enable = utils.mkModuleDefault true;
 
         # TODO: Explore split settings between desktop and laptop
         cpuFreqGovernor = "schedutil";

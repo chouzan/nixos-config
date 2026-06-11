@@ -1,5 +1,8 @@
-{ ... }:
+{ libs, ... }:
 
+let
+  inherit (libs) utils;
+in
 {
   imports = [
     ./boot
@@ -19,9 +22,9 @@
 
   services = {
     # Firmware updates for hardware devices
-    fwupd.enable = true;
+    fwupd.enable = utils.mkModuleDefault true;
 
     # System clock synchronization via NTP (systemd daemon)
-    timesyncd.enable = true;
+    timesyncd.enable = utils.mkModuleDefault true;
   };
 }

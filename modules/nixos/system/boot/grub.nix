@@ -1,8 +1,11 @@
-{ ... }:
+{ libs, ... }:
 
+let
+  inherit (libs) utils;
+in
 {
   boot.loader.grub = {
-    enable = true;
+    enable = utils.mkModuleDefault true;
 
     # UEFI
     efiSupport = true;

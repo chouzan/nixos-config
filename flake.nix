@@ -31,6 +31,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -346,6 +351,10 @@
           homeManager = false;
           aliases = [ "installer" ];
         };
+
+        otocolobus = mkMachine {
+          aliases = [ "wsl" ];
+        };
       };
 
       extraModules = with inputs; [
@@ -367,6 +376,7 @@
 
       packages.${system} = {
         installer = self.nixosConfigurations.installer.config.system.build.isoImage;
+        wsl = self.nixosConfigurations.wsl.config.system.build.tarballBuilder;
       };
 
       formatter.${system} = inputs.treefmt-nix.lib.mkWrapper pkgs {

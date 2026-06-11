@@ -1,5 +1,13 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  libs,
+  ...
+}:
 
+let
+  inherit (libs) utils;
+in
 {
   imports = [
     ./grub.nix
@@ -37,6 +45,6 @@
 
     # Splash screen
 
-    plymouth.enable = true;
+    plymouth.enable = utils.mkModuleDefault true;
   };
 }
