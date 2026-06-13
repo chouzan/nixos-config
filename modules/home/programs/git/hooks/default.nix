@@ -15,6 +15,7 @@ in
 
         repo_hook="$(git rev-parse --show-toplevel 2>/dev/null)/.githooks/pre-commit"
         [ -x "$repo_hook" ] && exec "$repo_hook"
+        exit 0
       '';
 
       executable = true;
