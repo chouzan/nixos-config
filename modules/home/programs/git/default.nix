@@ -33,10 +33,29 @@ in
             email = user.gitEmail;
           };
 
+          core = {
+            autocrlf = "input";
+            hooksPath = "${config.xdg.configHome}/git/hooks";
+            whitespace = "tab-in-indent,incomplete-line";
+          };
+
           init.defaultBranch = "master";
           checkout.defaultRemote = "origin";
+
+          diff = {
+            algorithm = "histogram";
+            colorMoved = "dimmed-zebra";
+            mnemonicPrefix = true;
+          };
+
+          merge.conflictStyle = "zdiff3";
+
+          commit.verbose = true;
+
+          # NOTE: Uncomment for signed commits
+          # commit.gpgSign = true;
+
           branch.sort = "-committerdate";
-          pager.branch = false;
 
           tag = {
             sort = "-version:refname";
@@ -45,38 +64,36 @@ in
             # gpgSign = true;
           };
 
-          # NOTE: Uncomment for signed commits
-          # commit.gpgSign = true;
-
-          fetch.prune = true;
+          fetch = {
+            prune = true;
+            pruneTags = true;
+            fsckObjects = true;
+          };
 
           pull.rebase = true;
 
           push = {
             autoSetupRemote = true;
+            followTags = true;
             useForceIfIncludes = true;
 
             # NOTE: Uncomment for signed pushes
             # gpgSign = true;
           };
 
-          diff.algorithm = "histogram";
-          merge.conflictStyle = "zdiff3";
+          transfer.fsckObjects = true;
+          receive.fsckObjects = true;
 
           rebase = {
             autoStash = true;
             autoSquash = true;
             updateRefs = true;
+            missingCommitsCheck = "error";
           };
 
           rerere.enabled = true;
           help.autoCorrect = "prompt";
-
-          core = {
-            autocrlf = "input";
-            hooksPath = "${config.xdg.configHome}/git/hooks";
-            whitespace = "tab-in-indent,incomplete-line";
-          };
+          pager.branch = false;
 
           url = {
             "git@github.com:".insteadOf = "gh:";

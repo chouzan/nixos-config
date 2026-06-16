@@ -27,12 +27,10 @@ in
       di = "diff";
       dit = "di --stat";
       dif = "di --function-context";
-      dic = "di --color-moved=dimmed-zebra";
       din = "di --name-only";
       dis = "di --staged";
       dist = "dis --stat";
       disf = "dis --function-context";
-      disc = "dis --color-moved=dimmed-zebra";
       dih = "di HEAD";
       diuh = "di @{upstream}...HEAD";
 
