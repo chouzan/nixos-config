@@ -88,7 +88,10 @@ in
       br = "branch";
 
       # List branches excluding current; cleaned for piping
-      brl = "!git br | grep --invert-match '^[*]' | sed 's/^  //'";
+      brl = "!f() { git br \"$@\" | grep --invert-match '^[*]' | sed 's/^  //'; }; f";
+
+      # List branches excluding current and default; for deletion
+      brld = "!f() { git brl \"$@\" | grep --invert-match \"^$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||')$\"; }; f";
 
       bra = "br --all";
       brd = "br --delete";
@@ -140,8 +143,8 @@ in
       # Stage all and commit as WIP; skips hooks
       wip = "cm --all --message='WIP' --no-verify";
 
-      # Delete all merged branches except main/master/develop
-      cleanup = "!git br --merged | grep --extended-regexp --invert-match '\\*|master|main|develop' | xargs --max-args=1 git brd";
+      # Delete all merged branches except current and default
+      cleanup = "!git brld --merged | xargs --max-args=1 git brd";
     }
     // lib.optionalAttrs modules.programs.fzf.enable {
       # -- Fzf pickers ---------------------------------------------------------
@@ -155,11 +158,12 @@ in
       fzcmfrbi = "fzloref cmfrbi --max-count=35";
 
       # Pick branch with log preview; prints name if no action is given
-      fzbrref = "!f() { action=$1; shift; sel=$(git brl | fzf \"$@\" --preview-window=wrap --preview='git lo --max-count=10 --color=always {}') || return; if [ -z \"$action\" ]; then echo \"$sel\"; else echo \"$sel\" | xargs git $action; fi; }; f";
+      fzbrref = "!f() { listcmd=$1; action=$2; shift 2; sel=$(git $listcmd | fzf \"$@\" --preview-window=wrap --preview='git lo --max-count=10 --color=always {}') || return; if [ -z \"$action\" ]; then echo \"$sel\"; else echo \"$sel\" | xargs git $action; fi; }; f";
 
-      fzsw = "fzbrref sw";
-      fzbrd = "fzbrref brd --multi";
-      fzbrdf = "fzbrref brdf --multi";
+      fzsw = "fzbrref brl sw";
+      fzrb = "fzbrref brl rb";
+      fzbrd = "fzbrref brld brd --multi";
+      fzbrdf = "fzbrref brld brdf --multi";
 
       # Pick stash with diff preview; outputs the stash ref
       fzshref = "!f() { stash=$(git shl | fzf --no-sort --preview-window=wrap --preview='git shs --color=always $(echo {} | cut --delimiter=: --fields=1)') || return; echo \"$stash\" | cut --delimiter=: --fields=1; }; f";
