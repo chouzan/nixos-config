@@ -9,6 +9,7 @@ in
     ./btrfs.nix
     ./user.nix
     ./networking.nix
+    ./dns.nix
     ./security.nix
     ./secrets.nix
     ./power.nix

@@ -39,6 +39,7 @@ in
   };
 
   modules = {
+    system.dns.encrypted.enable = false;
     stylix.enable = true;
     programs.zed.enable = false;
     bundles.ai.enable = false;
