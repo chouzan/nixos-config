@@ -31,8 +31,7 @@ in
         general = {
           lock_cmd = "pidof hyprlock || hyprlock"; # avoid starting multiple hyprlock instances.
           before_sleep_cmd = "loginctl lock-session"; # lock before suspend.
-          # TODO: WORKAROUND:aquamarine#240 — revert to just "hyprctl dispatch dpms on"
-          after_sleep_cmd = "hyprctl dispatch dpms on && sleep 2 && ${reModeset}";
+          after_sleep_cmd = "hyprctl dispatch dpms on";
         };
 
         listener = [
