@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 staged_nix=$(git diff --cached --name-only --diff-filter=ACM -- '*.nix')
 [ -z "$staged_nix" ] && exit 0
 
