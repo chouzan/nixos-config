@@ -21,4 +21,5 @@ devenv.local.nix
 
 # Nix build outputs
 result
+result-*
 nixos.wsl

@@ -25,7 +25,7 @@ in
         createDirectories = true;
 
         extraConfig = {
-          XDG_MISC_DIR = "${home}/Misc";
+          MISC = "${home}/Misc";
         };
       };
     };

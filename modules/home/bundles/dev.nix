@@ -46,7 +46,7 @@ in
 
     (lib.mkIf cfg.dev.elixir.enable {
       home.packages = with pkgs; [
-        elixir
+        beamPackages.elixir
         elixir-expert
       ];
     })

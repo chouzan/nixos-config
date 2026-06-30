@@ -38,7 +38,7 @@ let
           if isBroken pkg then
             fallback pkg
           else
-            builtins.trace "${pname}: upstream is FIXED. Remove its guard overlay${hint}." pkg;
+            builtins.warn "${pname}: upstream is FIXED. Remove its guard overlay${hint}." pkg;
       }
     );
 

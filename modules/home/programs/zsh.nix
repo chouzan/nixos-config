@@ -20,10 +20,6 @@ in
         enable = true;
         autocd = true;
 
-        # TODO: remove when upgrading home-manager
-        # to version = > 26.05 (default behaviour)
-        dotDir = "${config.xdg.configHome}/zsh";
-
         plugins = with pkgs; [
           {
             inherit (zsh-vi-mode) src;

@@ -41,8 +41,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Following main — v0.55.4 and earlier don't build with GCC 16.
+    # Switch back to tag pin once v0.56 is released.
     hyprland = {
-      url = "github:hyprwm/Hyprland/v0.55.3";
+      url = "github:hyprwm/Hyprland";
 
       inputs = {
         nixpkgs.follows = "nixpkgs";
@@ -115,8 +117,9 @@
       };
     };
 
+    # Following main to match hyprland above.
     hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins/v0.55.0";
+      url = "github:hyprwm/hyprland-plugins";
 
       inputs = {
         nixpkgs.follows = "nixpkgs";
@@ -140,11 +143,11 @@
     # };
 
     claude-desktop = {
-      url = "github:k3d3/claude-desktop-linux-flake";
+      url = "github:aaddrick/claude-desktop-debian";
 
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
+        flake-parts.follows = "flake-parts";
       };
     };
 
