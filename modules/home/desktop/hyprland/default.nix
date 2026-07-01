@@ -24,7 +24,6 @@ in
       kdePackages.qtwayland
       kdePackages.dolphin
       kdePackages.gwenview
-      kdePackages.kwallet
       rofi
 
       # Clipboard manager

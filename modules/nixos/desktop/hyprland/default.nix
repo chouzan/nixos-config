@@ -60,6 +60,27 @@ in
       };
     };
 
+    # Secret Service for the session. Apps that store credentials (Spotify,
+    # browsers, etc.) talk to org.freedesktop.secrets; without a working
+    # provider they prompt to create a keyring on every boot.
+    #
+    # Use gnome-keyring, not KWallet. On a non-KDE session KWallet's ksecretd
+    # repeatedly prompts to create a "Default Keyring" and its secret-service
+    # daemon hangs/errors on wallet-name edge cases (KDE bug 504656). KDE's own
+    # KWallet-to-SecretService transition explicitly supports backing the
+    # secret service with gnome-keyring or KeePassXC instead; gnome-keyring is
+    # the standard provider for non-KDE Wayland. Its "login" keyring is
+    # unlocked at login by pam_gnome_keyring with the login password, so it
+    # stays silent (no dialog, no wizard), and KDE apps still reach it through
+    # the standard freedesktop interface.
+    #
+    # Enable pam on the "login" service, NOT "sddm": SDDM sets
+    # useDefaultRules = false and only substacks "login", so a rule placed on
+    # "sddm" is silently dropped; the stack that runs at graphical login is
+    # "login".
+    services.gnome.gnome-keyring.enable = true;
+    security.pam.services.login.enableGnomeKeyring = true;
+
     # Essential system packages for Hyprland
     environment.systemPackages = with pkgs; [
       brightnessctl
