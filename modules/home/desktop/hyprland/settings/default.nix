@@ -21,16 +21,6 @@ let
   monitors = lib.map hypUtils.toHyprlandMonitor enabledMonitors;
   monitorWorkspaces = hypUtils.getWorkspaceAssignments enabledMonitors;
   workspaces = monitorWorkspaces ++ extraWorkspace;
-
-  # TODO: WORKAROUND:BEGIN aquamarine#240 — remove when PR#312 lands
-  reModeset = lib.concatStringsSep " && " (
-    lib.map (
-      m:
-      "hyprctl keyword monitor ${m.name},preferred,auto,${toString m.scale}"
-      + " && hyprctl keyword monitor ${hypUtils.toHyprlandMonitor m}"
-    ) enabledMonitors
-  );
-  # TODO: WORKAROUND:END aquamarine#240
 in
 {
   imports = [
@@ -66,9 +56,6 @@ in
           ];
 
           exec-once = [
-            # TODO: WORKAROUND:BEGIN aquamarine#240
-            "sleep 7 && ${reModeset}"
-            # TODO: WORKAROUND:END aquamarine#240
             "nm-applet &"
             "waybar &"
             "hyprpaper &"

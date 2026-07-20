@@ -8,23 +8,20 @@
     "nixd": {
       "settings": {
         "nixpkgs": {
-          "expr": "import (builtins.getFlake (toString ./.)).inputs.nixpkgs { }"
-        },
-        "formatting": {
-          "command": ["nixfmt"]
+          "expr": "import (builtins.getFlake (toString ./.)).inputs.nixpkgs { }",
         },
         "options": {
           "nixos": {
-            "expr": "(builtins.getFlake (toString ./.)).nixosConfigurations.${builtins.getEnv \"HOSTNAME\"}.options"
+            "expr": "(builtins.getFlake (toString ./.)).nixosConfigurations.${builtins.getEnv \"HOSTNAME\"}.options",
           },
           "home-manager": {
-            "expr": "(builtins.getFlake (toString ./.)).nixosConfigurations.${builtins.getEnv \"HOSTNAME\"}.options.home-manager.users.type.getSubOptions []"
+            "expr": "(builtins.getFlake (toString ./.)).nixosConfigurations.${builtins.getEnv \"HOSTNAME\"}.options.home-manager.users.type.getSubOptions []",
           },
           "monitors": {
-            "expr": "(builtins.getFlake (toString ./.)).nixosConfigurations.${builtins.getEnv \"HOSTNAME\"}.options.modules.monitors.type.getSubOptions []"
-          }
-        }
-      }
-    }
-  }
+            "expr": "(builtins.getFlake (toString ./.)).nixosConfigurations.${builtins.getEnv \"HOSTNAME\"}.options.modules.monitors.type.getSubOptions []",
+          },
+        },
+      },
+    },
+  },
 }

@@ -24,7 +24,7 @@ in
             find_path = true;
             grep = true;
             read_file = true;
-            web_search = true;
+            search_web = true;
             fetch = true;
             open = true;
             diagnostics = true;
@@ -57,7 +57,7 @@ in
             find_path = true;
             grep = true;
             read_file = true;
-            web_search = true;
+            search_web = true;
             fetch = true;
             open = true;
             diagnostics = true;

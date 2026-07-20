@@ -30,50 +30,55 @@ in
       # -- Languages -----------------------------------------------------------
 
       # TODO: Set based on modules
-      languages = {
-        JSON = {
-          prettier = {
-            plugins = [
-              "prettier-plugin-mltiline-arrays"
+      languages =
+        let
+          elixirSettings = {
+            language_servers = [
+              "expert"
+              "!elixir-ls"
+              "!next-ls"
+              "!lexical"
             ];
 
-            multilineArraysWrapThreshold = 1;
+            formatter = "language_server";
+            format_on_save = "on";
           };
-        };
 
-        Elixir = {
-          language_servers = [
-            "expert"
-            "!elixir-ls"
-            "!next-ls"
-            "!lexical"
-          ];
-        };
+          jsonSettings = {
+            formatter = "prettier";
+            format_on_save = "on";
 
-        HEEX = {
-          language_servers = [
-            "expert"
-            "!elixir-ls"
-            "!next-ls"
-            "!lexical"
-          ];
-        };
+            prettier = {
+              allowed = true;
+              plugins = [ "prettier-plugin-multiline-arrays" ];
+              multilineArraysWrapThreshold = 1;
+            };
+          };
+        in
+        {
+          Nix = {
+            language_servers = [ "nixd" ];
+            formatter = "language_server";
+            format_on_save = "on";
+          };
 
-        Nix = {
-          language_servers = [
-            "nixd"
-          ];
+          Elixir = elixirSettings;
+          EEx = elixirSettings;
+          HEEx = elixirSettings;
+
+          JSON = jsonSettings;
+          JSONC = jsonSettings;
         };
-      };
 
       # -- LSPs ----------------------------------------------------------------
 
       lsp = {
-        expert = {
-          binary = {
-            arguments = [ "--stdio" ];
-          };
-        };
+        nixd.settings.nixd.formatting = [
+          "nixfmt"
+          "-"
+        ];
+
+        expert.binary.arguments = [ "--stdio" ];
       };
     };
   };

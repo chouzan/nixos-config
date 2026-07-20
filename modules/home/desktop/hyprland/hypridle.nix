@@ -1,26 +1,7 @@
-{
-  osConfig,
-  lib,
-  libs,
-  ...
-}:
+{ osConfig, lib, ... }:
 
 let
   cfg = osConfig.modules.desktop.hyprland;
-  inherit (libs) hyprland utils;
-
-  hypUtils = hyprland.utils;
-  enabledMonitors = utils.getEnabledMonitors osConfig.modules.monitors;
-
-  # TODO: WORKAROUND:BEGIN aquamarine#240 — remove when PR#312 lands
-  reModeset = lib.concatStringsSep " && " (
-    lib.map (
-      m:
-      "hyprctl keyword monitor ${m.name},preferred,auto,${toString m.scale}"
-      + " && hyprctl keyword monitor ${hypUtils.toHyprlandMonitor m}"
-    ) enabledMonitors
-  );
-  # TODO: WORKAROUND:END aquamarine#240
 in
 {
   config = lib.mkIf cfg.enable {
@@ -56,8 +37,7 @@ in
           {
             timeout = 330; # 5.5min
             on-timeout = "hyprctl dispatch dpms off"; # screen off when timeout has passed
-            # TODO: WORKAROUND:aquamarine#240 — revert to just "hyprctl dispatch dpms on && brightnessctl -r"
-            on-resume = "hyprctl dispatch dpms on && brightnessctl -r && sleep 2 && ${reModeset}";
+            on-resume = "hyprctl dispatch dpms on && brightnessctl -r";
           }
 
           {

@@ -70,7 +70,7 @@ in
           };
 
           tool_permissions.default = "allow";
-          play_sound_when_agent_done = true;
+          play_sound_when_agent_done = "always";
           use_modifier_to_send = true;
         };
       };
