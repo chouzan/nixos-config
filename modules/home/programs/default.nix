@@ -5,6 +5,8 @@
     ./zsh.nix
     ./starship
     ./git
+    ./jujutsu
+    ./delta.nix
     ./gh.nix
     ./ripgrep.nix
     ./bat.nix

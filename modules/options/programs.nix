@@ -6,6 +6,8 @@
     starship.enable = lib.mkEnableOption "Starship cross-shell prompt";
     vim.enable = lib.mkEnableOption "Vim text editor";
     git.enable = lib.mkEnableOption "Git version control with custom configuration";
+    jujutsu.enable = lib.mkEnableOption "Jujutsu version control with custom configuration";
+    delta.enable = lib.mkEnableOption "delta syntax-highlighting pager for git and jujutsu";
     gh.enable = lib.mkEnableOption "GitHub CLI tool";
     ripgrep.enable = lib.mkEnableOption "ripgrep with custom configuration (includes ripgrep-all)";
     bat.enable = lib.mkEnableOption "bat (cat alternative) with custom configuration";

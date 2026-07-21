@@ -14,6 +14,8 @@ in
     programs = {
       starship.enable = utils.mkProfileDefault true;
       git.enable = utils.mkProfileDefault true;
+      jujutsu.enable = utils.mkProfileDefault true;
+      delta.enable = utils.mkProfileDefault true;
       gh.enable = utils.mkProfileDefault true;
       ripgrep.enable = utils.mkProfileDefault true;
       bat.enable = utils.mkProfileDefault true;
