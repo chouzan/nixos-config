@@ -17,7 +17,9 @@
     ./firefox
     ./zed
     ./claude-code
+    ./codex.nix
     ./opencode.nix
+    ./llm-plugins
     ./mcp.nix
     ./bitwarden.nix
   ];

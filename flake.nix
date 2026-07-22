@@ -160,6 +160,11 @@
       };
     };
 
+    llm-caveman = {
+      url = "github:JuliusBrussee/caveman";
+      flake = false;
+    };
+
     elixir-expert = {
       url = "github:elixir-lang/expert/nightly";
 

@@ -860,6 +860,22 @@
         "type": "github"
       }
     },
+    "llm-caveman": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1783076931,
+        "narHash": "sha256-VqRHx3/4SSCnEh3cUJ/he5saIfwNhS0hOzoH/wwtU2o=",
+        "owner": "JuliusBrussee",
+        "repo": "caveman",
+        "rev": "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "JuliusBrussee",
+        "repo": "caveman",
+        "type": "github"
+      }
+    },
     "mcp-proxy": {
       "flake": false,
       "locked": {
@@ -991,6 +1007,7 @@
         "hyprutils": "hyprutils",
         "hyprwayland-scanner": "hyprwayland-scanner",
         "hyprwire": "hyprwire",
+        "llm-caveman": "llm-caveman",
         "mcp-proxy": "mcp-proxy",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs",

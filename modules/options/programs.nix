@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 
 {
   options.modules.programs = {
@@ -18,7 +18,20 @@
     firefox.enable = lib.mkEnableOption "Firefox web browser with extensions";
     zed.enable = lib.mkEnableOption "Zed code editor (program name: zed-editor)";
     claude-code.enable = lib.mkEnableOption "Claude Code agentic coding tool";
-    opencode.enable = lib.mkEnableOption "OpenCode AI coding agent";
+
+    codex = {
+      enable = lib.mkEnableOption "Codex CLI agentic coding tool";
+
+      systemSettings = lib.mkOption {
+        inherit (pkgs.formats.toml { }) type;
+        default = { };
+        internal = true;
+        description = "Composable settings for the Codex System configuration layer";
+      };
+    };
+
+    opencode.enable = lib.mkEnableOption "OpenCode agentic coding tool";
+    llm-plugins.caveman.enable = lib.mkEnableOption "Caveman workflow plugin for LLM coding agents";
 
     mcp = {
       enable = lib.mkEnableOption "MCP server configuration";
