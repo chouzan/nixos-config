@@ -4,6 +4,8 @@
   imports = [
     ./zsh.nix
     ./starship
+    ./ssh.nix
+    ./gnupg.nix
     ./git
     ./jujutsu
     ./delta.nix

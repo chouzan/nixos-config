@@ -5,6 +5,8 @@
     zsh.enable = lib.mkEnableOption "Zsh shell with custom configuration";
     starship.enable = lib.mkEnableOption "Starship cross-shell prompt";
     vim.enable = lib.mkEnableOption "Vim text editor";
+    ssh.enable = lib.mkEnableOption "OpenSSH client configuration";
+    gnupg.enable = lib.mkEnableOption "GnuPG agent and pinentry";
     git.enable = lib.mkEnableOption "Git version control with custom configuration";
     jujutsu.enable = lib.mkEnableOption "Jujutsu version control with custom configuration";
     delta.enable = lib.mkEnableOption "delta syntax-highlighting pager for git and jujutsu";
