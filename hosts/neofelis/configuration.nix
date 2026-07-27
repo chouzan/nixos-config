@@ -29,27 +29,35 @@
     desktop.hyprland.extraWindowRules = [
       {
         name = "zed-nixos";
-        "match:class" = "dev.zed.Zed";
-        "match:title" = "nixos";
+
+        match = {
+          class = "dev.zed.Zed";
+          title = "nixos";
+        };
+
         workspace = "special:system silent";
       }
 
       {
         name = "kitty-btop";
-        "match:class" = "kitty";
-        "match:title" = "btop";
+
+        match = {
+          class = "kitty";
+          title = "btop";
+        };
+
         workspace = "special:system silent";
       }
 
       {
         name = "claude-desktop";
-        "match:class" = "Claude";
+        match.class = "Claude";
         workspace = "auxiliary silent";
       }
 
       {
         name = "spotify";
-        "match:class" = "spotify";
+        match.class = "spotify";
         workspace = "auxiliary silent";
       }
     ];

@@ -18,10 +18,9 @@ in
         default = true;
 
         description = ''
-          Enable local drop-in Hyprland config directories.
-          Each directory gets a keep.conf placeholder (so the glob
-          always matches) and a source directive appended to the
-          hyprland.conf.
+          Whether to load optional local Hyprland Lua configuration files.
+          Local files are loaded after the generated configuration, so they
+          can override module defaults without modifying the flake.
         '';
       };
 
@@ -35,10 +34,8 @@ in
         ];
 
         description = ''
-          Drop-in directories for local Hyprland .conf files.
-          Paths relative to home directory. Sourced at the end
-          of the hyprland.conf, so local files can override
-          module defaults.
+          Local Hyprland configuration directories relative to the home
+          directory. Each directory's optional init.lua is loaded.
         '';
       };
     };

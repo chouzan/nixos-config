@@ -40,14 +40,9 @@ in
     ];
 
     programs = {
-      hyprpanel.enable = true;
-
       kitty = {
         enable = true;
         shellIntegration.enableZshIntegration = true;
-
-        # TODO: Remove once kitty >=0.48 fixes inotify watcher bug (#10102)
-        settings.auto_reload_config = -1;
 
         keybindings = {
           # \x17 = Ctrl+W (backward-kill-word)
@@ -63,7 +58,6 @@ in
 
     wayland.windowManager.hyprland = {
       enable = true;
-      configType = "hyprlang";
 
       # Set Hyprland and XDPH packages to null to use the ones from the NixOS module
       package = null;
@@ -76,14 +70,12 @@ in
 
     services = {
       hyprpolkitagent.enable = true;
-
       hyprpaper.enable = true;
 
       # Clipboard manager
       clipse.enable = true;
 
-      # NOTE: switch to true if not using hyprpanel
-      mako.enable = false;
+      mako.enable = true;
     };
   };
 }

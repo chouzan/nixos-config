@@ -1,11 +1,13 @@
 { osConfig, lib, ... }:
 
+# Reference: <https://wiki.hypr.land/Configuring/Basics/Variables/#decoration>
+
 let
   cfg = osConfig.modules.desktop.hyprland;
 in
 {
   config = lib.mkIf cfg.enable {
-    wayland.windowManager.hyprland.settings.decoration = {
+    wayland.windowManager.hyprland.settings.config.decoration = {
       rounding = 10;
       rounding_power = 2;
 
@@ -19,7 +21,7 @@ in
         enabled = true;
         range = 4;
         render_power = 3;
-        # color = "rgba(1a1a1aee)";
+        # color = "#1a1a1aee";
       };
 
       blur = {

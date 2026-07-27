@@ -96,9 +96,7 @@ in
     lib.mkMerge [
       (lib.mkIf modules.programs.claude-code.enable {
         programs.claude-code = {
-          plugins = [
-            caveman
-          ];
+          plugins = { inherit caveman; };
 
           settings.statusLine = {
             type = "command";

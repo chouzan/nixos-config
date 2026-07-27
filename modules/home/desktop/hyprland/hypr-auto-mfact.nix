@@ -49,7 +49,7 @@ let
       mfact=$(get_mfact_for_window_count "$window_count")
 
       if [[ -n "$mfact" ]]; then
-        ${hyprctl} dispatch layoutmsg mfact exact "$mfact"
+        ${hyprctl} dispatch "hl.dsp.layout(\"mfact exact $mfact\")"
       fi
     }
 
@@ -76,8 +76,13 @@ let
 in
 {
   config = lib.mkIf cfg.enable {
-    wayland.windowManager.hyprland.settings.exec-once = [
-      "${hypr-auto-mfact}"
+    wayland.windowManager.hyprland.settings.on = [
+      {
+        _args = [
+          "hyprland.start"
+          (lib.generators.mkLuaInline ''function() hl.exec_cmd("${hypr-auto-mfact}") end'')
+        ];
+      }
     ];
   };
 }

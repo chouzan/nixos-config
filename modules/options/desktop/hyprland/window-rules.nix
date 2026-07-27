@@ -4,45 +4,34 @@ let
   inherit (lib) types;
 
   windowRuleDescription = ''
-    Each rule is an attribute set with:
+    Each rule is an attribute set rendered as an `hl.window_rule({ ... })` call:
     - `name`: Rule identifier (for debugging)
-    - Match conditions (prefix with `match:`):
-      - `match:class` - Window class regex
-      - `match:title` - Window title regex
-      - `match:initialclass` - Initial class regex
-      - `match:initialtitle` - Initial title regex
-      - `match:xwayland` - XWayland window (true/false)
-      - `match:float` - Floating state (true/false)
-      - `match:fullscreen` - Fullscreen state (true/false)
-      - `match:pin` - Pinned state (true/false)
-      - `match:workspace` - Workspace id or name
-    - Actions (without prefix):
-      - `float` - "on"/"off"
-      - `size` - "width height" or "width% height%"
-      - `move` - "x y" or "x% y%"
-      - `workspace` - Workspace name/id
-      - `opacity` - "active inactive"
-      - `pin` - "on"/"off"
-      - `stay_focused` - "on"/"off"
-      - `no_focus` - "on"/"off"
-      - `suppress_event` - Event to suppress (e.g., "maximize")
-      - And more: https://wiki.hypr.land/Configuring/Window-Rules/
+    - `match`: Attribute set of match conditions (e.g. `class`, `title`,
+      `xwayland`, `workspace`)
+    - Remaining keys are rule actions (e.g. `float`, `size`, `workspace`,
+      `opacity`, `pin`, `suppress_event`)
 
-    Rules are evaluated top to bottom, order matters.
+    See <https://wiki.hypr.land/Configuring/Basics/Window-Rules/> for the full set of
+    match conditions and actions. Rules evaluate top to bottom; order matters.
   '';
 
   windowRuleExample = [
     {
       name = "steam";
-      "match:class" = "steam";
-      float = "on";
+      match.class = "steam";
+      float = true;
     }
+
     {
       name = "firefox-pip";
-      "match:class" = "firefox";
-      "match:title" = "Picture-in-Picture";
-      float = "on";
-      pin = "on";
+
+      match = {
+        class = "firefox";
+        title = "Picture-in-Picture";
+      };
+
+      float = true;
+      pin = true;
       size = "25% 25%";
     }
   ];

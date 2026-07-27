@@ -1,6 +1,12 @@
-{ osConfig, lib, ... }:
+{
+  osConfig,
+  lib,
+  libs,
+  ...
+}:
 
 let
+  inherit (libs.hyprland.utils) hlDispatch;
   cfg = osConfig.modules.desktop.hyprland;
 in
 {
@@ -12,7 +18,7 @@ in
         general = {
           lock_cmd = "pidof hyprlock || hyprlock"; # avoid starting multiple hyprlock instances.
           before_sleep_cmd = "loginctl lock-session"; # lock before suspend.
-          after_sleep_cmd = "hyprctl dispatch dpms on";
+          after_sleep_cmd = hlDispatch "hl.dsp.dpms({ action = 'on' })";
         };
 
         listener = [
@@ -36,8 +42,8 @@ in
 
           {
             timeout = 330; # 5.5min
-            on-timeout = "hyprctl dispatch dpms off"; # screen off when timeout has passed
-            on-resume = "hyprctl dispatch dpms on && brightnessctl -r";
+            on-timeout = hlDispatch "hl.dsp.dpms({ action = 'off' })"; # screen off when timeout has passed
+            on-resume = "${hlDispatch "hl.dsp.dpms({ action = 'on' })"} && brightnessctl -r";
           }
 
           {

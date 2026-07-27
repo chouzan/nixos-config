@@ -41,7 +41,6 @@ let
       }
     ) agents
   );
-
 in
 {
   config = lib.mkIf cfg.enable {

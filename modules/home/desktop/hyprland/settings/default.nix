@@ -12,94 +12,73 @@ let
   cfg = modules.desktop.hyprland;
 
   hypUtils = hyprland.utils;
+  inherit (hypUtils) mkEnv mkMonitor;
 
-  extraWorkspace = [
-    "special:system, on-created-empty:kitty"
+  # A `special:system` scratchpad that spawns a terminal on first use.
+  extraWorkspaceRules = [
+    {
+      workspace = "special:system";
+      on_created_empty = "kitty";
+    }
   ];
 
   enabledMonitors = utils.getEnabledMonitors modules.monitors;
   monitors = lib.map hypUtils.toHyprlandMonitor enabledMonitors;
-  monitorWorkspaces = hypUtils.getWorkspaceAssignments enabledMonitors;
-  workspaces = monitorWorkspaces ++ extraWorkspace;
+  monitorWorkspaceRules = hypUtils.getWorkspaceAssignments enabledMonitors;
+  workspaceRules = monitorWorkspaceRules ++ extraWorkspaceRules;
 in
 {
   imports = [
     ./layouts.nix
-    ./binds.nix
+    ./lua.nix
+    ./local-settings.nix
     ./window-rules.nix
     ./decorations.nix
     ./animations.nix
   ];
 
-  config = lib.mkIf cfg.enable (
-    lib.mkMerge [
-      {
-        wayland.windowManager.hyprland.settings = {
-          monitor = utils.orIfEmpty [ ", preferred, auto, auto" ] monitors;
-          workspace = utils.orIfEmpty [ ] workspaces;
+  config = lib.mkIf cfg.enable {
+    wayland.windowManager.hyprland.settings = {
+      monitor = utils.orIfEmpty [
+        (mkMonitor {
+          output = "";
+          mode = "preferred";
+          position = "auto";
+          scale = "auto";
+        })
+      ] monitors;
 
-          "$menu" = "rofi -show drun";
-          "$fileManager" = "dolphin";
-          "$terminal" = "kitty";
-          "$editor" = "zeditor";
-          "$ai" = "claude-desktop";
-          "$webBrowser" = "firefox";
-          "$musicPlayer" = "spotify";
+      workspace_rule = workspaceRules;
 
-          xwayland.force_zero_scaling = true;
+      env = [
+        (mkEnv "HYPRCURSOR_THEME" "Nordzy-hyprcursors")
+        (mkEnv "HYPRCURSOR_SIZE" "24")
+        (mkEnv "XCURSOR_THEME" "Nordzy-cursors")
+        (mkEnv "XCURSOR_SIZE" "24")
+      ];
 
-          env = [
-            "HYPRCURSOR_THEME,Nordzy-hyprcursors"
-            "HYPRCURSOR_SIZE,24"
-            "XCURSOR_THEME,Nordzy-cursors"
-            "XCURSOR_SIZE,24"
-          ];
+      config = {
+        xwayland.force_zero_scaling = true;
 
-          exec-once = [
-            "nm-applet &"
-            "waybar &"
-            "hyprpaper &"
-            "$editor"
-            "[workspace special:system silent] $terminal --hold btop"
-            "[workspace name:primary silent] $terminal"
-            "[workspace name:primary silent] $webBrowser"
-            "[workspace name:auxiliary silent] $ai"
-            "[workspace name:auxiliary silent] $musicPlayer"
-          ];
-
-          general = {
-            # TODO: Cleanup
-            # "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
-            # "col.inactive_border" = "rgba(595959aa)";
-            resize_on_border = true;
-          };
-
-          input = {
-            numlock_by_default = true;
-            touchpad.natural_scroll = true;
-          };
-
-          misc = {
-            enable_swallow = true;
-            swallow_regex = "kitty";
-            focus_on_activate = true;
-            middle_click_paste = false;
-          };
+        general = {
+          # TODO: Cleanup
+          # col.active_border = { colors = [ "#33ccffee" "#00ff99ee" ]; angle = 45; };
+          # col.inactive_border = "#595959aa";
+          resize_on_border = true;
         };
-      }
 
-      (lib.mkIf cfg.localSettings.enable {
-        home.file = lib.listToAttrs (
-          map (dir: {
-            name = "${dir}/keep.conf";
-            value.text = "";
-          }) cfg.localSettings.dirs
-        );
+        input = {
+          numlock_by_default = true;
+          touchpad.natural_scroll = true;
+        };
 
-        wayland.windowManager.hyprland.extraConfig = lib.concatMapStringsSep "\n" (
-          dir: "source = ~/${dir}/*.conf"
-        ) cfg.localSettings.dirs;
-      })
-    ]
-  );
+        misc = {
+          enable_swallow = true;
+          swallow_regex = "kitty";
+          focus_on_activate = true;
+          middle_click_paste = false;
+        };
+      };
+    };
+  };
 }

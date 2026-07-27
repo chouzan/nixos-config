@@ -37,17 +37,6 @@
   inputs.claude-code.overlays.default
   inputs.claude-desktop.overlays.default
 
-  # kitty #10102: recursive inotify watch on /nix/store via config symlinks.
-  # Workaround: auto_reload_config = -1 in modules/home/desktop/hyprland/default.nix.
-  # Remove both this overlay and that setting once kitty ships the fix.
-  (_final: prev: {
-    kitty =
-      if builtins.compareVersions prev.kitty.version "0.48" >= 0 then
-        builtins.warn "kitty: inotify watcher bug is likely fixed (>=0.48). Remove auto_reload_config workaround in modules/home/desktop/hyprland/default.nix and this overlay." prev.kitty
-      else
-        prev.kitty;
-  })
-
   # Custom overlays (no upstream available)
   (import ./elixir-expert.nix { inherit inputs system; })
   (import ./mcp-proxy.nix { inherit inputs; })
