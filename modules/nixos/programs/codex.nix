@@ -46,10 +46,16 @@ let
     permissions.workspace = {
       extends = ":workspace";
 
+      network = {
+        enabled = true;
+        unix_sockets."/nix/var/nix/daemon-socket/socket" = "allow";
+      };
+
       filesystem =
         lib.recursiveUpdate
           {
             ":workspace_roots".".git" = "write";
+            "~/.cache/nix" = "write";
             "~/.config/jj/repos" = "write";
             "~/.config/jj/workspaces" = "write";
             glob_scan_max_depth = 4;
