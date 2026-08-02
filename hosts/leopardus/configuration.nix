@@ -26,6 +26,9 @@
     makeUsbBootable = true;
   };
 
+  # Latest kernel may outpace ZFS support
+  boot.supportedFilesystems.zfs = false;
+
   # Embed flake in ISO for nixos-install
   environment.etc."nixos-config".source = ../..;
 

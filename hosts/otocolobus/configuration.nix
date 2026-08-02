@@ -34,7 +34,6 @@ in
 
   services = {
     fwupd.enable = false;
-    btrfs.autoScrub.enable = false;
     timesyncd.enable = false;
   };
 

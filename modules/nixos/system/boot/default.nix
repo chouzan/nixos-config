@@ -21,7 +21,7 @@ in
     ];
 
     loader = {
-      timeout = 15;
+      timeout = utils.mkModuleDefault 15;
       efi.efiSysMountPoint = lib.mkIf (config.fileSystems ? "/boot/efi") "/boot/efi";
     };
 
