@@ -59,7 +59,7 @@
   };
 
   environment.systemPackages = [
-    inputs.disko.packages.${pkgs.system}.default
+    inputs.disko.packages.${pkgs.stdenv.hostPlatform.system}.default
 
     (pkgs.writeScriptBin "menu" (builtins.readFile ../../scripts/installer/menu.sh))
     (pkgs.writeScriptBin "help" (builtins.readFile ../../scripts/installer/help.sh))
