@@ -95,14 +95,7 @@ in
   config = lib.mkIf cfg.enable (
     lib.mkMerge [
       (lib.mkIf modules.programs.claude-code.enable {
-        programs.claude-code = {
-          plugins = { inherit caveman; };
-
-          settings.statusLine = {
-            type = "command";
-            command = "bash \"${caveman}/src/hooks/caveman-statusline.sh\"";
-          };
-        };
+        programs.claude-code.plugins = { inherit caveman; };
       })
 
       (lib.mkIf modules.programs.codex.enable {

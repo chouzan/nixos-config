@@ -20,7 +20,24 @@
     carapace.enable = lib.mkEnableOption "Carapace multi-shell command argument completer";
     firefox.enable = lib.mkEnableOption "Firefox web browser with extensions";
     zed.enable = lib.mkEnableOption "Zed code editor (program name: zed-editor)";
-    claude-code.enable = lib.mkEnableOption "Claude Code agentic coding tool";
+
+    claude-code = {
+      enable = lib.mkEnableOption "Claude Code agentic coding tool";
+
+      systemSettings = lib.mkOption {
+        inherit (pkgs.formats.json { }) type;
+        default = { };
+        internal = true;
+        description = "Composable policy for the Claude Code managed settings layer";
+      };
+
+      userSettings = lib.mkOption {
+        inherit (pkgs.formats.json { }) type;
+        default = { };
+        internal = true;
+        description = "Composable preferences merged into the writable Claude Code user settings";
+      };
+    };
 
     codex = {
       enable = lib.mkEnableOption "Codex CLI agentic coding tool";

@@ -13,10 +13,19 @@ let
   codexHooks = (lib.importJSON "${caveman}/.codex/hooks.json").hooks;
 in
 {
-  config = lib.mkIf (cfg.enable && modules.programs.codex.enable) {
-    modules.programs.codex.systemSettings = {
-      features.hooks = true;
-      hooks = codexHooks;
-    };
-  };
+  config = lib.mkMerge [
+    (lib.mkIf (cfg.enable && modules.programs.claude-code.enable) {
+      modules.programs.claude-code.userSettings.statusLine = {
+        type = "command";
+        command = "bash \"${caveman}/src/hooks/caveman-statusline.sh\"";
+      };
+    })
+
+    (lib.mkIf (cfg.enable && modules.programs.codex.enable) {
+      modules.programs.codex.systemSettings = {
+        features.hooks = true;
+        hooks = codexHooks;
+      };
+    })
+  ];
 }
