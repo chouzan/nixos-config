@@ -35,6 +35,7 @@ let
       webBrowser    = "firefox",
       mediaPlayer   = "spotify",
 
+      quickshell    = "${pkgs.quickshell}/bin/quickshell",
       toggleFocus   = "${hypr-toggle-focus-layer}",
 
       clipMan        = "clipse",

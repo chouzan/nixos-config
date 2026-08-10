@@ -4,6 +4,7 @@ local vars = require("vars")
 
 hl.on("hyprland.start", function()
   hl.exec_cmd("nm-applet")
+  hl.exec_cmd("blueman-applet")
   hl.exec_cmd("hyprpaper")
   hl.exec_cmd(vars.editor)
   hl.exec_cmd(vars.terminal .. " --hold btop", { workspace = "special:system silent" })

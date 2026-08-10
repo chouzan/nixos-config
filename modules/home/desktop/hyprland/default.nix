@@ -17,6 +17,7 @@ in
     ./plugins.nix
     ./capture.nix
     ./screen-share-picker.nix
+    ./quickshell
     ./hypr-auto-mfact.nix
   ];
 
@@ -83,8 +84,6 @@ in
 
       # Clipboard manager
       clipse.enable = true;
-
-      mako.enable = true;
     };
   };
 }
