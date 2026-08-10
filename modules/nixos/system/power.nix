@@ -41,6 +41,7 @@ in
     })
 
     (lib.mkIf modules.hardware.battery.enable {
+      services.upower.enable = true;
       powerManagement.powertop.enable = true;
 
       # TODO: Explore TLP for charging limit
