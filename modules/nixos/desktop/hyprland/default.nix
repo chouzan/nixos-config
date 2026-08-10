@@ -77,6 +77,14 @@ in
           wayland.enable = false;
         };
       };
+
+      # Bluetooth pairing agent. Pairing needs a registered BlueZ agent to
+      # handle the passkey/PIN/confirmation exchange, and to authorize even
+      # "just works" pairings. blueman supplies that agent along with the
+      # passkey dialogs. Enabling the service installs the package and its
+      # D-Bus services; blueman-applet must run in the session to register
+      # the agent.
+      blueman.enable = true;
     };
 
     # Secret Service for the session. Apps that store credentials (Spotify,

@@ -20,9 +20,13 @@ local hyperMod = mainMod .. " + SHIFT + CTRL + ALT"
 -- Session ---------------------------------------------------------------------
 
 hl.bind(hyperMod .. " + Q", hl.dsp.exit())
-hl.bind(mainMod .. " + L",  hl.dsp.exec_cmd("hyprlock"))
+hl.bind(mainMod .. " + L",  hl.dsp.exec_cmd("loginctl lock-session"))
 hl.bind(mainMod .. " + W",  hl.dsp.window.close())
 hl.bind(mainMod .. " + Q",  hl.dsp.window.kill())
+
+-- Status bar ------------------------------------------------------------------
+
+hl.bind(mainMod .. " + Z", hl.dsp.exec_cmd(vars.quickshell .. " ipc -c bar call idle toggleInhibit"))
 
 -- Launchers -------------------------------------------------------------------
 
