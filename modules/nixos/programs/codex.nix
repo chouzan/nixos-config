@@ -43,6 +43,9 @@ let
     # `:workspace` directly would bypass those additional rules.
     default_permissions = "workspace";
 
+    approval_policy = "on-request";
+    approvals_reviewer = "auto_review";
+
     permissions.workspace = {
       extends = ":workspace";
 
