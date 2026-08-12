@@ -17,19 +17,10 @@ in
         git-lfs
       ];
 
-      programs.direnv = lib.mkMerge [
-        {
-          enable = true;
-        }
-
-        (lib.mkIf cfg.dev.nix.enable {
-          nix-direnv.enable = true;
-        })
-
-        (lib.mkIf modules.programs.zsh.enable {
-          enableZshIntegration = true;
-        })
-      ];
+      programs.direnv = {
+        enable = true;
+        nix-direnv.enable = cfg.dev.nix.enable;
+      };
     })
 
     (lib.mkIf cfg.dev.nix.enable {

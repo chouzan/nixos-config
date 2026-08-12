@@ -11,10 +11,7 @@ let
 in
 {
   config = lib.mkIf cfg.enable {
-    programs.fzf = {
-      enable = true;
-      enableZshIntegration = modules.programs.zsh.enable;
-    };
+    programs.fzf.enable = true;
 
     programs.zsh.initContent = lib.mkIf modules.programs.zsh.enable (
       lib.mkOrder 1000 ''

@@ -1,5 +1,8 @@
-{ ... }:
+{ osConfig, ... }:
 
+let
+  inherit (osConfig) modules;
+in
 {
   imports = [
     ./zsh.nix
@@ -23,4 +26,9 @@
     ./mcp.nix
     ./bitwarden.nix
   ];
+
+  home.shell = {
+    enableShellIntegration = false;
+    enableZshIntegration = modules.programs.zsh.enable;
+  };
 }

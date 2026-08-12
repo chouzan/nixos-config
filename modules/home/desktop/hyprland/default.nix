@@ -6,7 +6,8 @@
 }:
 
 let
-  cfg = osConfig.modules.desktop.hyprland;
+  inherit (osConfig) modules;
+  cfg = modules.desktop.hyprland;
 in
 {
   imports = [
@@ -42,7 +43,9 @@ in
     programs = {
       kitty = {
         enable = true;
-        shellIntegration.enableZshIntegration = true;
+
+        # Kitty derives this from shellIntegration.mode, not from home.shell.
+        shellIntegration.enableZshIntegration = modules.programs.zsh.enable;
 
         keybindings = {
           # \x17 = Ctrl+W (backward-kill-word)

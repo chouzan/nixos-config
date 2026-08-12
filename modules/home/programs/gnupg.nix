@@ -16,7 +16,6 @@ in
     services.gpg-agent = {
       enable = true;
       enableSshSupport = modules.programs.ssh.enable;
-      enableZshIntegration = modules.programs.zsh.enable;
       pinentry.package = pkgs.pinentry-rofi;
     };
   };
