@@ -1,0 +1,27 @@
+diff --git a/src/portals/Screencopy.cpp b/src/portals/Screencopy.cpp
+--- a/src/portals/Screencopy.cpp
++++ b/src/portals/Screencopy.cpp
+@@ -495 +495,5 @@ void CScreencopyPortal::SSession::initCallbacks() {
+-                if (sharingData.copyRetries++ < MAX_RETRIES) {
++                // Renegotiating cannot produce a buffer and breaks the session:
++                // pw_stream_update_params() re-enters STREAMING synchronously, so
++                // pwStreamStateChange() installs a new callback that reset() below
++                // destroys.
++                if (sharingData.copyRetries++ < MAX_RETRIES)
+@@ -497,3 +501 @@ void CScreencopyPortal::SSession::initCallbacks() {
+-                    g_pPortalManager->m_sPortals.screencopy->m_pPipewire->updateStreamParam(PSTREAM);
+-                    g_pPortalManager->m_sPortals.screencopy->queueNextShareFrame(this);
+-                }
++                g_pPortalManager->m_sPortals.screencopy->queueNextShareFrame(this);
+@@ -610 +612,5 @@ void CScreencopyPortal::SSession::initCallbacks() {
+-                if (sharingData.copyRetries++ < MAX_RETRIES) {
++                // Renegotiating cannot produce a buffer and breaks the session:
++                // pw_stream_update_params() re-enters STREAMING synchronously, so
++                // pwStreamStateChange() installs a new callback that reset() below
++                // destroys.
++                if (sharingData.copyRetries++ < MAX_RETRIES)
+@@ -612,3 +618 @@ void CScreencopyPortal::SSession::initCallbacks() {
+-                    g_pPortalManager->m_sPortals.screencopy->m_pPipewire->updateStreamParam(PSTREAM);
+-                    g_pPortalManager->m_sPortals.screencopy->queueNextShareFrame(this);
+-                }
++                g_pPortalManager->m_sPortals.screencopy->queueNextShareFrame(this);

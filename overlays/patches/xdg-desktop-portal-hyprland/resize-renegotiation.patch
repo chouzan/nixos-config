@@ -1,0 +1,109 @@
+diff --git a/src/portals/Screencopy.cpp b/src/portals/Screencopy.cpp
+--- a/src/portals/Screencopy.cpp
++++ b/src/portals/Screencopy.cpp
+@@ -13,2 +13,3 @@
+-constexpr static int MAX_RETRIES        = 10;
+-constexpr static int MAX_DMABUF_RETRIES = 2;
++constexpr static int  MAX_RETRIES        = 10;
++constexpr static int  MAX_DMABUF_RETRIES = 2;
++constexpr static auto RESIZE_SETTLE_TIME = std::chrono::milliseconds{50};
+@@ -347,0 +349,16 @@ void CScreencopyPortal::startFrameCopy(CScreencopyPortal::SSession* pSession) {
++bool CScreencopyPortal::SSession::hasStableSize(uint32_t width, uint32_t height) {
++    if (sharingData.pendingWidth != width || sharingData.pendingHeight != height) {
++        sharingData.pendingWidth     = width;
++        sharingData.pendingHeight    = height;
++        sharingData.pendingSizeSince = std::chrono::steady_clock::now();
++        return false;
++    }
++
++    return std::chrono::steady_clock::now() - sharingData.pendingSizeSince >= RESIZE_SETTLE_TIME;
++}
++
++void CScreencopyPortal::SSession::resetResizeTracking() {
++    sharingData.pendingWidth  = 0;
++    sharingData.pendingHeight = 0;
++}
++
+@@ -475,4 +492,19 @@ void CScreencopyPortal::SSession::initCallbacks() {
+-            const auto FMT = PSTREAM->isDMA ? sharingData.frameInfoDMA.fmt : sharingData.frameInfoSHM.fmt;
+-            if ((PSTREAM->pwVideoInfo.format != pwFromDrmFourcc(FMT) && PSTREAM->pwVideoInfo.format != pwStripAlpha(pwFromDrmFourcc(FMT))) ||
+-                (PSTREAM->pwVideoInfo.size.width != sharingData.frameInfoDMA.w || PSTREAM->pwVideoInfo.size.height != sharingData.frameInfoDMA.h)) {
+-                Debug::log(LOG, "[sc] Incompatible formats, renegotiate stream");
++            const auto FMT             = PSTREAM->isDMA ? sharingData.frameInfoDMA.fmt : sharingData.frameInfoSHM.fmt;
++            const auto WIDTH           = PSTREAM->isDMA ? sharingData.frameInfoDMA.w : sharingData.frameInfoSHM.w;
++            const auto HEIGHT          = PSTREAM->isDMA ? sharingData.frameInfoDMA.h : sharingData.frameInfoSHM.h;
++            const bool FORMAT_MISMATCH = PSTREAM->pwVideoInfo.format != pwFromDrmFourcc(FMT) && PSTREAM->pwVideoInfo.format != pwStripAlpha(pwFromDrmFourcc(FMT));
++            const bool SIZE_MISMATCH   = PSTREAM->pwVideoInfo.size.width != WIDTH || PSTREAM->pwVideoInfo.size.height != HEIGHT;
++            if (FORMAT_MISMATCH || SIZE_MISMATCH) {
++                Debug::log(LOG, "[sc] Incompatible {} frame: PipeWire format {} size {}x{}, frame format {} size {}x{}", PSTREAM->isDMA ? "DMA" : "SHM",
++                           (int)PSTREAM->pwVideoInfo.format, PSTREAM->pwVideoInfo.size.width, PSTREAM->pwVideoInfo.size.height, (int)FMT, WIDTH, HEIGHT);
++                // Keep this handler alive, but clear the session slot before stream
++                // parameter updates synchronously re-enter state callbacks.
++                const auto FRAME_CALLBACK = sharingData.frameCallback;
++                sharingData.frameCallback.reset();
++                if (!FORMAT_MISMATCH && !hasStableSize(WIDTH, HEIGHT)) {
++                    // Wait until the source size is stable for 50 ms.
++                    sharingData.status = FRAME_NONE;
++                    g_pPortalManager->m_sPortals.screencopy->queueNextShareFrame(this);
++                    return;
++                }
++                resetResizeTracking();
+@@ -481,3 +512,0 @@ void CScreencopyPortal::SSession::initCallbacks() {
+-                g_pPortalManager->m_sPortals.screencopy->queueNextShareFrame(this);
+-                sharingData.status = FRAME_NONE;
+-                sharingData.frameCallback.reset();
+@@ -485,0 +515 @@ void CScreencopyPortal::SSession::initCallbacks() {
++            resetResizeTracking();
+@@ -590,4 +622,19 @@ void CScreencopyPortal::SSession::initCallbacks() {
+-            const auto FMT = PSTREAM->isDMA ? sharingData.frameInfoDMA.fmt : sharingData.frameInfoSHM.fmt;
+-            if ((PSTREAM->pwVideoInfo.format != pwFromDrmFourcc(FMT) && PSTREAM->pwVideoInfo.format != pwStripAlpha(pwFromDrmFourcc(FMT))) ||
+-                (PSTREAM->pwVideoInfo.size.width != sharingData.frameInfoDMA.w || PSTREAM->pwVideoInfo.size.height != sharingData.frameInfoDMA.h)) {
+-                Debug::log(LOG, "[sc] Incompatible formats, renegotiate stream");
++            const auto FMT             = PSTREAM->isDMA ? sharingData.frameInfoDMA.fmt : sharingData.frameInfoSHM.fmt;
++            const auto WIDTH           = PSTREAM->isDMA ? sharingData.frameInfoDMA.w : sharingData.frameInfoSHM.w;
++            const auto HEIGHT          = PSTREAM->isDMA ? sharingData.frameInfoDMA.h : sharingData.frameInfoSHM.h;
++            const bool FORMAT_MISMATCH = PSTREAM->pwVideoInfo.format != pwFromDrmFourcc(FMT) && PSTREAM->pwVideoInfo.format != pwStripAlpha(pwFromDrmFourcc(FMT));
++            const bool SIZE_MISMATCH   = PSTREAM->pwVideoInfo.size.width != WIDTH || PSTREAM->pwVideoInfo.size.height != HEIGHT;
++            if (FORMAT_MISMATCH || SIZE_MISMATCH) {
++                Debug::log(LOG, "[sc] Incompatible {} frame: PipeWire format {} size {}x{}, frame format {} size {}x{}", PSTREAM->isDMA ? "DMA" : "SHM",
++                           (int)PSTREAM->pwVideoInfo.format, PSTREAM->pwVideoInfo.size.width, PSTREAM->pwVideoInfo.size.height, (int)FMT, WIDTH, HEIGHT);
++                // Keep this handler alive, but clear the session slot before stream
++                // parameter updates synchronously re-enter state callbacks.
++                const auto FRAME_CALLBACK = sharingData.windowFrameCallback;
++                sharingData.windowFrameCallback.reset();
++                if (!FORMAT_MISMATCH && !hasStableSize(WIDTH, HEIGHT)) {
++                    // Wait until the source size is stable for 50 ms.
++                    sharingData.status = FRAME_NONE;
++                    g_pPortalManager->m_sPortals.screencopy->queueNextShareFrame(this);
++                    return;
++                }
++                resetResizeTracking();
+@@ -596,3 +642,0 @@ void CScreencopyPortal::SSession::initCallbacks() {
+-                g_pPortalManager->m_sPortals.screencopy->queueNextShareFrame(this);
+-                sharingData.status = FRAME_NONE;
+-                sharingData.windowFrameCallback.reset();
+@@ -600,0 +645 @@ void CScreencopyPortal::SSession::initCallbacks() {
++            resetResizeTracking();
+@@ -757,0 +805,2 @@ static void pwStreamStateChange(void* data, pw_stream_state old, pw_stream_state
++            if (PSTREAM->pSession->sharingData.status == FRAME_RENEG)
++                break;
+@@ -799,0 +849,3 @@ static void pwStreamParamChanged(void* data, uint32_t id, const spa_pod* param)
++    // A format without a modifier uses shared memory, including DMA fallback.
++    PSTREAM->isDMA = false;
++
+@@ -916,0 +969,5 @@ static void pwStreamParamChanged(void* data, uint32_t id, const spa_pod* param)
++
++    if (PSTREAM->pSession->sharingData.status == FRAME_RENEG) {
++        PSTREAM->pSession->sharingData.status = FRAME_NONE;
++        g_pPortalManager->m_sPortals.screencopy->queueNextShareFrame(PSTREAM->pSession);
++    }
+diff --git a/src/portals/Screencopy.hpp b/src/portals/Screencopy.hpp
+--- a/src/portals/Screencopy.hpp
++++ b/src/portals/Screencopy.hpp
+@@ -79,0 +80,2 @@ class CScreencopyPortal {
++        bool                                      hasStableSize(uint32_t width, uint32_t height);
++        void                                      resetResizeTracking();
+@@ -94,0 +97,3 @@ class CScreencopyPortal {
++            uint32_t                              pendingWidth        = 0;
++            uint32_t                              pendingHeight       = 0;
++            std::chrono::steady_clock::time_point pendingSizeSince    = std::chrono::steady_clock::now();

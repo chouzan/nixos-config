@@ -15,6 +15,7 @@ in
     ./hyprlock.nix
     ./hypridle.nix
     ./plugins.nix
+    ./screen-share-picker.nix
     ./hypr-auto-mfact.nix
   ];
 

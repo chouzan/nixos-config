@@ -128,6 +128,11 @@
       };
     };
 
+    hyprland-preview-share-picker = {
+      url = "git+https://github.com/WhySoBad/hyprland-preview-share-picker?submodules=1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # TODO: Maybe remove zed-editor flake
     # NOTE: Building Zed may cause LimitNOFILE error.
     # Build it with:
