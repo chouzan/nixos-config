@@ -7,6 +7,13 @@
 
 let
   inherit (osConfig) modules;
+
+  secretFilePaths = {
+    SOPS_ANTHROPIC_API_KEY_FILE = config.sops.secrets.anthropic_api_key.path;
+    SOPS_OPENAI_API_KEY_FILE = config.sops.secrets.openai_api_key.path;
+    SOPS_ONEMAP_USERNAME_FILE = config.sops.secrets.onemap_username.path;
+    SOPS_ONEMAP_PASSWORD_FILE = config.sops.secrets.onemap_password.path;
+  };
 in
 {
   sops = {
@@ -24,10 +31,7 @@ in
   home.file."${modules.my.scriptHome}/sops_nix/load_secrets.sh" = {
     text = ''
       #!/usr/bin/env bash
-      export SOPS_ANTHROPIC_API_KEY_FILE=${config.sops.secrets.anthropic_api_key.path}
-      export SOPS_OPENAI_API_KEY_FILE=${config.sops.secrets.openai_api_key.path}
-      export SOPS_ONEMAP_USERNAME_FILE=${config.sops.secrets.onemap_username.path}
-      export SOPS_ONEMAP_PASSWORD_FILE=${config.sops.secrets.onemap_password.path}
+      ${lib.hm.shell.exportAll secretFilePaths}
     '';
 
     executable = true;
@@ -39,4 +43,6 @@ in
       # export <SOME_ENV>=$(cat "$SOPS_<SOME_ENV>_FILE" 2>/dev/null || echo "")
     ''
   );
+
+  programs.nushell.environmentVariables = lib.mkIf modules.programs.nushell.enable secretFilePaths;
 }

@@ -3,6 +3,7 @@
 {
   options.modules.programs = {
     zsh.enable = lib.mkEnableOption "Zsh shell with custom configuration";
+    nushell.enable = lib.mkEnableOption "Nushell with custom configuration";
     starship.enable = lib.mkEnableOption "Starship cross-shell prompt";
     vim.enable = lib.mkEnableOption "Vim text editor";
     ssh.enable = lib.mkEnableOption "OpenSSH client configuration";
@@ -15,6 +16,8 @@
     bat.enable = lib.mkEnableOption "bat (cat alternative) with custom configuration";
     eza.enable = lib.mkEnableOption "eza (ls alternative) with custom configuration";
     fzf.enable = lib.mkEnableOption "fzf (fuzzy finder) with custom configuration";
+    zoxide.enable = lib.mkEnableOption "zoxide smarter cd command";
+    carapace.enable = lib.mkEnableOption "Carapace multi-shell command argument completer";
     firefox.enable = lib.mkEnableOption "Firefox web browser with extensions";
     zed.enable = lib.mkEnableOption "Zed code editor (program name: zed-editor)";
     claude-code.enable = lib.mkEnableOption "Claude Code agentic coding tool";

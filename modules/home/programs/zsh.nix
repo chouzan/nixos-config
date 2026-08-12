@@ -47,11 +47,6 @@ in
             inherit (zsh-you-should-use) src;
             name = zsh-you-should-use.pname;
           }
-
-          {
-            inherit (zsh-z) src;
-            name = zsh-z.pname;
-          }
         ];
 
         completionInit = "autoload -U compinit && compinit -u";

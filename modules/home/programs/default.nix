@@ -6,6 +6,7 @@ in
 {
   imports = [
     ./zsh.nix
+    ./nushell.nix
     ./starship
     ./ssh.nix
     ./gnupg.nix
@@ -17,6 +18,8 @@ in
     ./bat.nix
     ./eza.nix
     ./fzf.nix
+    ./zoxide.nix
+    ./carapace.nix
     ./firefox
     ./zed
     ./claude-code
@@ -30,5 +33,6 @@ in
   home.shell = {
     enableShellIntegration = false;
     enableZshIntegration = modules.programs.zsh.enable;
+    enableNushellIntegration = modules.programs.nushell.enable;
   };
 }
