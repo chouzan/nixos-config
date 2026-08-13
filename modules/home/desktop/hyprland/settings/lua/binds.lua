@@ -28,7 +28,27 @@ hl.bind(mainMod .. " + Q",  hl.dsp.window.kill())
 
 hl.bind(mainMod .. " + A", hl.dsp.exec_cmd(vars.menu))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(vars.fileManager))
-hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(vars.terminal))
+
+hl.bind(mainMod .. " + T", function()
+  local activeWindow = hl.get_active_window()
+
+  if activeWindow and activeWindow.class == vars.terminalClass then
+    -- NOTE: Kitty opens a window in the working directory of the focused window
+    -- when it receives ctrl+shift+f12. The mods and key must match the Kitty
+    -- keybinding that home/desktop/hyprland/default.nix declares. A terminal
+    -- other than Kitty needs its own mechanism.
+    hl.dispatch(hl.dsp.send_shortcut({
+      mods = "CTRL + SHIFT",
+      key = "F12",
+      window = activeWindow,
+    }))
+  else
+    hl.dispatch(hl.dsp.exec_cmd(vars.terminal))
+  end
+end)
+
+hl.bind(altMod .. " + T", hl.dsp.exec_cmd(vars.terminal))
+
 hl.bind(mainMod .. " + D", hl.dsp.exec_cmd(vars.editor))
 hl.bind(mainMod .. " + I", hl.dsp.exec_cmd(vars.ai))
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(vars.webBrowser))

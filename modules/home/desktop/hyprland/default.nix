@@ -43,6 +43,12 @@ in
         keybindings = {
           # \x17 = Ctrl+W (backward-kill-word)
           "ctrl+backspace" = "send_text all \\x17";
+
+          # NOTE: Opens a window in the working directory of the focused
+          # window. The Hyprland terminal bind sends this shortcut, so
+          # changing the shortcut needs the matching change in
+          # settings/lua/binds.lua.
+          "ctrl+shift+f12" = "new_os_window_with_cwd";
         };
 
         # font = {

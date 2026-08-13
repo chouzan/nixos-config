@@ -10,6 +10,7 @@
 
 let
   cfg = osConfig.modules.desktop.hyprland;
+  inherit (cfg) terminal;
 
   hyprctl = "${pkgs.hyprland}/bin/hyprctl";
   jq = "${pkgs.jq}/bin/jq";
@@ -27,7 +28,8 @@ let
     return {
       menu          = "rofi -show drun",
       fileManager   = "dolphin",
-      terminal      = "kitty",
+      terminal      = "${terminal.command}",
+      terminalClass = "${terminal.class}",
       editor        = "zeditor",
       ai            = "claude-desktop",
       webBrowser    = "firefox",

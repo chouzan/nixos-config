@@ -18,7 +18,7 @@ let
   extraWorkspaceRules = [
     {
       workspace = "special:system";
-      on_created_empty = "kitty";
+      on_created_empty = cfg.terminal.command;
     }
   ];
 
@@ -74,7 +74,12 @@ in
 
         misc = {
           enable_swallow = true;
-          swallow_regex = "kitty";
+
+          # terminal.class holds a plain window class and swallow_regex takes a
+          # regular expression, so an unescaped metacharacter in the class
+          # would match loosely.
+          swallow_regex = lib.escapeRegex cfg.terminal.class;
+
           focus_on_activate = true;
           middle_click_paste = false;
         };

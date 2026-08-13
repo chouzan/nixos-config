@@ -12,6 +12,24 @@ in
   options.modules.desktop.hyprland = {
     enable = lib.mkEnableOption "Hyprland Wayland compositor";
 
+    terminal = {
+      command = lib.mkOption {
+        type = types.str;
+        default = "kitty";
+        description = "Command that starts the terminal.";
+      };
+
+      class = lib.mkOption {
+        type = types.str;
+        default = "kitty";
+
+        description = ''
+          Window class of the terminal, which can differ from the command that
+          starts it.
+        '';
+      };
+    };
+
     localSettings = {
       enable = lib.mkOption {
         type = types.bool;
