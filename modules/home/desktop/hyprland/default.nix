@@ -15,6 +15,7 @@ in
     ./hyprlock.nix
     ./hypridle.nix
     ./plugins.nix
+    ./capture.nix
     ./screen-share-picker.nix
     ./hypr-auto-mfact.nix
   ];
@@ -30,15 +31,6 @@ in
 
       # Clipboard manager
       wl-clipboard
-
-      # Screenshot
-      grim
-      slurp
-      satty
-
-      # Screen recording
-      wf-recorder
-      wl-screenrec
     ];
 
     programs = {

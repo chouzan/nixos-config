@@ -34,18 +34,16 @@ hl.bind(mainMod .. " + I", hl.dsp.exec_cmd(vars.ai))
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(vars.webBrowser))
 hl.bind(mainMod .. " + U", hl.dsp.exec_cmd(vars.mediaPlayer))
 
--- Screenshots -----------------------------------------------------------------
--- Grab a region, pipe to satty, save under the pictures dir.
+-- Screen capture --------------------------------------------------------------
 
-local sattyPipe = " -t png - | satty --filename - --output-filename "
-  .. vars.screenshotDir .. "/$(date '+%Y%m%d%H%M%S')_screenshot.png"
+hl.bind("Print",        hl.dsp.exec_cmd("hypr-capture screenshot region"))
+hl.bind("ALT + Print",  hl.dsp.exec_cmd("hypr-capture screenshot output"))
+hl.bind("CTRL + Print", hl.dsp.exec_cmd("hypr-capture screenshot window"))
 
-hl.bind("Print", hl.dsp.exec_cmd(
-  [==[grim -g "$(slurp -doc '##ff0000ff')"]==] .. sattyPipe))
-hl.bind("ALT + Print", hl.dsp.exec_cmd(
-  [==[grim -g "$(hyprctl monitors -j | jq -r '.[] | select(.focused) | [.] | if length != 1 then error("expected exactly one focused monitor") else .[0] end | "\(.x),\(.y) \(.width)x\(.height)"')"]==] .. sattyPipe))
-hl.bind("CTRL + Print", hl.dsp.exec_cmd(
-  [==[grim -g "$(hyprctl activewindow -j | jq -r '. | "\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"')"]==] .. sattyPipe))
+hl.bind("SHIFT + Print",              hl.dsp.exec_cmd("hypr-capture record region"))
+hl.bind("SHIFT + ALT + Print",        hl.dsp.exec_cmd("hypr-capture record output"))
+hl.bind("SHIFT + CTRL + Print",       hl.dsp.exec_cmd("hypr-capture record window"))
+hl.bind("SHIFT + CTRL + ALT + Print", hl.dsp.exec_cmd("hypr-capture record stop"))
 
 -- Window state ----------------------------------------------------------------
 

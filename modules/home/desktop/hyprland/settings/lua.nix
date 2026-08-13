@@ -9,7 +9,6 @@
 # Reference: <https://github.com/hyprwm/Hyprland/blob/main/example/hyprland.lua>
 
 let
-  inherit (config.xdg) userDirs;
   cfg = osConfig.modules.desktop.hyprland;
 
   hyprctl = "${pkgs.hyprland}/bin/hyprctl";
@@ -34,7 +33,6 @@ let
       webBrowser    = "firefox",
       mediaPlayer   = "spotify",
 
-      screenshotDir = "${userDirs.pictures}/Screenshot",
       toggleFocus   = "${hypr-toggle-focus-layer}",
 
       clipMan        = "clipse",
