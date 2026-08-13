@@ -1,0 +1,4 @@
+interface:
+  display_name: "Change Description"
+  short_description: "Write concise, stand-alone change descriptions"
+  default_prompt: "Use $change-description to write or review a description."

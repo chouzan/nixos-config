@@ -71,44 +71,26 @@ let
 
   mcpCfg = modules.programs.mcp;
 
-  skills = [
-    ./skills/git-commit
-    ./skills/git-rebase
-    ./skills/nix-patterns
-    ./skills/skill-creator
-  ];
+  skills = {
+    git-commit = ./skills/git-commit;
+    git-rebase = ./skills/git-rebase;
+    nix-patterns = ./skills/nix-patterns;
+    skill-creator = ./skills/skill-creator;
+  };
 
-  agents = [
-    ./agents/git-rebaser.md
-  ];
-
-  skillFiles = lib.listToAttrs (
-    map (
-      source:
-      lib.nameValuePair ".claude/skills/${baseNameOf source}" {
-        inherit source;
-        recursive = true;
-      }
-    ) skills
-  );
-
-  agentFiles = lib.listToAttrs (
-    map (
-      source:
-      lib.nameValuePair ".claude/agents/${baseNameOf source}" {
-        inherit source;
-      }
-    ) agents
-  );
+  agents = {
+    git-rebaser = ./agents/git-rebaser.md;
+  };
 in
 {
   config = lib.mkIf cfg.enable {
-    home.file = skillFiles // agentFiles;
-
     home.activation.claudeCodeSettings = lib.hm.dag.entryAfter [ "linkGeneration" ] mergeUserSettings;
 
     programs.claude-code = {
       enable = true;
+
+      inherit skills agents;
+
       enableMcpIntegration = mcpCfg.enable;
 
       # Disabled: Claude Code LSP client has lifecycle bugs that wedge

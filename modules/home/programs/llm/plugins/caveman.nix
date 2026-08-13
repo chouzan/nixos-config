@@ -9,7 +9,7 @@
 let
   inherit (osConfig) modules;
 
-  cfg = modules.programs.llm-plugins.caveman;
+  cfg = modules.programs.llm.plugins.caveman;
   caveman = inputs.llm-caveman;
 
   opencodePlugin = pkgs.runCommand "caveman-opencode-plugin" { } ''

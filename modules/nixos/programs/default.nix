@@ -7,7 +7,7 @@
     ./vim.nix
     ./claude-code.nix
     ./codex.nix
-    ./llm-plugins
+    ./llm
     ./spotify.nix
   ];
 }

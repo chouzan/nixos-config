@@ -37,6 +37,29 @@
         internal = true;
         description = "Composable preferences merged into the writable Claude Code user settings";
       };
+
+      statusLineSegments = lib.mkOption {
+        type = lib.types.listOf (
+          lib.types.submodule {
+            options = {
+              order = lib.mkOption {
+                type = lib.types.int;
+                default = 100;
+                description = "Sort key. A lower value puts the segment further left.";
+              };
+
+              command = lib.mkOption {
+                type = lib.types.str;
+                description = "Command that reads the status payload on stdin and writes one segment.";
+              };
+            };
+          }
+        );
+
+        default = [ ];
+        internal = true;
+        description = "Composable segments for the Claude Code status line";
+      };
     };
 
     codex = {
@@ -51,7 +74,7 @@
     };
 
     opencode.enable = lib.mkEnableOption "OpenCode agentic coding tool";
-    llm-plugins.caveman.enable = lib.mkEnableOption "Caveman workflow plugin for LLM coding agents";
+    llm.plugins.caveman.enable = lib.mkEnableOption "Caveman workflow plugin for LLM coding agents";
 
     mcp = {
       enable = lib.mkEnableOption "MCP server configuration";

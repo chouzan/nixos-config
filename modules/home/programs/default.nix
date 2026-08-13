@@ -25,7 +25,7 @@ in
     ./claude-code
     ./codex.nix
     ./opencode.nix
-    ./llm-plugins
+    ./llm
     ./mcp.nix
     ./bitwarden.nix
   ];

@@ -27,7 +27,7 @@ in
       claude-code.enable = utils.mkProfileDefault true;
       codex.enable = utils.mkProfileDefault true;
       opencode.enable = utils.mkProfileDefault true;
-      llm-plugins.caveman.enable = utils.mkProfileDefault true;
+      llm.plugins.caveman.enable = utils.mkProfileDefault true;
 
       mcp = {
         enable = utils.mkProfileDefault true;
