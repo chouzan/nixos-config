@@ -15,10 +15,10 @@ let
 in
 {
   config = lib.mkMerge [
-    (lib.mkIf (cfg.enable && modules.programs.claude-code.enable) {
+    (lib.mkIf (cfg.enable && modules.programs.llm.claude-code.enable) {
       # The badge is the last segment, so the model and the effort level read
       # first. The status line itself is composed by the claude-code module.
-      modules.programs.claude-code.statusLineSegments = [
+      modules.programs.llm.claude-code.statusLineSegments = [
         {
           order = 90;
           command = "${lib.getExe pkgs.bash} ${caveman}/src/hooks/caveman-statusline.sh";
@@ -26,8 +26,8 @@ in
       ];
     })
 
-    (lib.mkIf (cfg.enable && modules.programs.codex.enable) {
-      modules.programs.codex.systemSettings = {
+    (lib.mkIf (cfg.enable && modules.programs.llm.codex.enable) {
+      modules.programs.llm.codex.systemSettings = {
         features.hooks = true;
         hooks = codexHooks;
       };

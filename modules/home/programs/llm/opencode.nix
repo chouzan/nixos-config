@@ -3,7 +3,7 @@
 let
   inherit (osConfig) modules;
 
-  cfg = modules.programs.opencode;
+  cfg = modules.programs.llm.opencode;
   mcpCfg = modules.programs.mcp;
 in
 {

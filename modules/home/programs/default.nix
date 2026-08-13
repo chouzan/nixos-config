@@ -22,9 +22,6 @@ in
     ./carapace.nix
     ./firefox
     ./zed
-    ./claude-code
-    ./codex.nix
-    ./opencode.nix
     ./llm
     ./mcp.nix
     ./bitwarden.nix

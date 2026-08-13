@@ -10,15 +10,15 @@ let
 in
 {
   config = lib.mkMerge [
-    (lib.mkIf modules.programs.claude-code.enable {
+    (lib.mkIf modules.programs.llm.claude-code.enable {
       programs.claude-code.skills = skills;
     })
 
-    (lib.mkIf modules.programs.codex.enable {
+    (lib.mkIf modules.programs.llm.codex.enable {
       programs.codex.skills = skills;
     })
 
-    (lib.mkIf modules.programs.opencode.enable {
+    (lib.mkIf modules.programs.llm.opencode.enable {
       programs.opencode.skills = skills;
     })
   ];

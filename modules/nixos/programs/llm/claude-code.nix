@@ -10,7 +10,7 @@ let
   inherit (config) modules;
   inherit (libs) sensitivePaths;
 
-  cfg = modules.programs.claude-code;
+  cfg = modules.programs.llm.claude-code;
 
   jsonFormat = pkgs.formats.json { };
 
@@ -88,7 +88,7 @@ in
     environment.etc."claude-code/managed-settings.json".source =
       jsonFormat.generate "claude-code-managed-settings.json" managedSettings;
 
-    modules.programs.claude-code = {
+    modules.programs.llm.claude-code = {
       statusLineSegments = [
         {
           order = 10;

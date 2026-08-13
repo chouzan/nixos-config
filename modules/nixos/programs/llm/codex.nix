@@ -10,7 +10,7 @@ let
   inherit (config) modules;
   inherit (libs) sensitivePaths;
 
-  cfg = modules.programs.codex;
+  cfg = modules.programs.llm.codex;
   mcpCfg = modules.programs.mcp;
 
   tomlFormat = pkgs.formats.toml { };
@@ -84,8 +84,8 @@ in
 {
   # Codex writes folder-trust decisions to the user's config.toml at runtime,
   # so that file must stay writable and codex-owned; home-manager leaves it
-  # unmanaged (see modules/home/programs/codex.nix). This declarative config
-  # lives in Codex's `System` layer (/etc/codex/config.toml): lowest
+  # unmanaged (see modules/home/programs/llm/codex.nix). This declarative
+  # config lives in Codex's `System` layer (/etc/codex/config.toml): lowest
   # precedence, always loaded for every subcommand, and merged beneath the
   # writable user file so the two never collide. A `--profile` layer cannot
   # replace it -- Codex rejects `--profile` on non-runtime subcommands such as

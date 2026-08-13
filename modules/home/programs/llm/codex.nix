@@ -2,7 +2,7 @@
 
 let
   inherit (osConfig) modules;
-  cfg = modules.programs.codex;
+  cfg = modules.programs.llm.codex;
 in
 {
   config = lib.mkIf cfg.enable {

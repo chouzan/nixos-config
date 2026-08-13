@@ -20,61 +20,62 @@
     carapace.enable = lib.mkEnableOption "Carapace multi-shell command argument completer";
     firefox.enable = lib.mkEnableOption "Firefox web browser with extensions";
     zed.enable = lib.mkEnableOption "Zed code editor (program name: zed-editor)";
+    llm = {
+      claude-code = {
+        enable = lib.mkEnableOption "Claude Code agentic coding tool";
 
-    claude-code = {
-      enable = lib.mkEnableOption "Claude Code agentic coding tool";
+        systemSettings = lib.mkOption {
+          inherit (pkgs.formats.json { }) type;
+          default = { };
+          internal = true;
+          description = "Composable policy for the Claude Code managed settings layer";
+        };
 
-      systemSettings = lib.mkOption {
-        inherit (pkgs.formats.json { }) type;
-        default = { };
-        internal = true;
-        description = "Composable policy for the Claude Code managed settings layer";
-      };
+        userSettings = lib.mkOption {
+          inherit (pkgs.formats.json { }) type;
+          default = { };
+          internal = true;
+          description = "Composable preferences merged into the writable Claude Code user settings";
+        };
 
-      userSettings = lib.mkOption {
-        inherit (pkgs.formats.json { }) type;
-        default = { };
-        internal = true;
-        description = "Composable preferences merged into the writable Claude Code user settings";
-      };
+        statusLineSegments = lib.mkOption {
+          type = lib.types.listOf (
+            lib.types.submodule {
+              options = {
+                order = lib.mkOption {
+                  type = lib.types.int;
+                  default = 100;
+                  description = "Sort key. A lower value puts the segment further left.";
+                };
 
-      statusLineSegments = lib.mkOption {
-        type = lib.types.listOf (
-          lib.types.submodule {
-            options = {
-              order = lib.mkOption {
-                type = lib.types.int;
-                default = 100;
-                description = "Sort key. A lower value puts the segment further left.";
+                command = lib.mkOption {
+                  type = lib.types.str;
+                  description = "Command that reads the status payload on stdin and writes one segment.";
+                };
               };
+            }
+          );
 
-              command = lib.mkOption {
-                type = lib.types.str;
-                description = "Command that reads the status payload on stdin and writes one segment.";
-              };
-            };
-          }
-        );
-
-        default = [ ];
-        internal = true;
-        description = "Composable segments for the Claude Code status line";
+          default = [ ];
+          internal = true;
+          description = "Composable segments for the Claude Code status line";
+        };
       };
-    };
 
-    codex = {
-      enable = lib.mkEnableOption "Codex CLI agentic coding tool";
+      codex = {
+        enable = lib.mkEnableOption "Codex CLI agentic coding tool";
 
-      systemSettings = lib.mkOption {
-        inherit (pkgs.formats.toml { }) type;
-        default = { };
-        internal = true;
-        description = "Composable settings for the Codex System configuration layer";
+        systemSettings = lib.mkOption {
+          inherit (pkgs.formats.toml { }) type;
+          default = { };
+          internal = true;
+          description = "Composable settings for the Codex System configuration layer";
+        };
       };
-    };
 
-    opencode.enable = lib.mkEnableOption "OpenCode agentic coding tool";
-    llm.plugins.caveman.enable = lib.mkEnableOption "Caveman workflow plugin for LLM coding agents";
+      opencode.enable = lib.mkEnableOption "OpenCode agentic coding tool";
+      plugins.caveman.enable = lib.mkEnableOption "Caveman workflow plugin for LLM coding agents";
+    };
 
     mcp = {
       enable = lib.mkEnableOption "MCP server configuration";

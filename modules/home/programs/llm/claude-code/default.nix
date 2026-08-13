@@ -9,9 +9,10 @@
 let
   inherit (osConfig) modules;
 
-  cfg = modules.programs.claude-code;
+  cfg = modules.programs.llm.claude-code;
 
   jsonFormat = pkgs.formats.json { };
+
   settingsPath = "${config.home.homeDirectory}/.claude/settings.json";
 
   userSettings = lib.recursiveUpdate {
@@ -68,7 +69,6 @@ let
     chmod 600 "$settings.tmp"
     mv "$settings.tmp" "$settings"
   '';
-
   mcpCfg = modules.programs.mcp;
 
   skills = {
