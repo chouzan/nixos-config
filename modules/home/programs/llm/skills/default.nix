@@ -4,6 +4,7 @@ let
   inherit (osConfig) modules;
 
   skills = {
+    skill-creator = ./skill-creator;
     change-description = ./change-description;
     technical-writing = ./technical-writing;
   };

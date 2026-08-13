@@ -11,8 +11,7 @@ description: >-
 # Technical Writing
 
 Requirement keywords in capitals follow BCP 14 (RFC 2119, RFC 8174). Lowercase
-forms of these words state no requirement. When a document states requirements,
-use BCP 14 keywords for the requirement levels.
+forms of these words state no requirement.
 
 Apply repository rules first. A repository rule or an explicit user instruction
 MAY replace a rule in this skill. Otherwise these rules are the minimum for
@@ -52,6 +51,8 @@ Apply the general principles of ASD-STE100 Simplified Technical English.
 
 Documentation:
 
+- MUST use BCP 14 keywords for the requirement levels of a document that
+  states requirements.
 - MUST use one term for one meaning, and MUST NOT vary terms only for style.
 - MUST define uncommon abbreviations and project-specific terms at first use.
 - MUST replace ambiguous pronouns and references with explicit nouns.

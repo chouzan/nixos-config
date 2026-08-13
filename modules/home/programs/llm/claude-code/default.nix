@@ -75,7 +75,6 @@ let
     git-commit = ./skills/git-commit;
     git-rebase = ./skills/git-rebase;
     nix-patterns = ./skills/nix-patterns;
-    skill-creator = ./skills/skill-creator;
   };
 
   agents = {

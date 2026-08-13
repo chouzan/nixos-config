@@ -52,15 +52,20 @@ The description:
 ## Do not add external references
 
 The description MUST NOT contain an issue or pull-request reference. This rule
-covers every form that GitHub can link or use as an action:
+covers every form that a code forge can link or use as an action:
 
 - `#123`, `GH-123`, and `owner/repository#123`
 - `Fixes`, `Closes`, `Resolves`, `Refs`, and similar reference trailers
-- GitHub issue or pull-request URLs
+- Issue or pull-request URLs
 
 A necessary upstream reference SHOULD stay in a relevant code comment.
 
 ## Apply and verify the description
+
+You MUST NOT change a description that is published, or that another author
+wrote. You MAY update the description of a change that the current task creates
+or edits. For any other change, you MUST report what is wrong and update the
+description only after the user permits it.
 
 For Jujutsu, set the description with `jj describe`. For Git, set the message
 with `git commit` or `git commit --amend`.
