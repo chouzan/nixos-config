@@ -22,13 +22,16 @@ in
     programs.zed-editor = {
       enable = true;
 
-      extraPackages = lib.optionals modules.bundles.dev.nix.enable (
+      extraPackages =
         with pkgs;
-        [
+        lib.optionals modules.bundles.dev.nix.enable [
           nixd
           nixfmt
         ]
-      );
+        ++ lib.optionals modules.programs.nushell.enable [
+          nushell
+          nufmt
+        ];
     };
 
     # TODO: Check if this is necessary

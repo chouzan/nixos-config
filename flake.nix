@@ -376,6 +376,13 @@
         sops-nix.homeManagerModules.sops
         quadlet-nix.homeManagerModules.quadlet
       ];
+
+      projectChecks = import ./checks {
+        inherit pkgs;
+        flakeSrc = ./.;
+      };
+
+      treefmtEval = inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
     in
     {
       nixosConfigurations =
@@ -387,11 +394,10 @@
         wsl = self.nixosConfigurations.wsl.config.system.build.tarballBuilder;
       };
 
-      formatter.${system} = inputs.treefmt-nix.lib.mkWrapper pkgs {
-        projectRootFile = "flake.nix";
-        programs.nixfmt.enable = true;
-        settings.global.includes = [ "*.nix" ];
-        settings.global.excludes = [ ".knowledge/*" ];
+      formatter.${system} = treefmtEval.config.build.wrapper;
+
+      checks.${system} = projectChecks // {
+        formatting = treefmtEval.config.build.check self;
       };
     };
 }

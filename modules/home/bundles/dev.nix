@@ -25,11 +25,6 @@ in
 
     (lib.mkIf cfg.dev.nix.enable {
       home.packages = with pkgs; [
-        nixd
-        nixfmt
-        nixfmt-tree
-        statix
-        deadnix
         nix-tree
         nix-output-monitor
       ];

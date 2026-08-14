@@ -22,6 +22,10 @@ in
           nix = true;
         })
 
+        (lib.mkIf modules.programs.nushell.enable {
+          nu = true;
+        })
+
         (lib.mkIf modules.bundles.dev.elixir.enable {
           elixir = true;
         })
@@ -59,6 +63,15 @@ in
           Nix = {
             language_servers = [ "nixd" ];
             formatter = "language_server";
+            format_on_save = "on";
+          };
+
+          Nu = {
+            formatter.external = {
+              command = "nufmt";
+              arguments = [ "--stdin" ];
+            };
+
             format_on_save = "on";
           };
 
