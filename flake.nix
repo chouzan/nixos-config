@@ -369,7 +369,10 @@
       ];
 
       projectChecks = import ./checks {
-        inherit pkgs;
+        # The checks need the Nushell writers that report a parse error at build
+        # time. Only that overlay is applied, so a check does not rebuild
+        # everything the system overlays touch.
+        pkgs = pkgs.extend (import ./overlays/nu-writers.nix);
         flakeSrc = ./.;
       };
 
