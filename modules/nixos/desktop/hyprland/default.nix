@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  libs,
   ...
 }:
 
@@ -22,6 +23,18 @@ in
         # Let Hyprland launch via the Unified Wayland Session Manager (UWSM)
         withUWSM = true;
       };
+    };
+
+    # Written to /etc/xdg/mimeapps.list, which the specification ranks below
+    # the file in the home directory, so a choice that a file manager records
+    # still wins.
+    xdg.mime.defaultApplications = libs.mime.defaultApplications {
+      # Kitty claims inode/directory through kitty-open.desktop, which opens a
+      # terminal rather than a file manager.
+      directory = "org.kde.dolphin.desktop";
+
+      image = "org.kde.gwenview.desktop";
+      video = "org.kde.gwenview.desktop";
     };
 
     xdg.portal = {
