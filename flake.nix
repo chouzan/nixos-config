@@ -161,7 +161,7 @@
 
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
+        systems.follows = "systems";
       };
     };
 
@@ -198,11 +198,6 @@
     # Transitive dependencies
 
     nixpkgs-lib.url = "github:nix-community/nixpkgs.lib";
-
-    flake-utils = {
-      url = "github:numtide/flake-utils";
-      inputs.systems.follows = "systems";
-    };
 
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
