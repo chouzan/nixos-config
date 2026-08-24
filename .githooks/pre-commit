@@ -1,26 +1,22 @@
 #!/usr/bin/env bash
 
+# Git is a fallback here, since Jujutsu drives this repository and never runs
+# git hooks. The hook therefore has to work from a bare environment, so it asks
+# Nix for the checks rather than expecting linters on PATH.
+
+set -euo pipefail
+
 staged_nix=$(git diff --cached --name-only --diff-filter=ACM -- '*.nix')
 [ -z "$staged_nix" ] && exit 0
 
-echo "running nix checks on staged files..."
+system=$(nix eval --impure --raw --expr builtins.currentSystem)
 
-echo "  nixfmt..."
-if ! echo "$staged_nix" | xargs nixfmt --check 2>/dev/null; then
-  echo "error: nixfmt: formatting check failed. Run 'nix fmt' to fix."
-  exit 1
-fi
+echo "running nix checks..."
 
-echo "  statix..."
-if ! statix check . 2>&1; then
-  echo "error: statix: lint warnings found."
-  exit 1
-fi
-
-echo "  deadnix..."
-if ! deadnix --fail . 2>&1; then
-  echo "error: deadnix: dead code found."
-  exit 1
-fi
+# Both checks read the flake source, which for a git flake is the index, so
+# staged changes are what they see.
+nix build --no-link --print-build-logs \
+  ".#checks.${system}.formatting" \
+  ".#checks.${system}.nix-static"
 
 echo "all checks passed."

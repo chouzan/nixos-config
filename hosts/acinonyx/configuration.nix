@@ -25,10 +25,6 @@
 
   system.stateVersion = "26.05";
 
-  # bitwarden-desktop depends on Electron 39 (EOL in nixpkgs).
-  # Remove once bitwarden updates to a supported Electron version.
-  nixpkgs.config.permittedInsecurePackages = [ "electron-39.8.10" ];
-
   modules = {
     monitors = [
       {

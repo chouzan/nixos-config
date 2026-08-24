@@ -92,36 +92,6 @@ in
 
       enableMcpIntegration = mcpCfg.enable;
 
-      # Disabled: Claude Code LSP client has lifecycle bugs that wedge
-      # the entire session. Re-enable once upstream fixes land.
-      # Tracking:
-      #   - github.com/anthropics/claude-code/issues/67037 (state gate wedges, blocks session)
-      #   - github.com/anthropics/claude-code/issues/66987 (plugin LSP init-ordering bug)
-      #   - github.com/anthropics/claude-code/issues/70326 (workspace/configuration never sent)
-      #
-      # lspServers = {
-      #   nix = {
-      #     command = "nixd";
-      #     args = [ ];
-      #
-      #     extensionToLanguage = {
-      #       ".nix" = "nix";
-      #     };
-      #   };
-      #
-      #   elixir = {
-      #     command = "expert";
-      #     args = [ "--stdio" ];
-      #
-      #     extensionToLanguage = {
-      #       ".ex" = "elixir";
-      #       ".exs" = "elixir";
-      #       ".heex" = "phoenix-heex";
-      #       ".leex" = "phoenix-heex";
-      #     };
-      #   };
-      # };
-
       # No `settings` here: home-manager would install the user settings file
       # read-only, and Claude Code writes runtime choices such as the model and
       # effort level to it. Declarative settings live in the managed layer (see

@@ -11,14 +11,16 @@ let
   # Args:
   #   pname           -- nixpkgs attribute name
   #   isBroken        -- pkg -> bool, detection logic
-  #   fallback        -- pkg -> drv, what to use when broken
+  #   fallback        -- prev -> pkg -> drv, what to use when broken. Takes the
+  #                      package set as well, because a fallback that adds a
+  #                      missing dependency needs a sibling package.
   #   overlayLocation -- optional string shown in the trace message
   #
   #   mkPackageGuardOverlay {
   #     pname = "kitty";
   #     overlayLocation = "overlays/default.nix";
   #     isBroken = pkg: builtins.readFile "${pkg}/path/to/file" == "";
-  #     fallback = pkg: pkg.overrideAttrs (old: { ... });
+  #     fallback = prev: pkg: pkg.overrideAttrs (old: { ... });
   #   }
   mkPackageGuardOverlay =
     {
@@ -36,7 +38,7 @@ let
       {
         ${pname} =
           if isBroken pkg then
-            fallback pkg
+            fallback prev pkg
           else
             builtins.warn "${pname}: upstream is FIXED. Remove its guard overlay${hint}." pkg;
       }
