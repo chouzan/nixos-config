@@ -31,9 +31,9 @@ in
     })
 
     (lib.mkIf cfg.dev.elixir.enable {
-      home.packages = with pkgs; [
-        beamPackages.elixir
-        elixir-expert
+      home.packages = with pkgs.beamPackages; [
+        elixir
+        expert
       ];
     })
 

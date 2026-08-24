@@ -170,15 +170,6 @@
       flake = false;
     };
 
-    elixir-expert = {
-      url = "github:elixir-lang/expert/nightly";
-
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
-      };
-    };
-
     mcp-proxy = {
       url = "github:tidewave-ai/mcp_proxy_rust";
       flake = false;

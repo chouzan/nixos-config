@@ -1,4 +1,4 @@
-{ inputs, system, ... }:
+{ inputs, ... }:
 
 [
   # Upstream overlays
@@ -52,6 +52,5 @@
 
   # Custom overlays (no upstream available)
   (import ./nu-writers.nix)
-  (import ./elixir-expert.nix { inherit inputs system; })
   (import ./mcp-proxy.nix { inherit inputs; })
 ]
