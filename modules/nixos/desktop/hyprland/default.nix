@@ -60,7 +60,13 @@ in
 
       displayManager = {
         enable = true;
-        defaultSession = "hyprland";
+        # Hyprland installs two session entries, and only the uwsm one runs the
+        # compositor as a systemd user unit, which is what makes the session
+        # stoppable and its units collectable.
+        #
+        # The setting only preselects an entry. SDDM records the session a user
+        # last chose and offers that one instead.
+        defaultSession = "hyprland-uwsm";
 
         sddm = {
           # Enable SDDM as the graphical login manager

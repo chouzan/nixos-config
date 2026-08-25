@@ -65,6 +65,13 @@ in
       package = null;
       portalPackage = null;
 
+      # uwsm binds the compositor into graphical-session.target. Home Manager
+      # links hyprland-session.target to that same target and stops it while
+      # the compositor starts, which tears the session down.
+      #
+      # Reference: https://wiki.nixos.org/wiki/Hyprland
+      systemd.enable = false;
+
       plugins = with pkgs.hyprlandPlugins; [
         hyprbars
       ];
