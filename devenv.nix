@@ -1,7 +1,11 @@
 { pkgs, ... }:
 
 let
-  dev = pkgs.writers.writeNuBin "dev" (builtins.readFile ./scripts/dev.nu);
+  # devenv brings its own package set, so the writer that reports a Nushell
+  # parse error at build time has to be added to it here.
+  nuPkgs = pkgs.extend (import ./overlays/nu-writers.nix);
+
+  dev = nuPkgs.writeNuBinChecked "dev" { } ./scripts/dev.nu;
 in
 {
   packages = [
