@@ -1,9 +1,11 @@
 _final: prev:
 
 let
-  # The check runs inside the derivation of the script it checks, where only the
-  # inputs of that derivation are on PATH, so the checker carries Nushell with
-  # it for the process it starts.
+  # The check runs inside the derivation it checks, where only that
+  # derivation's inputs are on PATH, so the checker carries Nushell itself.
+  #
+  # It is built with the unchecked writer, since a checking one would need this
+  # checker to build.
   nuCheck = prev.writers.writeNu "nu-ide-check" {
     makeWrapperArgs = [
       "--prefix"
@@ -14,14 +16,13 @@ let
   } ./nu-ide-check.nu;
 in
 {
-  # `writers.writeNu` accepts a `check` argument and leaves it empty, so a parse
-  # error surfaces only when the script runs. `writeNuChecked` and
-  # `writeNuBinChecked` fill that argument in, which moves the failure to build
-  # time. Every other argument, including `makeWrapperArgs`, passes through
-  # untouched.
-  #
-  # The checker itself is written with the unchecked builder, because a builder
-  # that checked it would need it in order to build.
+  # The checker as a package, for a build that runs the gate itself. It takes
+  # one file per run.
+  nu-ide-check = nuCheck;
+
+  # `writers.writeNu` leaves its `check` argument empty, so a parse error
+  # surfaces only at run time. These fill it in, moving the failure to the
+  # build.
   writeNuChecked =
     name: arguments: content:
     prev.writers.writeNu name ({ check = nuCheck; } // arguments) content;

@@ -25,17 +25,20 @@ in
     # Extras
     memtest86.enable = true;
 
-    # A firmware boot order lists a named loader, and treats the removable path
-    # as a device rather than an entry, so an installation that writes only the
-    # removable path cannot be ordered ahead of another system.
+    # The loader goes to the fallback path, \EFI\BOOT\BOOTX64.EFI, which any
+    # installer may overwrite, and firmware names the entry it creates there
+    # itself.
     #
-    # The copy is made by every run of the installer, right after it writes the
-    # file it copies, so the two cannot drift. A copy written once and left
-    # alone is the failure this avoids: firmware loads a loader from one
-    # installation while it reads modules from another, and stops before any
-    # menu appears.
+    # A copy under \EFI\NixOS is written by this system alone, and an entry
+    # pointing at it takes the name its creator chooses.
+    #
+    # The copy does nothing until `nixosadm boot create` writes that entry.
+    #
+    # Every rebuild remakes the copy, so it cannot go stale. A stale copy means
+    # firmware loads one installation's loader while that loader reads another's
+    # modules, and stops before any menu.
     extraInstallCommands = ''
-      install -Dm644 ${esp}/EFI/BOOT/BOOTX64.EFI ${esp}/EFI/NixOS/grubx64.efi
+      install -D ${esp}/EFI/BOOT/BOOTX64.EFI ${esp}/EFI/NixOS/grubx64.efi
     '';
   };
 }

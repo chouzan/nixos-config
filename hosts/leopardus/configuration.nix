@@ -55,6 +55,7 @@
   modules = {
     user.enable = false;
     packages.admin.enable = true;
+    system.nixosadm.enable = true;
     programs.vim.enable = true;
   };
 

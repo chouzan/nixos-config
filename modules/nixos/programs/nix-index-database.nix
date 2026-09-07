@@ -12,7 +12,6 @@ let
 
   cfg = config.modules.programs.nix-index-database;
   system = pkgs.stdenv.hostPlatform.system;
-
   nixIndexSmallDb = inputs.nix-index-database.packages.${system}.nix-index-with-small-db;
 in
 {

@@ -341,7 +341,7 @@
 
       mkMachine = builder.mkMachineDefaults { inherit inputs system user; };
 
-      # TODO: Introduce `nixosadm` command for unified admin tasks
+      # TODO: Extend `nixosadm` beyond firmware boot entries
       # - Similar to `eos` from EndeavourOS
       # - Commit hardware-configuration.nix and stateVersion changes after install
       # - System maintenance, updates, garbage collection
@@ -374,6 +374,13 @@
         quadlet-nix.homeManagerModules.quadlet
       ];
 
+      adminPkgs = pkgs.extend (
+        nixpkgs.lib.composeManyExtensions [
+          (import ./overlays/nu-writers.nix)
+          (import ./overlays/nixosadm.nix)
+        ]
+      );
+
       projectChecks = import ./checks {
         inherit pkgs;
         flakeSrc = ./.;
@@ -387,6 +394,8 @@
           overlays;
 
       packages.${system} = {
+        inherit (adminPkgs) nixosadm;
+
         installer = self.nixosConfigurations.installer.config.system.build.isoImage;
         wsl = self.nixosConfigurations.wsl.config.system.build.tarballBuilder;
       };

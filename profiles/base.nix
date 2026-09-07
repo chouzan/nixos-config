@@ -6,6 +6,7 @@ in
 {
   modules = {
     system.dns.encrypted.enable = utils.mkProfileDefault true;
+    system.nixosadm.enable = utils.mkProfileDefault true;
     packages.admin.enable = utils.mkProfileDefault true;
     bundles.dev.nix.enable = utils.mkProfileDefault true;
 

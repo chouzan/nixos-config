@@ -46,5 +46,6 @@
 
   # Custom overlays (no upstream available)
   (import ./nu-writers.nix)
+  (import ./nixosadm.nix)
   (import ./mcp-proxy.nix { inherit inputs; })
 ]

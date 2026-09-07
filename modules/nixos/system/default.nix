@@ -16,6 +16,7 @@ in
     ./sleep.nix
     ./fonts.nix
     ./hosts.nix
+    ./nixosadm.nix
   ];
 
   # Disable watchdog auto-reboot (prefer debugging hangs)
