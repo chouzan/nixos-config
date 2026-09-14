@@ -27,7 +27,27 @@ in
     name: arguments: content:
     prev.writers.writeNu name ({ check = nuCheck; } // arguments) content;
 
+  # Nushell names a script's commands after its file, and that name prints in
+  # the help. The writer renames a wrapped script to `.NAME-wrapped`, so the
+  # script is built unwrapped here and the wrapper separately.
   writeNuBinChecked =
     name: arguments: content:
-    prev.writers.writeNuBin name ({ check = nuCheck; } // arguments) content;
+    let
+      makeWrapperArgs = arguments.makeWrapperArgs or [ ];
+
+      script = prev.writers.writeNuBin name (
+        { check = nuCheck; } // removeAttrs arguments [ "makeWrapperArgs" ]
+      ) content;
+    in
+    if makeWrapperArgs == [ ] then
+      script
+    else
+      prev.runCommandLocal name
+        {
+          nativeBuildInputs = [ prev.makeBinaryWrapper ];
+          meta.mainProgram = name;
+        }
+        ''
+          makeWrapper ${script}/bin/${name} $out/bin/${name} ${prev.lib.escapeShellArgs makeWrapperArgs}
+        '';
 }
