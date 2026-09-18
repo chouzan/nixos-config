@@ -24,6 +24,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     quadlet-nix.url = "github:SEIAROTg/quadlet-nix";
 
     disko = {
@@ -358,6 +363,7 @@
 
       extraModules = with inputs; [
         sops-nix.nixosModules.sops
+        nix-index-database.nixosModules.default
         quadlet-nix.nixosModules.quadlet
         disko.nixosModules.disko
         stylix.nixosModules.stylix

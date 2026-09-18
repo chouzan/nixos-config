@@ -18,8 +18,10 @@
     fzf.enable = lib.mkEnableOption "fzf (fuzzy finder) with custom configuration";
     zoxide.enable = lib.mkEnableOption "zoxide smarter cd command";
     carapace.enable = lib.mkEnableOption "Carapace multi-shell command argument completer";
+    nix-index-database.enable = lib.mkEnableOption "nix-index database with comma";
     firefox.enable = lib.mkEnableOption "Firefox web browser with extensions";
     zed.enable = lib.mkEnableOption "Zed code editor (program name: zed-editor)";
+
     llm = {
       claude-code = {
         enable = lib.mkEnableOption "Claude Code agentic coding tool";

@@ -12,9 +12,10 @@ in
     programs = {
       zsh.enable = utils.mkProfileDefault true;
       nushell.enable = utils.mkProfileDefault true;
+      vim.enable = utils.mkProfileDefault true;
       zoxide.enable = utils.mkProfileDefault true;
       carapace.enable = utils.mkProfileDefault true;
-      vim.enable = utils.mkProfileDefault true;
+      nix-index-database.enable = utils.mkProfileDefault true;
     };
   };
 }
