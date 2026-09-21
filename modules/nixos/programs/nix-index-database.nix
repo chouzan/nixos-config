@@ -19,7 +19,7 @@ in
   # The upstream nix-index-database module turns itself on as soon as it is
   # imported, so the option is assigned rather than guarded.
   config.programs.nix-index-database = {
-    enable = cfg.enable;
+    inherit (cfg) enable;
     comma.enable = cfg.enable;
   };
 
