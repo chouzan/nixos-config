@@ -13,7 +13,7 @@ let
 
   jsonFormat = pkgs.formats.json { };
 
-  settingsPath = "${config.home.homeDirectory}/.claude/settings.json";
+  settingsPath = "${config.programs.claude-code.configDir}/settings.json";
 
   userSettings = lib.recursiveUpdate {
     "$schema" = "https://json.schemastore.org/claude-code-settings.json";
@@ -87,6 +87,12 @@ in
 
     programs.claude-code = {
       enable = true;
+
+      # Pinned to the pre-26.11 default. Adopting `$XDG_CONFIG_HOME/claude`
+      # means moving the directory by hand, and it holds live state rather
+      # than configuration: session transcripts, credentials, and the paths
+      # home-manager links into it.
+      configDir = "${config.home.homeDirectory}/.claude";
 
       inherit skills agents;
 

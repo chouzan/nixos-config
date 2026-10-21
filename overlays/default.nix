@@ -33,6 +33,42 @@
       });
   })
 
+  # The kmod aggregator concatenates a per-module certificate for every
+  # out-of-tree module, naming it after the module in `modules.dep`, and the
+  # aggregate build fails on the first one missing. Reported as nixpkgs#575192,
+  # which lists sixteen more modules in the same position.
+  #
+  # Kbuild writes that certificate while signing during `modules_install`, so
+  # the obvious fix is to install through Kbuild. It does not work here: the
+  # kernel sets CONFIG_MODULE_SIG_ALL, but its `dev` output keeps no signing
+  # key, so nothing out of tree can be signed and no certificate exists to
+  # write. An empty one is what the module actually has, and contributes
+  # nothing to the concatenation. The module stays unsigned either way, which
+  # loads because CONFIG_MODULE_SIG_FORCE is unset.
+  (libs.utils.mkPackageGuardOverlay {
+    pname = "linuxPackages_latest";
+    label = "zenpower";
+    overlayLocation = "overlays/default.nix";
+
+    isBroken =
+      kernelPackages:
+      inputs.nixpkgs.lib.hasInfix "install -D zenpower.ko" (kernelPackages.zenpower.installPhase or "");
+
+    fallback =
+      _prev: kernelPackages:
+      kernelPackages.extend (
+        _final: prev: {
+          # Appended to the phase rather than `postInstall`, which zenpower's
+          # own `installPhase` never runs a hook for.
+          zenpower = prev.zenpower.overrideAttrs (old: {
+            installPhase = old.installPhase + ''
+              touch "$out/lib/modules/${prev.kernel.modDirVersion}/kernel/drivers/hwmon/zenpower/zenpower.ko.cer"
+            '';
+          });
+        }
+      );
+  })
+
   inputs.hyprpaper.overlays.default
   inputs.hypridle.overlays.default
   inputs.hyprlock.overlays.default

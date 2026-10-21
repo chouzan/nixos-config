@@ -15,6 +15,9 @@ let
   #                      package set as well, because a fallback that adds a
   #                      missing dependency needs a sibling package.
   #   overlayLocation -- optional string shown in the trace message
+  #   label           -- optional name for the trace message, for a guard whose
+  #                      attribute is a package set rather than the package the
+  #                      fix is about
   #
   #   mkPackageGuardOverlay {
   #     pname = "kitty";
@@ -28,6 +31,7 @@ let
       isBroken,
       fallback,
       overlayLocation ? null,
+      label ? pname,
     }:
     (
       _final: prev:
@@ -40,7 +44,7 @@ let
           if isBroken pkg then
             fallback prev pkg
           else
-            builtins.warn "${pname}: upstream is FIXED. Remove its guard overlay${hint}." pkg;
+            builtins.warn "${label}: upstream is FIXED. Remove its guard overlay${hint}." pkg;
       }
     );
 
