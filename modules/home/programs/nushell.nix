@@ -1,4 +1,9 @@
-{ osConfig, lib, ... }:
+{
+  osConfig,
+  config,
+  lib,
+  ...
+}:
 
 let
   inherit (osConfig) modules;
@@ -11,6 +16,13 @@ in
 
       # NixOS owns the package; Home Manager owns the user configuration.
       package = null;
+
+      # Matches the default from home.stateVersion 26.11. This pin can go after
+      # that.
+      loadSessionVariables =
+        lib.warnIf (lib.versionAtLeast config.home.stateVersion "26.11")
+          "programs.nushell.loadSessionVariables is the default from state version 26.11. Remove its pin."
+          true;
 
       settings = {
         show_banner = false;
