@@ -1,0 +1,31 @@
+diff --git a/src/portals/Screencopy.cpp b/src/portals/Screencopy.cpp
+--- a/src/portals/Screencopy.cpp
++++ b/src/portals/Screencopy.cpp
+@@ -538,6 +538,13 @@ void CScreencopyPortal::SSession::initCa
+             if (!self)
+                 return;
+             sharingData.status = FRAME_FAILED;
++
++            g_pPortalManager->m_sPortals.screencopy->m_pPipewire->enqueue(this);
++
++            if (g_pPortalManager->m_sPortals.screencopy->m_pPipewire->streamFromSession(this))
++                g_pPortalManager->m_sPortals.screencopy->queueNextShareFrame(this);
++
++            sharingData.frameCallback.reset();
+         });
+         sharingData.frameCallback->setDamage([this, self = self](CCZwlrScreencopyFrameV1* r, uint32_t x, uint32_t y, uint32_t width, uint32_t height) {
+             Debug::log(TRACE, "[sc] wlrOnDamage for {}", (void*)self.get());
+@@ -656,6 +663,13 @@ void CScreencopyPortal::SSession::initCa
+             if (!self)
+                 return;
+             sharingData.status = FRAME_FAILED;
++
++            g_pPortalManager->m_sPortals.screencopy->m_pPipewire->enqueue(this);
++
++            if (g_pPortalManager->m_sPortals.screencopy->m_pPipewire->streamFromSession(this))
++                g_pPortalManager->m_sPortals.screencopy->queueNextShareFrame(this);
++
++            sharingData.windowFrameCallback.reset();
+         });
+         sharingData.windowFrameCallback->setDamage([this, self = self](CCHyprlandToplevelExportFrameV1* r, uint32_t x, uint32_t y, uint32_t width, uint32_t height) {
+             Debug::log(TRACE, "[sc] hlOnDamage for {}", (void*)self.get());

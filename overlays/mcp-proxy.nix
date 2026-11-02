@@ -8,7 +8,10 @@ _final: prev: {
     src = inputs.mcp-proxy;
     cargoHash = "sha256-yTWBv5Y4U69yslIYOqQmJ4JN0t24STvyv+0gOYKtnpU=";
 
-    nativeBuildInputs = with prev; [ perl ];
+    # The crate asks for a vendored OpenSSL, but the Rust build hook forbids
+    # building it, so the system one is linked.
+    nativeBuildInputs = with prev; [ pkg-config ];
+    buildInputs = with prev; [ openssl ];
 
     # Integration tests require binaries in specific paths not available in sandbox
     doCheck = false;

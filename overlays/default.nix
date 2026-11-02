@@ -3,19 +3,6 @@
 [
   # Upstream overlays
   inputs.hyprland.overlays.hyprland-packages
-
-  # WORKAROUND: XDPH 1.4.1 predates the out-of-buffer fix (#424), and does not
-  # coalesce animated resize renegotiation (#216). Remove each patch when its
-  # fix reaches the packaged release.
-  (_final: prev: {
-    xdg-desktop-portal-hyprland = prev.xdg-desktop-portal-hyprland.overrideAttrs (old: {
-      patches = (old.patches or [ ]) ++ [
-        ./patches/xdg-desktop-portal-hyprland/resize-renegotiation.patch
-        ./patches/xdg-desktop-portal-hyprland/out-of-buffer-retry.patch
-      ];
-    });
-  })
-
   inputs.hyprtoolkit.overlays.default
   inputs.hyprpolkitagent.overlays.default
 
@@ -30,6 +17,59 @@
       prev: pkg:
       pkg.overrideAttrs (old: {
         buildInputs = (old.buildInputs or [ ]) ++ [ prev.libglvnd ];
+      });
+  })
+
+  # The screen share portal records a frame that the compositor failed and never
+  # queues another one, so the share stops for good. Resizing the shared window
+  # is enough to trigger it. Reported upstream as
+  # hyprwm/xdg-desktop-portal-hyprland#445.
+  #
+  # The check reads the handlers without whitespace, so reformatting upstream
+  # does not end the guard. It ends when the handler does more than record.
+  (libs.utils.mkPackageGuardOverlay {
+    pname = "xdg-desktop-portal-hyprland";
+    overlayLocation = "overlays/default.nix";
+
+    isBroken =
+      pkg:
+      let
+        source = builtins.readFile "${pkg.src}/src/portals/Screencopy.cpp";
+        compact = builtins.replaceStrings [ " " "\n" ] [ "" "" ] source;
+      in
+      inputs.nixpkgs.lib.hasInfix "sharingData.status=FRAME_FAILED;});" compact;
+
+    fallback =
+      _prev: pkg:
+      pkg.overrideAttrs (old: {
+        patches = (old.patches or [ ]) ++ [
+          ./patches/xdg-desktop-portal-hyprland/failed-frame-recovery.patch
+        ];
+      });
+  })
+
+  # The Rust build hook makes zstd-sys, aws-lc-sys, onig_sys and sqlite link
+  # the system libraries, which codex does not declare.
+  (libs.utils.mkPackageGuardOverlay {
+    pname = "codex";
+    overlayLocation = "overlays/default.nix";
+
+    isBroken =
+      pkg:
+      let
+        has = name: builtins.any (dep: (dep.pname or "") == name) (pkg.buildInputs or [ ]);
+      in
+      !(has "zstd" && has "aws-lc" && has "oniguruma" && has "sqlite");
+
+    fallback =
+      prev: pkg:
+      pkg.overrideAttrs (old: {
+        buildInputs = (old.buildInputs or [ ]) ++ [
+          prev.zstd
+          prev.aws-lc
+          prev.oniguruma
+          prev.sqlite
+        ];
       });
   })
 
