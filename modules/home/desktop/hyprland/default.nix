@@ -14,7 +14,6 @@ in
     ./settings
     ./hyprlock.nix
     ./hypridle.nix
-    ./plugins.nix
     ./capture.nix
     ./screen-share-picker.nix
     ./hypr-auto-mfact.nix
@@ -71,10 +70,6 @@ in
       #
       # Reference: https://wiki.nixos.org/wiki/Hyprland
       systemd.enable = false;
-
-      plugins = with pkgs.hyprlandPlugins; [
-        hyprbars
-      ];
     };
 
     services = {

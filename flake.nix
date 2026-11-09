@@ -122,17 +122,6 @@
       };
     };
 
-    # Following main to match hyprland above.
-    hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins";
-
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        systems.follows = "systems";
-        hyprland.follows = "hyprland";
-      };
-    };
-
     hyprland-preview-share-picker = {
       url = "git+https://github.com/WhySoBad/hyprland-preview-share-picker?submodules=1";
       inputs.nixpkgs.follows = "nixpkgs";

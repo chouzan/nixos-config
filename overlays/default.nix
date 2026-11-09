@@ -76,7 +76,6 @@
   inputs.hyprpaper.overlays.default
   inputs.hypridle.overlays.default
   inputs.hyprlock.overlays.default
-  inputs.hyprland-plugins.overlays.default
 
   # TODO: Maybe remove zed-editor flake
   # inputs.zed-editor.overlays.default
