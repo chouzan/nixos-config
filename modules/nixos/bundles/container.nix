@@ -22,7 +22,7 @@ in
 
       quadlet.enable = true;
 
-      containers.storage.settings = {
+      containers.storage.rootful.settings = {
         # TODO: Explore better settings for btrfs
         storage = {
           driver = "overlay";
