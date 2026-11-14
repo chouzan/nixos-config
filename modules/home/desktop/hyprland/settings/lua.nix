@@ -23,6 +23,8 @@ let
     fi
   '';
 
+  systemScratchpad = "system";
+
   # Config-derived values the lua files read via `require("vars")`.
   varsLua = ''
     return {
@@ -36,6 +38,9 @@ let
       mediaPlayer   = "spotify",
 
       toggleFocus   = "${hypr-toggle-focus-layer}",
+
+      systemScratchpad = "${systemScratchpad}",
+      systemWorkspace  = "special:${systemScratchpad}",
 
       clipMan        = "clipse",
       clipManEnabled = ${lib.boolToString config.services.clipse.enable},
@@ -52,6 +57,7 @@ in
 
       binds = ./lua/binds.lua;
       autostart = ./lua/autostart.lua;
+      workspaces = ./lua/workspaces.lua;
     };
   };
 }

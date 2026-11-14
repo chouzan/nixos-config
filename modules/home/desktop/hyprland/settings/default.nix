@@ -14,18 +14,9 @@ let
   hypUtils = hyprland.utils;
   inherit (hypUtils) mkEnv mkMonitor;
 
-  # A `special:system` scratchpad that spawns a terminal on first use.
-  extraWorkspaceRules = [
-    {
-      workspace = "special:system";
-      on_created_empty = cfg.terminal.command;
-    }
-  ];
-
   enabledMonitors = utils.getEnabledMonitors modules.monitors;
   monitors = lib.map hypUtils.toHyprlandMonitor enabledMonitors;
-  monitorWorkspaceRules = hypUtils.getWorkspaceAssignments enabledMonitors;
-  workspaceRules = monitorWorkspaceRules ++ extraWorkspaceRules;
+  workspaceRules = hypUtils.getWorkspaceAssignments enabledMonitors;
 in
 {
   imports = [

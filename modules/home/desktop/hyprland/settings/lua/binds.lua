@@ -104,9 +104,9 @@ hl.bind(mainMod .. " + 3", hl.dsp.focus({ workspace = "name:other" }))
 
 -- Special workspace -----------------------------------------------------------
 
-hl.bind(mainMod .. " + S", hl.dsp.workspace.toggle_special("system"))
+hl.bind(mainMod .. " + S", hl.dsp.workspace.toggle_special(vars.systemScratchpad))
 
-hl.bind(shiftMod .. " + S", hl.dsp.window.move({ workspace = "special:system" }))
+hl.bind(shiftMod .. " + S", hl.dsp.window.move({ workspace = vars.systemWorkspace }))
 
 -- Master layout ---------------------------------------------------------------
 
