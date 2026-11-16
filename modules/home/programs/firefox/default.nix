@@ -4,11 +4,6 @@ let
   cfg = osConfig.modules.programs.firefox;
 in
 {
-  imports = [
-    ./containers.nix
-    ./extensions
-  ];
-
   config = lib.mkIf cfg.enable {
     programs.firefox = {
       enable = true;

@@ -16,11 +16,6 @@ let
   cfg = modules.programs.git;
 in
 {
-  imports = [
-    ./aliases.nix
-    ./hooks
-  ];
-
   config = lib.mkIf cfg.enable {
     programs.git = {
       enable = true;

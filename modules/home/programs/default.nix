@@ -4,29 +4,6 @@ let
   inherit (osConfig) modules;
 in
 {
-  imports = [
-    ./zsh.nix
-    ./nushell.nix
-    ./starship
-    ./ssh.nix
-    ./gnupg.nix
-    ./git
-    ./jujutsu
-    ./delta.nix
-    ./gh.nix
-    ./ripgrep.nix
-    ./bat.nix
-    ./eza.nix
-    ./fzf.nix
-    ./zoxide.nix
-    ./carapace.nix
-    ./firefox
-    ./zed
-    ./llm
-    ./mcp.nix
-    ./bitwarden.nix
-  ];
-
   home.shell = {
     enableShellIntegration = false;
     enableZshIntegration = modules.programs.zsh.enable;

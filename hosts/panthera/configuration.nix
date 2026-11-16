@@ -11,8 +11,6 @@
     ../shared/hardware/logitech/udev-rules.nix
     ../shared/hardware/x870e-tomahawk/power-management.nix
 
-    ../../modules/nixos
-
     ../../profiles/base.nix
     ../../profiles/hardware/desktop.nix
     ../../profiles/hardware/amd.nix

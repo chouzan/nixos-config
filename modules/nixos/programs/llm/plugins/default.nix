@@ -1,7 +1,0 @@
-{ ... }:
-
-{
-  imports = [
-    ./caveman.nix
-  ];
-}

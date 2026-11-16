@@ -9,10 +9,6 @@ let
   cfg = config.modules.stylix;
 in
 {
-  imports = [
-    ./targets.nix
-  ];
-
   config = lib.mkIf cfg.enable {
     stylix = {
       enable = true;

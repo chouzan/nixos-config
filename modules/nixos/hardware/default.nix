@@ -1,16 +1,6 @@
 { ... }:
 
 {
-  imports = [
-    ./kernel.nix
-    ./cpu.nix
-    ./gpu.nix
-    ./graphic.nix
-    ./video.nix
-    ./audio.nix
-    ./ssd.nix
-  ];
-
   # Kernel modules to make available during early boot (initrd stage) to access storage devices
   boot.initrd.availableKernelModules = [
     # USB 3.0 host controller

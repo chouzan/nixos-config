@@ -9,10 +9,6 @@ let
   cfg = osConfig.modules.programs.firefox;
 in
 {
-  imports = [
-    ./simple-tab-groups.nix
-  ];
-
   config = lib.mkIf cfg.enable {
     programs.firefox.profiles.default = {
       settings."extensions.autoDisableScopes" = 0;

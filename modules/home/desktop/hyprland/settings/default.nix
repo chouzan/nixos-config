@@ -19,15 +19,6 @@ let
   workspaceRules = hypUtils.getWorkspaceAssignments enabledMonitors;
 in
 {
-  imports = [
-    ./layouts.nix
-    ./lua.nix
-    ./local-settings.nix
-    ./window-rules.nix
-    ./decorations.nix
-    ./animations.nix
-  ];
-
   config = lib.mkIf cfg.enable {
     wayland.windowManager.hyprland.settings = {
       monitor = utils.orIfEmpty [

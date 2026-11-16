@@ -7,12 +7,6 @@ let
   cfg = modules.programs.zed;
 in
 {
-  imports = [
-    ./languages.nix
-    ./context-servers.nix
-    ./agent-profiles.nix
-  ];
-
   config = lib.mkIf cfg.enable {
     programs.zed-editor = {
       mutableUserSettings = true;

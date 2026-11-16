@@ -4,21 +4,6 @@ let
   inherit (libs) utils;
 in
 {
-  imports = [
-    ./boot
-    ./btrfs.nix
-    ./user.nix
-    ./networking.nix
-    ./dns.nix
-    ./security.nix
-    ./secrets.nix
-    ./power.nix
-    ./sleep.nix
-    ./fonts.nix
-    ./hosts.nix
-    ./nixosadm.nix
-  ];
-
   # Disable watchdog auto-reboot (prefer debugging hangs)
   systemd.settings.Manager.RebootWatchdogSec = "0";
 

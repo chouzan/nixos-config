@@ -11,10 +11,6 @@ let
   cfg = osConfig.modules.programs.jujutsu;
 in
 {
-  imports = [
-    ./aliases.nix
-  ];
-
   config = lib.mkIf cfg.enable {
     programs.jujutsu = {
       enable = true;

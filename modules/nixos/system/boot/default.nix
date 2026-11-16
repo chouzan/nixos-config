@@ -9,10 +9,6 @@ let
   inherit (libs) utils;
 in
 {
-  imports = [
-    ./grub.nix
-  ];
-
   boot = {
     supportedFilesystems = [
       "vfat"

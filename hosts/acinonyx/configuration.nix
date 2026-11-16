@@ -12,8 +12,6 @@
     ../shared/system/locale.nix
     ../shared/hardware/logitech/udev-rules.nix
 
-    ../../modules/nixos
-
     ../../profiles/base.nix
     ../../profiles/hardware/laptop.nix
     ../../profiles/hardware/amd.nix

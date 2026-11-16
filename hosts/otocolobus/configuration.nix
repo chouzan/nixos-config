@@ -9,8 +9,6 @@ in
 
     ../shared/system/locale.nix
 
-    ../../modules/nixos
-
     ../../profiles/base.nix
     ../../profiles/role/development.nix
   ];

@@ -41,6 +41,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    import-tree.url = "github:denful/import-tree";
+
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -351,6 +353,12 @@
       };
 
       extraModules = with inputs; [
+        (import-tree [
+          ./modules/options
+          ./modules/nix
+          ./modules/nixos
+        ])
+
         sops-nix.nixosModules.sops
         nix-index-database.nixosModules.default
         quadlet-nix.nixosModules.quadlet
@@ -359,6 +367,8 @@
       ];
 
       extraHomeManagerModules = with inputs; [
+        (import-tree ./modules/home)
+
         sops-nix.homeManagerModules.sops
         quadlet-nix.homeManagerModules.quadlet
       ];

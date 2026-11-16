@@ -5,15 +5,6 @@ let
   inherit (machine) user;
 in
 {
-  imports = [
-    ./system
-    ./desktop
-    ./programs
-    ./bundles
-    ./packages.nix
-    ./stylix
-  ];
-
   programs.home-manager.enable = true;
 
   home = {

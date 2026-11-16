@@ -16,8 +16,6 @@
   imports = [
     "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
 
-    ../../modules/nixos
-
     ../shared/system/locale.nix
   ];
 

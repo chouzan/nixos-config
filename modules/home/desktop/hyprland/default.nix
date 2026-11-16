@@ -10,15 +10,6 @@ let
   cfg = modules.desktop.hyprland;
 in
 {
-  imports = [
-    ./settings
-    ./hyprlock.nix
-    ./hypridle.nix
-    ./capture.nix
-    ./screen-share-picker.nix
-    ./hypr-auto-mfact.nix
-  ];
-
   config = lib.mkIf cfg.enable {
     home.packages = with pkgs; [
       nordzy-cursor-theme

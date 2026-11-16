@@ -10,14 +10,6 @@ let
   cfg = modules.programs.zed;
 in
 {
-  imports = [
-    ./settings
-    ./keymaps.nix
-    ./tasks.nix
-    ./debug.nix
-    ./themes.nix
-  ];
-
   config = lib.mkIf cfg.enable {
     programs.zed-editor = {
       enable = true;
