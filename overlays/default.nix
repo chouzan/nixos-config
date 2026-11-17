@@ -48,31 +48,6 @@
       });
   })
 
-  # The Rust build hook makes zstd-sys, aws-lc-sys, onig_sys and sqlite link
-  # the system libraries, which codex does not declare.
-  (libs.utils.mkPackageGuardOverlay {
-    pname = "codex";
-    overlayLocation = "overlays/default.nix";
-
-    isBroken =
-      pkg:
-      let
-        has = name: builtins.any (dep: (dep.pname or "") == name) (pkg.buildInputs or [ ]);
-      in
-      !(has "zstd" && has "aws-lc" && has "oniguruma" && has "sqlite");
-
-    fallback =
-      prev: pkg:
-      pkg.overrideAttrs (old: {
-        buildInputs = (old.buildInputs or [ ]) ++ [
-          prev.zstd
-          prev.aws-lc
-          prev.oniguruma
-          prev.sqlite
-        ];
-      });
-  })
-
   inputs.hyprpaper.overlays.default
   inputs.hypridle.overlays.default
   inputs.hyprlock.overlays.default
