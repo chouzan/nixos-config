@@ -41,6 +41,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs-lib";
+    };
+
     import-tree.url = "github:denful/import-tree";
 
     treefmt-nix = {
@@ -186,11 +191,6 @@
 
     nixpkgs-lib.url = "github:nix-community/nixpkgs.lib";
 
-    flake-parts = {
-      url = "github:hercules-ci/flake-parts";
-      inputs.nixpkgs-lib.follows = "nixpkgs-lib";
-    };
-
     # TODO: Maybe remove zed-editor flake
     # flake-compat.url = "github:NixOS/flake-compat";
 
@@ -310,99 +310,8 @@
   };
 
   outputs =
-    { self, nixpkgs, ... }@inputs:
-    let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-      libs = import ./lib { inherit (nixpkgs) lib; };
-      overlays = import ./overlays { inherit inputs system libs; };
-
-      builder = import ./lib/builder.nix {
-        inherit (nixpkgs) lib;
-        inherit libs;
-      };
-
-      mkUser = username: {
-        inherit username;
-        name = "Muhammad H. Fauzan";
-        gitEmail = "14904191+chouzan@users.noreply.github.com";
-      };
-
-      user = mkUser "chouzan";
-
-      mkMachine = builder.mkMachineDefaults { inherit inputs system user; };
-
-      # TODO: Extend `nixosadm` beyond firmware boot entries
-      # - Similar to `eos` from EndeavourOS
-      # - Commit hardware-configuration.nix and stateVersion changes after install
-      # - System maintenance, updates, garbage collection
-      # - Explore integration with nh (github:nix-community/nh) for better UX
-      machines = {
-        panthera = mkMachine { };
-        neofelis = mkMachine { };
-        acinonyx = mkMachine { user = mkUser "muhifauzan"; };
-
-        leopardus = mkMachine {
-          homeManager = false;
-          aliases = [ "installer" ];
-        };
-
-        otocolobus = mkMachine {
-          aliases = [ "wsl" ];
-        };
-      };
-
-      extraModules = with inputs; [
-        (import-tree [
-          ./modules/options
-          ./modules/nix
-          ./modules/nixos
-        ])
-
-        sops-nix.nixosModules.sops
-        nix-index-database.nixosModules.default
-        quadlet-nix.nixosModules.quadlet
-        disko.nixosModules.disko
-        stylix.nixosModules.stylix
-      ];
-
-      extraHomeManagerModules = with inputs; [
-        (import-tree ./modules/home)
-
-        sops-nix.homeManagerModules.sops
-        quadlet-nix.homeManagerModules.quadlet
-      ];
-
-      adminPkgs = pkgs.extend (
-        nixpkgs.lib.composeManyExtensions [
-          (import ./overlays/nu-writers.nix)
-          (import ./overlays/nixosadm.nix)
-        ]
-      );
-
-      projectChecks = import ./checks {
-        inherit pkgs;
-        flakeSrc = ./.;
-      };
-
-      treefmtEval = inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
-    in
-    {
-      nixosConfigurations =
-        builder.buildConfigurations machines extraModules extraHomeManagerModules
-          overlays;
-
-      packages.${system} = {
-        inherit (adminPkgs) nixosadm;
-
-        installer = self.nixosConfigurations.installer.config.system.build.isoImage;
-        wsl = self.nixosConfigurations.wsl.config.system.build.tarballBuilder;
-      };
-
-      formatter.${system} = treefmtEval.config.build.wrapper;
-
-      checks.${system} = projectChecks // {
-        formatting = treefmtEval.config.build.check self;
-      };
+    inputs@{ flake-parts, import-tree, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [ (import-tree ./parts) ];
     };
 }
