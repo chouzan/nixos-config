@@ -67,7 +67,7 @@ in
           };
 
           # Formatting stays off until nufmt handles records reliably. See the
-          # note in treefmt.nix.
+          # note in parts/treefmt.nix.
           #
           # Both keys are set rather than dropped, because home-manager merges
           # this file into the one Zed already has. A key left out here keeps

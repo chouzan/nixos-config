@@ -16,7 +16,7 @@ echo "running nix checks..."
 # Both checks read the flake source, which for a git flake is the index, so
 # staged changes are what they see.
 nix build --no-link --print-build-logs \
-  ".#checks.${system}.formatting" \
+  ".#checks.${system}.treefmt" \
   ".#checks.${system}.nix-static"
 
 echo "all checks passed."
