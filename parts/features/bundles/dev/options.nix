@@ -1,11 +1,6 @@
-{ lib, ... }:
-
 {
-  options.modules.bundles = {
-    container.enable = lib.mkEnableOption "container and virtualization tools (podman, podman-compose)";
-    ai.enable = lib.mkEnableOption "AI tooling (Claude Desktop, MCP, etc.)";
-
-    dev = {
+  flake.modules.nixos.bundles-dev = { lib, ... }: {
+    options.modules.bundles.dev = {
       enable = lib.mkEnableOption "uncategorized development tools";
       nix.enable = lib.mkEnableOption "Nix development";
       ruby.enable = lib.mkEnableOption "Ruby development";
