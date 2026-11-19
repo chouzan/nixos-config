@@ -48,7 +48,6 @@ let
     [
       (import-tree [
         ../modules/options
-        ../modules/nix
         ../modules/nixos
       ])
 
