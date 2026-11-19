@@ -1,0 +1,110 @@
+{
+  flake.modules.homeManager.programs-llm-claude-code =
+    {
+      osConfig,
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
+
+    let
+      inherit (osConfig) modules;
+
+      cfg = modules.programs.llm.claude-code;
+
+      jsonFormat = pkgs.formats.json { };
+
+      settingsPath = "${config.programs.claude-code.configDir}/settings.json";
+
+      userSettings = lib.recursiveUpdate {
+        "$schema" = "https://json.schemastore.org/claude-code-settings.json";
+
+        tui = "fullscreen";
+        env.DISABLE_AUTOUPDATER = "1";
+
+        attribution = {
+          commit = "";
+          pr = "";
+          sessionUrl = false;
+        };
+      } cfg.userSettings;
+
+      userSettingsFile = jsonFormat.generate "claude-code-user-settings.json" userSettings;
+
+      # Claude Code owns this file: it writes runtime choices such as the model and
+      # effort level back to it. Merge the declared preferences into whatever is
+      # there instead of managing the file, so both survive. Declared values win on
+      # conflict; keys dropped from the module stay until removed by hand.
+      #
+      # Must run after linkGeneration: the file may still be a symlink into the
+      # store from an earlier generation, and writing through it would fail on the
+      # read-only store. Home Manager removes it once it stops managing the file.
+      #
+      # Unreadable or malformed JSON aborts instead of falling back to an empty
+      # object, which would drop every runtime value on the next write.
+      mergeUserSettings = ''
+        settings=${lib.escapeShellArg settingsPath}
+
+        mkdir -p "$(dirname "$settings")"
+
+        if [ ! -e "$settings" ]; then
+          echo '{}' > "$settings"
+        fi
+
+        if ! dynamic="$(${lib.getExe pkgs.jq} '.' "$settings")"; then
+          echo "claude-code: $settings is not valid JSON; fix or remove it" >&2
+          exit 1
+        fi
+
+        merged="$(${lib.getExe pkgs.jq} -n '$dynamic * $static' \
+          --argjson dynamic "$dynamic" \
+          --argjson static "$(cat ${userSettingsFile})")"
+
+        # Write through a temporary file so an interrupted run cannot truncate the
+        # settings Claude Code is holding. Keep it private: the file carries the
+        # environment Claude Code runs with, which is where a token would sit.
+        (
+          umask 077
+          printf '%s\n' "$merged" > "$settings.tmp"
+        )
+        chmod 600 "$settings.tmp"
+        mv "$settings.tmp" "$settings"
+      '';
+      mcpCfg = modules.programs.mcp;
+
+      skills = {
+        git-commit = ./skills/git-commit;
+        git-rebase = ./skills/git-rebase;
+        nix-patterns = ./skills/nix-patterns;
+      };
+
+      agents = {
+        git-rebaser = ./agents/git-rebaser.md;
+      };
+    in
+    {
+      config = lib.mkIf cfg.enable {
+        home.activation.claudeCodeSettings = lib.hm.dag.entryAfter [ "linkGeneration" ] mergeUserSettings;
+
+        programs.claude-code = {
+          enable = true;
+
+          # Pinned to the pre-26.11 default. Adopting `$XDG_CONFIG_HOME/claude`
+          # means moving the directory by hand, and it holds live state rather
+          # than configuration: session transcripts, credentials, and the paths
+          # home-manager links into it.
+          configDir = "${config.home.homeDirectory}/.claude";
+
+          inherit skills agents;
+
+          enableMcpIntegration = mcpCfg.enable;
+
+          # No `settings` here: home-manager would install the user settings file
+          # read-only, and Claude Code writes runtime choices such as the model and
+          # effort level to it. Declarative settings live in the managed layer (see
+          # the nixos claude-code module).
+        };
+      };
+    };
+}
