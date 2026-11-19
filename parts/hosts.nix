@@ -1,7 +1,8 @@
-{ inputs, ... }:
+{ inputs, config, ... }:
 
 let
   inherit (inputs) nixpkgs;
+  inherit (nixpkgs) lib;
 
   system = "x86_64-linux";
   libs = import ../lib { inherit (nixpkgs) lib; };
@@ -42,26 +43,32 @@ let
     };
   };
 
-  extraModules = with inputs; [
-    (import-tree [
-      ../modules/options
-      ../modules/nix
-      ../modules/nixos
-    ])
+  extraModules =
+    with inputs;
+    [
+      (import-tree [
+        ../modules/options
+        ../modules/nix
+        ../modules/nixos
+      ])
 
-    sops-nix.nixosModules.sops
-    nix-index-database.nixosModules.default
-    quadlet-nix.nixosModules.quadlet
-    disko.nixosModules.disko
-    stylix.nixosModules.stylix
-  ];
+      sops-nix.nixosModules.sops
+      nix-index-database.nixosModules.default
+      quadlet-nix.nixosModules.quadlet
+      disko.nixosModules.disko
+      stylix.nixosModules.stylix
+    ]
+    ++ lib.attrValues config.flake.modules.nixos;
 
-  extraHomeManagerModules = with inputs; [
-    (import-tree ../modules/home)
+  extraHomeManagerModules =
+    with inputs;
+    [
+      (import-tree ../modules/home)
 
-    sops-nix.homeManagerModules.sops
-    quadlet-nix.homeManagerModules.quadlet
-  ];
+      sops-nix.homeManagerModules.sops
+      quadlet-nix.homeManagerModules.quadlet
+    ]
+    ++ lib.attrValues config.flake.modules.homeManager;
 in
 {
   flake.nixosConfigurations =
