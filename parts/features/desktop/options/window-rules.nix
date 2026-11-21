@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.desktop-hyprland =
+  flake.modules.nixos.desktop-options =
     { lib, ... }:
 
     let
