@@ -135,7 +135,7 @@ Hibernation uses kernel-level compression. The default NixOS kernel only include
 | lz4 | Faster | Good | `CONFIG_HIBERNATION_COMP_LZ4=y` |
 | zstd | Slower | Better | `CONFIG_HIBERNATION_COMP_ZSTD=y` |
 
-The system configures `lzo` by default in `parts/features/system/sleep/nixos.nix`. To use lz4 or zstd, you must rebuild the kernel with the appropriate configuration option enabled.
+The system configures `lzo` by default in `parts/features/system/sleep/nixos/sleep.nix`. To use lz4 or zstd, you must rebuild the kernel with the appropriate configuration option enabled.
 
 ### Common Issues
 

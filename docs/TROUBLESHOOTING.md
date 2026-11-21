@@ -57,7 +57,7 @@ The kernel doesn't have the specified compressor compiled in. NixOS kernel by de
 
 **Solution 1: Use LZO (Recommended)**
 
-Check `parts/features/system/sleep/nixos.nix` - it should be set to:
+Check `parts/features/system/sleep/nixos/sleep.nix` - it should be set to:
 ```nix
 boot.kernelParams = [
   "hibernate.compressor=lzo"
@@ -94,7 +94,7 @@ boot.kernelPatches = [{
 }];
 ```
 
-Then update the compressor in `parts/features/system/sleep/nixos.nix` and rebuild (takes ~30 minutes for kernel compilation).
+Then update the compressor in `parts/features/system/sleep/nixos/sleep.nix` and rebuild (takes ~30 minutes for kernel compilation).
 
 ---
 
