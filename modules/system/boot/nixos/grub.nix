@@ -22,7 +22,7 @@
         timeoutStyle = "menu";
 
         # Appearance
-        theme = ../../../../../assets/grub-themes/nixos;
+        theme = ../../../../assets/grub-themes/nixos;
 
         # Extras
         memtest86.enable = true;

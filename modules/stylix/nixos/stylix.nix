@@ -102,7 +102,7 @@
             terminal = 0.9;
           };
 
-          image = ../../../../assets/wallpapers/wallpaper.jpg;
+          image = ../../../assets/wallpapers/wallpaper.jpg;
           polarity = "dark";
         };
       };

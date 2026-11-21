@@ -7,7 +7,7 @@
     in
     {
       sops = {
-        defaultSopsFile = ../../../../../.secrets/secrets.nixos.yaml;
+        defaultSopsFile = ../../../../.secrets/secrets.nixos.yaml;
         age.keyFile = "${modules.my.keyHome}/age/nixos.key";
       };
     };

@@ -19,7 +19,7 @@
     in
     {
       sops = {
-        defaultSopsFile = ../../../../../.secrets/secrets.home.yaml;
+        defaultSopsFile = ../../../../.secrets/secrets.home.yaml;
         age.keyFile = "${modules.my.keyHome}/age/home.key";
 
         secrets = {

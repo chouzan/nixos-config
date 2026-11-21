@@ -27,7 +27,7 @@ NC='\033[0m'
 # Default paths
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 NIXOS_DIR="${SCRIPT_DIR}/../.."
-SETTINGS_FILE="${NIXOS_DIR}/parts/features/programs/firefox/home/extensions/simple-tab-groups-settings.json"
+SETTINGS_FILE="${NIXOS_DIR}/modules/programs/firefox/home/extensions/simple-tab-groups-settings.json"
 
 show_help() {
     cat << EOF

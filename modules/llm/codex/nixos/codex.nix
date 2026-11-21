@@ -86,7 +86,7 @@
     {
       # Codex writes folder-trust decisions to the user's config.toml at runtime,
       # so that file must stay writable and codex-owned; home-manager leaves it
-      # unmanaged (see parts/features/llm/codex/home/codex.nix). This declarative
+      # unmanaged (see modules/llm/codex/home/codex.nix). This declarative
       # config lives in Codex's `System` layer (/etc/codex/config.toml): lowest
       # precedence, always loaded for every subcommand, and merged beneath the
       # writable user file so the two never collide. A `--profile` layer cannot
