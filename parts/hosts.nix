@@ -46,11 +46,6 @@ let
   extraModules =
     with inputs;
     [
-      (import-tree [
-        ../modules/options
-        ../modules/nixos
-      ])
-
       sops-nix.nixosModules.sops
       nix-index-database.nixosModules.default
       quadlet-nix.nixosModules.quadlet
@@ -62,8 +57,6 @@ let
   extraHomeManagerModules =
     with inputs;
     [
-      (import-tree ../modules/home)
-
       sops-nix.homeManagerModules.sops
       quadlet-nix.homeManagerModules.quadlet
     ]
