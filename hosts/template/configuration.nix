@@ -43,7 +43,7 @@
   system.stateVersion = "26.05"; # Did you read the comment?
 
   # Host-specific module configuration
-  # See modules/options/ for available options
+  # See the options.nix file of each group in modules/ for available options
   modules = {
     # monitors = [
     #   {

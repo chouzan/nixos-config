@@ -8,7 +8,7 @@ Personal NixOS configuration with an opinionated abstraction layer over NixOS an
 
 ## What is This?
 
-A modular NixOS configuration that provides high-level feature flags (`modules.*`) instead of raw NixOS options. Set what you want (`modules.bundles.dev.elixir.enable = true`) and let implementations handle the details (Elixir packages, LSP integration in Zed, shell completions, etc.).
+A modular NixOS configuration that provides high-level feature flags (`modules.*`) instead of raw NixOS options. Set what you want (`modules.programming.elixir.enable = true`) and let implementations handle the details (Elixir packages, extensions in Zed, etc.).
 
 ## Quick Example
 
@@ -22,9 +22,9 @@ A modular NixOS configuration that provides high-level feature flags (`modules.*
   ];
 
   modules = {
-    packages.extras.enable = true;
+    packages.cli.enable = true;
     programs.git.enable = true;
-    bundles.dev.elixir.enable = true;
+    programming.elixir.enable = true;
   };
 }
 ```
@@ -41,10 +41,12 @@ NixOS/Home Manager Options
 
 **Key Concepts:**
 
-- **Options** (`modules/options/*`) - Define the public API contract
-- **Implementations** (`modules/nixos/*`, `modules/home/*`) - Derive configuration decisions from custom options
-- **Profiles** (`profiles/*`) - Preset option combinations with `lib.mkDefault` (easily overridable)
+- **Options** (`modules/<group>/options.nix`) - Define the public API contract
+- **Implementations** (`modules/<group>/<feature>/nixos/`, `modules/<group>/<feature>/home/`) - Derive configuration decisions from custom options
+- **Profiles** (`profiles/*`) - Preset option combinations with `utils.mkProfileDefault` (easily overridable)
 - **Hosts** (`hosts/*`) - Machine-specific configurations
+
+Each implementation file is a [flake-parts](https://flake.parts) module that stores a NixOS or Home Manager module under `flake.modules`. `parts/hosts.nix` gives every host all of them, and the enable flags decide what takes effect.
 
 **Example Flow:**
 ```nix
@@ -53,59 +55,72 @@ modules.programs.zsh.enable = true;
 
 # Implementation derives:
 programs.zsh.enable = true;                     # Enable Zsh itself
-programs.bat.enableZshIntegration = true;       # Auto-integration
-programs.fzf.enableZshIntegration = true;       # Cross-cutting concern
-services.gpg-agent.enableZshIntegration = true;
+home.shell.enableZshIntegration = true;         # Every Home Manager program with a Zsh integration picks this up
 ```
 
 ```nix
 # You enable:
-modules.bundles.dev.elixir.enable = true;
+modules.programming.elixir.enable = true;
 
 # Implementation derives:
-environment.systemPackages = [ elixir elixir-ls ];
-programs.zed.extensions = [ "elixir" ];             # Conditional dependency
-# ... and more
+home.packages = [ elixir expert ];                  # Toolchain and language server
+programs.zed-editor.userSettings.auto_install_extensions.elixir = true;  # Conditional dependency
 ```
 
 ## Project Structure
 
 ```
 nixos-config/
-├── flake.nix           # Entry point
+├── flake.nix           # Inputs and the flake-parts entry point
+├── parts/              # Flake outputs, one flake-parts module per concern
+│   ├── hosts.nix       # Users, machines, and the modules of every host
+│   ├── modules.nix     # Loads modules/
+│   ├── packages.nix
+│   ├── systems.nix
+│   ├── treefmt.nix
+│   └── checks/
+├── modules/            # Features, grouped by domain
+│   ├── <group>/
+│   │   ├── options.nix             # Flags of the group (modules.<group>.*)
+│   │   └── <feature>/
+│   │       ├── nixos/<feature>.nix # NixOS implementation
+│   │       ├── home/<feature>.nix  # Home Manager implementation
+│   │       └── assets/             # Files that the implementations read
+│   └── base/options/   # Options that belong to no group
 ├── lib/                # Helper functions
+├── overlays/           # Package overlays and patches
 ├── hosts/              # Machine configurations
 │   ├── panthera/       # Desktop workstation
 │   ├── neofelis/       # Lab machine
 │   ├── acinonyx/       # Laptop
 │   ├── leopardus/      # Installer ISO
-│   └── default/        # Template for new hosts
+│   ├── otocolobus/     # WSL
+│   ├── shared/         # Settings that several hosts use
+│   └── template/       # Template for new hosts
 ├── profiles/           # Convenience presets
 │   ├── base.nix
 │   ├── hardware/
 │   ├── environment/
 │   └── role/
-├── modules/
-│   ├── options/        # API contract (modules.*)
-│   ├── nixos/          # NixOS implementations
-│   ├── home/           # Home Manager implementations
-│   └── nix/            # Nix daemon & community settings
+├── scripts/            # Installer and helper scripts
 └── docs/               # Documentation
 ```
 
+A group that has one feature, such as `stylix` and `packages`, keeps that feature's `nixos/` and `home/` directories directly in the group directory.
+
 ## Available Modules
 
-All available options are defined in `modules/options/`. The files are organized by category for easy discovery:
+All available options are defined in the `options.nix` file of each group in `modules/`:
 
-- `modules/options/hardware.nix` - CPU, GPU, battery, etc.
-- `modules/options/system.nix` - System configuration (XDG, fonts, secrets)
-- `modules/options/stylix.nix` - Stylix theming configuration
-- `modules/options/desktop/` - Desktop environments
-- `modules/options/packages.nix` - Package collections (admin, cli, media, etc.)
-- `modules/options/programs.nix` - Individual programs (zsh, git, firefox, zed, etc.)
-- `modules/options/bundles.nix` - Feature bundles (containers, dev tools, AI, etc.)
-- `modules/options/monitors.nix` - Monitor configuration
-- `modules/options/my.nix` - Personal paths configuration (~/.my, scripts, keys)
+- `modules/system/options.nix` - DNS, XDG, nixosadm, containers
+- `modules/hardware/options.nix` - CPU, GPU, battery
+- `modules/programs/options.nix` - Individual programs (zsh, git, firefox, zed, etc.)
+- `modules/llm/options.nix` - LLM tools, MCP servers, Claude Desktop
+- `modules/programming/options.nix` - Language toolchains and development tools
+- `modules/packages/options.nix` - Package collections (admin, cli, media, etc.)
+- `modules/stylix/options.nix` - Stylix theming
+- `modules/desktop/options/` - Hyprland, window rules, and Hyprland monitor settings
+- `modules/base/options/` - User, monitors, and personal paths (`~/.my`, scripts, keys)
 
 Each file contains clear option definitions with descriptions.
 
@@ -136,7 +151,7 @@ modules.monitors = [
 ];
 ```
 
-See `modules/options/monitors.nix` and `modules/options/desktop/hyprland/monitors.nix` for all options.
+See `modules/base/options/monitors.nix` and `modules/desktop/options/monitors.nix` for all options.
 
 ## Installation
 
@@ -165,21 +180,20 @@ See [hosts/leopardus/configuration.nix](hosts/leopardus/configuration.nix) for d
    cd ~/nixos-config
    ```
 
-2. **Update `flake.nix` with your information:**
+2. **Update `parts/hosts.nix` with your information:**
    ```nix
    # User information
-   user = rec {
-     username = "<username>";      # Your username
+   mkUser = username: {
+     inherit username;
      name = "<Your Full Name>";    # Your full name
      gitEmail = "<your-email>";    # Your git email
-     # ... homeDir is derived from username
    };
-   
+
+   user = mkUser "<username>";     # Your username
+
    # Machine configuration
    machines = {
-     <hostname> = mkMachine {
-       hostname = "<hostname>";
-     };
+     <hostname> = mkMachine { };
    };
    ```
 
@@ -194,7 +208,12 @@ See [hosts/leopardus/configuration.nix](hosts/leopardus/configuration.nix) for d
    $EDITOR hosts/<hostname>/configuration.nix
    ```
 
-5. **Build and switch:**
+5. **Track the new files.** Flakes only see files that Git tracks:
+   ```bash
+   git add hosts/<hostname>
+   ```
+
+6. **Build and switch:**
    ```bash
    sudo nixos-rebuild switch
    ```
@@ -203,14 +222,21 @@ See [hosts/leopardus/configuration.nix](hosts/leopardus/configuration.nix) for d
 
 ## Profiles
 
-Profiles are convenience wrappers that set multiple options at once with `lib.mkDefault`:
+Profiles are convenience wrappers that set multiple options at once with `utils.mkProfileDefault`. It sets a priority that a host overrides with a plain assignment:
 
 ```nix
 # profiles/hardware/amd.nix
-modules.hardware = {
-  cpu.amd.enable = lib.mkDefault true;
-  gpu.amd.enable = lib.mkDefault true;
-};
+{ libs, ... }:
+
+let
+  inherit (libs) utils;
+in
+{
+  modules.hardware = {
+    cpu.amd.enable = utils.mkProfileDefault true;
+    gpu.amd.enable = utils.mkProfileDefault true;
+  };
+}
 ```
 
 Import profiles in your host's configuration:
@@ -237,15 +263,17 @@ modules.hardware.gpu.amd.enable = false;        # Disable GPU part
 nix fmt
 ```
 
-**Debug configurations:**
+**Check the flake and the project checks:**
 ```bash
-nix eval .#debug.machines --json | jq
+nix flake check
 ```
 
-**Add new module:**
-1. Define option in `modules/options/<category>.nix`
-2. Implement in `modules/nixos/<category>/` or `modules/home/<category>/`
-3. Use `lib.mkIf cfg.enable { ... }` pattern
+**Add a new feature:**
+1. Create `modules/<group>/<feature>/nixos/<feature>.nix` or `modules/<group>/<feature>/home/<feature>.nix`.
+2. Define the module in each file as `flake.modules.nixos.<group>-<feature>` or `flake.modules.homeManager.<group>-<feature>`.
+3. Declare the flag in `modules/<group>/options.nix`.
+4. Gate the configuration with `lib.mkIf cfg.enable { ... }`.
+5. Run `git add` on the new files. Flakes ignore files that Git does not track, so an untracked module is silently not loaded.
 
 ## Documentation
 
