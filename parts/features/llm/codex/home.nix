@@ -1,10 +1,10 @@
 {
-  flake.modules.homeManager.programs-llm-codex =
+  flake.modules.homeManager.llm-codex =
     { osConfig, lib, ... }:
 
     let
       inherit (osConfig) modules;
-      cfg = modules.programs.llm.codex;
+      cfg = modules.llm.codex;
     in
     {
       config = lib.mkIf cfg.enable {

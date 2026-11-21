@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.programs-llm-claude-code =
+  flake.modules.nixos.llm-claude-code =
     {
       config,
       lib,
@@ -12,7 +12,7 @@
       inherit (config) modules;
       inherit (libs) sensitivePaths;
 
-      cfg = modules.programs.llm.claude-code;
+      cfg = modules.llm.claude-code;
 
       jsonFormat = pkgs.formats.json { };
 
@@ -90,7 +90,7 @@
         environment.etc."claude-code/managed-settings.json".source =
           jsonFormat.generate "claude-code-managed-settings.json" managedSettings;
 
-        modules.programs.llm.claude-code = {
+        modules.llm.claude-code = {
           statusLineSegments = [
             {
               order = 10;

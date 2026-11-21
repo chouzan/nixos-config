@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.programs-llm-skills =
+  flake.modules.homeManager.llm-skills =
     { osConfig, lib, ... }:
 
     let
@@ -13,15 +13,15 @@
     in
     {
       config = lib.mkMerge [
-        (lib.mkIf modules.programs.llm.claude-code.enable {
+        (lib.mkIf modules.llm.claude-code.enable {
           programs.claude-code.skills = skills;
         })
 
-        (lib.mkIf modules.programs.llm.codex.enable {
+        (lib.mkIf modules.llm.codex.enable {
           programs.codex.skills = skills;
         })
 
-        (lib.mkIf modules.programs.llm.opencode.enable {
+        (lib.mkIf modules.llm.opencode.enable {
           programs.opencode.skills = skills;
         })
       ];

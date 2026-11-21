@@ -1,12 +1,12 @@
 {
-  flake.modules.homeManager.programs-llm-opencode =
+  flake.modules.homeManager.llm-opencode =
     { osConfig, lib, ... }:
 
     let
       inherit (osConfig) modules;
 
-      cfg = modules.programs.llm.opencode;
-      mcpCfg = modules.programs.mcp;
+      cfg = modules.llm.opencode;
+      mcpCfg = modules.llm.mcp;
     in
     {
       config = lib.mkIf cfg.enable {

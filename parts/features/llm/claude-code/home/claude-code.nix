@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.programs-llm-claude-code =
+  flake.modules.homeManager.llm-claude-code =
     {
       osConfig,
       config,
@@ -11,7 +11,7 @@
     let
       inherit (osConfig) modules;
 
-      cfg = modules.programs.llm.claude-code;
+      cfg = modules.llm.claude-code;
 
       jsonFormat = pkgs.formats.json { };
 
@@ -71,7 +71,7 @@
         chmod 600 "$settings.tmp"
         mv "$settings.tmp" "$settings"
       '';
-      mcpCfg = modules.programs.mcp;
+      mcpCfg = modules.llm.mcp;
 
       skills = {
         git-commit = ./skills/git-commit;

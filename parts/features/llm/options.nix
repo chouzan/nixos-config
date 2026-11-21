@@ -1,6 +1,17 @@
 {
-  flake.modules.nixos.programs-llm-options = { lib, pkgs, ... }: {
-    options.modules.programs.llm = {
+  flake.modules.nixos.llm-options = { lib, pkgs, ... }: {
+    options.modules.llm = {
+      mcp = {
+        enable = lib.mkEnableOption "MCP server configuration";
+
+        servers = {
+          sequential-thinking.enable = lib.mkEnableOption "sequential-thinking MCP server";
+          context7.enable = lib.mkEnableOption "context7 MCP server";
+          graphiti-memory.enable = lib.mkEnableOption "graphiti-memory MCP server";
+          tidewave.enable = lib.mkEnableOption "tidewave MCP server";
+        };
+      };
+
       claude-code = {
         enable = lib.mkEnableOption "Claude Code agentic coding tool";
 
@@ -54,7 +65,7 @@
       };
 
       opencode.enable = lib.mkEnableOption "OpenCode agentic coding tool";
-      plugins.caveman.enable = lib.mkEnableOption "Caveman workflow plugin for LLM coding agents";
+      caveman.enable = lib.mkEnableOption "Caveman workflow plugin for LLM coding agents";
     };
   };
 }

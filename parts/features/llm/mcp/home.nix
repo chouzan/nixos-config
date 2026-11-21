@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.programs-mcp =
+  flake.modules.homeManager.llm-mcp =
     {
       osConfig,
       lib,
@@ -11,7 +11,7 @@
       inherit (osConfig) modules;
       inherit (libs.mcp) servers;
 
-      cfg = modules.programs.mcp;
+      cfg = modules.llm.mcp;
     in
     {
       config = lib.mkIf cfg.enable {

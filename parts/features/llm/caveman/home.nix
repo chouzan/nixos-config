@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.programs-llm-caveman =
+  flake.modules.homeManager.llm-caveman =
     {
       osConfig,
       inputs,
@@ -11,7 +11,7 @@
     let
       inherit (osConfig) modules;
 
-      cfg = modules.programs.llm.plugins.caveman;
+      cfg = modules.llm.caveman;
       caveman = inputs.llm-caveman;
 
       opencodePlugin = pkgs.runCommand "caveman-opencode-plugin" { } ''
@@ -96,15 +96,15 @@
     {
       config = lib.mkIf cfg.enable (
         lib.mkMerge [
-          (lib.mkIf modules.programs.llm.claude-code.enable {
+          (lib.mkIf modules.llm.claude-code.enable {
             programs.claude-code.plugins = { inherit caveman; };
           })
 
-          (lib.mkIf modules.programs.llm.codex.enable {
+          (lib.mkIf modules.llm.codex.enable {
             programs.codex.skills = cavemanSkills;
           })
 
-          (lib.mkIf modules.programs.llm.opencode.enable {
+          (lib.mkIf modules.llm.opencode.enable {
             programs.opencode = {
               skills = cavemanSkills;
               commands = opencodeCommands;

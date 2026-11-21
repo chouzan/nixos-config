@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.programs-llm-codex =
+  flake.modules.nixos.llm-codex =
     {
       config,
       lib,
@@ -12,8 +12,8 @@
       inherit (config) modules;
       inherit (libs) sensitivePaths;
 
-      cfg = modules.programs.llm.codex;
-      mcpCfg = modules.programs.mcp;
+      cfg = modules.llm.codex;
+      mcpCfg = modules.llm.mcp;
 
       tomlFormat = pkgs.formats.toml { };
 
@@ -86,7 +86,7 @@
     {
       # Codex writes folder-trust decisions to the user's config.toml at runtime,
       # so that file must stay writable and codex-owned; home-manager leaves it
-      # unmanaged (see parts/features/programs/llm/codex/home.nix). This declarative
+      # unmanaged (see parts/features/llm/codex/home.nix). This declarative
       # config lives in Codex's `System` layer (/etc/codex/config.toml): lowest
       # precedence, always loaded for every subcommand, and merged beneath the
       # writable user file so the two never collide. A `--profile` layer cannot
