@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.bundles-container =
+  flake.modules.nixos.system-container =
     {
       config,
       lib,
@@ -10,10 +10,10 @@
 
     let
       inherit (machine) user;
-      cfg = config.modules.bundles;
+      cfg = config.modules.system.container;
     in
     {
-      config = lib.mkIf cfg.container.enable {
+      config = lib.mkIf cfg.enable {
         environment.systemPackages = with pkgs; [ podman-compose ];
 
         virtualisation = {

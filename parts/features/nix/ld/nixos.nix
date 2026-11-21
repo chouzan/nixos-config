@@ -8,7 +8,7 @@
     }:
 
     let
-      inherit (config.modules) bundles;
+      inherit (config.modules) programming;
 
       langLdLibs = {
         python = pkgs.python3;
@@ -16,7 +16,7 @@
 
       activeLdLibs = lib.foldlAttrs (
         acc: lang: pkgs:
-        acc ++ lib.flatten (lib.optionals (lib.attrByPath [ lang "enable" ] false bundles.dev) pkgs)
+        acc ++ lib.flatten (lib.optionals (lib.attrByPath [ lang "enable" ] false programming) pkgs)
       ) [ ] langLdLibs;
 
       ldRequired = activeLdLibs != [ ];

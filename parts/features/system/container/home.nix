@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.bundles-container =
+  flake.modules.homeManager.system-container =
     {
       osConfig,
       config,
@@ -10,13 +10,13 @@
     let
       inherit (osConfig) modules;
 
-      cfg = modules.bundles;
+      cfg = modules.system.container;
 
       home = config.home.homeDirectory;
       dataHome = config.xdg.dataHome or "${home}/.local/share";
     in
     {
-      config = lib.mkIf cfg.container.enable {
+      config = lib.mkIf cfg.enable {
         services.podman = {
           enable = true;
 

@@ -18,7 +18,7 @@
 
           extraPackages =
             with pkgs;
-            lib.optionals modules.bundles.dev.nix.enable [
+            lib.optionals modules.programming.nix.enable [
               nixd
               nixfmt
             ]

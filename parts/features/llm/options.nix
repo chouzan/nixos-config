@@ -66,6 +66,7 @@
 
       opencode.enable = lib.mkEnableOption "OpenCode agentic coding tool";
       caveman.enable = lib.mkEnableOption "Caveman workflow plugin for LLM coding agents";
+      claude-desktop.enable = lib.mkEnableOption "Claude Desktop";
     };
   };
 }

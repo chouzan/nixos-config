@@ -3,6 +3,7 @@
     {
       osConfig,
       lib,
+      pkgs,
       libs,
       ...
     }:
@@ -15,6 +16,9 @@
     in
     {
       config = lib.mkIf cfg.enable {
+        # From mcp-proxy overlay
+        home.packages = [ pkgs.mcp-proxy ];
+
         programs.mcp = {
           enable = true;
 

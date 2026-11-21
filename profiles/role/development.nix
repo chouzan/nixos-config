@@ -5,6 +5,8 @@ let
 in
 {
   modules = {
+    system.container.enable = utils.mkProfileDefault true;
+
     packages = {
       network.enable = utils.mkProfileDefault true;
       archive.enable = utils.mkProfileDefault true;
@@ -31,6 +33,7 @@ in
       codex.enable = utils.mkProfileDefault true;
       opencode.enable = utils.mkProfileDefault true;
       caveman.enable = utils.mkProfileDefault true;
+      claude-desktop.enable = utils.mkProfileDefault true;
 
       mcp = {
         enable = utils.mkProfileDefault true;
@@ -43,21 +46,17 @@ in
       };
     };
 
-    bundles = {
-      container.enable = utils.mkProfileDefault true;
-      ai.enable = utils.mkProfileDefault true;
+    programming = {
+      tools.enable = utils.mkProfileDefault true;
 
-      dev = {
+      elixir = {
         enable = utils.mkProfileDefault true;
-        ruby.enable = utils.mkProfileDefault true;
-        python.enable = utils.mkProfileDefault true;
-        node.enable = utils.mkProfileDefault true;
-
-        elixir = {
-          enable = utils.mkProfileDefault true;
-          phoenix.enable = utils.mkProfileDefault true;
-        };
+        phoenix.enable = utils.mkProfileDefault true;
       };
+
+      ruby.enable = utils.mkProfileDefault true;
+      python.enable = utils.mkProfileDefault true;
+      node.enable = utils.mkProfileDefault true;
     };
   };
 }

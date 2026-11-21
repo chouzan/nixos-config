@@ -36,7 +36,7 @@
           no_focus = true;
         }
 
-        # TODO: Guard with options (modules.bundles.screenshot)
+        # TODO: Guard with options (a screenshot option)
         # Screenshot annotation tool
         {
           name = "satty";

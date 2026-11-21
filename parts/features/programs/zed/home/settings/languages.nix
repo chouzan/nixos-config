@@ -11,16 +11,16 @@
         programs.zed-editor.userSettings = {
           # Reference: https://github.com/zed-industries/extensions/tree/main/extensions
           auto_install_extensions = lib.mkMerge [
-            (lib.mkIf modules.bundles.container.enable {
+            (lib.mkIf modules.system.container.enable {
               dockerfile = true;
               docker-compose = true;
             })
 
-            (lib.mkIf modules.bundles.dev.enable {
+            (lib.mkIf modules.programming.tools.enable {
               toml = true;
             })
 
-            (lib.mkIf modules.bundles.dev.nix.enable {
+            (lib.mkIf modules.programming.nix.enable {
               nix = true;
             })
 
@@ -28,7 +28,7 @@
               nu = true;
             })
 
-            (lib.mkIf modules.bundles.dev.elixir.enable {
+            (lib.mkIf modules.programming.elixir.enable {
               elixir = true;
             })
           ];
