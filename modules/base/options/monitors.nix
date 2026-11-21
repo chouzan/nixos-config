@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.options-monitors =
+  flake.modules.nixos.base-options =
     { config, lib, ... }:
 
     let

@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.options-user =
+  flake.modules.nixos.base-options =
     {
       config,
       lib,
